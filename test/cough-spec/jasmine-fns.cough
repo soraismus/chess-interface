@@ -1,0 +1,94 @@
+define (['mydash'], (_) ->
+
+  j = jasmine-fns = {}
+
+  j.descr  = \a1 \a2 -> describe (a1, a2)
+  j.xdescr = \a1 \a2 -> xdescribe (a1, a2)
+  j.t      = \a1 \a2 -> it (a1, a2)
+  j.xt     = \a1 \a2 -> xit (a1, a2)
+
+  j.test-spec = \spec \message \element ->
+    it (message, (-> spec element))
+
+  j.to-throw = \fn \arg -> expect (fn.bind (null, arg)) .toThrow ()
+
+  j.to-be = \actual \expected -> expect (expected) .toBe actual
+
+  j.to-equal = \actual \expected -> expect (expected) .toEqual actual
+
+  j.to-be-true  = \expected -> expect (expected) .toEqual true
+
+  j.to-be-false = \expected -> expect (expected) .toEqual false
+
+  j.satisfies = \predicate \input ->
+    expect (predicate (input)) .toEqual true
+
+  j.contravenes = \predicate \input ->
+    expect(predicate (input)).toEqual false
+
+  j.throws = \predicate \input -> j.to-throw predicate input
+
+  j.each-satisfies = \predicate \inputs ->
+    _.each (j.satisfies predicate) inputs
+
+  j.each-contravenes = \predicate \inputs ->
+    _.each (j.contravenes predicate) inputs
+
+  j.each-throws = \fn \inputs -> _.each (j.to-throw fn) inputs
+
+  j.to-be-fn = \expected ->
+    expect (expected) .toEqual (jasmine.any (Function))
+
+  manage-subset = \spec \message \element-set ->
+    test-spec = j.test-spec spec
+
+    if _.isArray message
+      _.zipEach2 test-spec message element-set unless _.empty message
+    else
+      test-spec message element-set
+
+  gen-pred-specs = \predicate ->
+    _.mapOnto [j.satisfies, j.contravenes, j.throws] predicate
+
+  j.gen-pred-guards = \predicate ->
+    _.map _.each (gen-pred-specs predicate)
+
+  j.test-predicate = \predicate \messages \element-sets ->
+    guards = j.gen-pred-guards predicate
+
+    # Start assertions for testing mode.
+    _.vowFull messages
+    _.vowAllAry element-sets
+    # End assertions for testing mode.
+
+    _.zipEach manage-subset [guards, messages, element-sets]
+
+  j.test-transformation = \fn \results \inputs ->
+    j.to-equal results (_.map fn inputs)
+
+  j.test-throwing-transformation = \fn ->
+    _.mapOnto [j.test-transformation, j.each-throws] fn
+
+  # TODO: Refactor.
+  j.implement-specs = \specs ->
+    fn-helper = \msg \spec \arg-set ->
+      it (msg, (-> _.apply spec arg-set))
+
+    _.eachApply fn-helper specs
+
+  j.implement-specs2 = \messages \specs \element-sets ->
+    fn-helper = \msg \spec \arg-set ->
+      it (msg, (-> _.apply spec arg-set))
+
+    _.zipEach fn-helper [messages, specs, element-sets]
+
+  j.implement-specs3 = \msgs \specs \elements ->
+    elements = _.transpose elements
+
+    fn-helper = \msg \spec \arg-set ->
+      it (msg, (-> _.zipEach spec arg-set))
+
+    _.zipEach fn-helper [msgs, specs, elements]
+
+  return j
+)

@@ -1,0 +1,90 @@
+#chess {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+.board {
+	border: thick solid black;
+  margin-left: auto;
+  margin-right: auto;
+}
+	
+.row {
+	float: left;
+	clear: both;
+}
+
+.row:nth-child(even) .sq:nth-child(even) {
+	background: #fff;
+}
+
+.row:nth-child(odd) .sq:nth-child(even) {
+	background: #888;
+}
+
+.row:nth-child(even) .sq:nth-child(odd) {
+	background: #888;
+}
+
+.row:nth-child(odd) .sq:nth-child(odd) {
+	background: #fff;
+}
+
+.sq {
+	height: 50px;
+	width: 50px;
+	float: left;
+}
+
+.inactive {
+  pointer-events: none;
+}
+
+.ui-draggable-dragging {
+  z-index: 1;
+}
+
+.mount-point {
+  position: relative;
+  width: 430px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#promotion-options {
+  visibility: hidden;
+  top: 40%;
+  left: 22%;
+  height: 20%;
+  width: 56%;
+  background: #aaa;
+  border: solid #888;
+  border-radius: 20px;
+  position: absolute;
+  text-align: center;
+  animation: fadeIn 0.3s forwards;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; visibility: hidden; }
+  2% { opacity: 0; visibility: visible; }
+  100% { opacity: 0.9; visibility: visible; }
+}
+
+#promotion-msg {
+  font: 22px/26px sans-serif;
+}
+
+.promotion-option {
+  float: left;
+  border: 1px yellow;
+  border-radius: 10px;
+  margin: 4px;
+}
+
+.promotion-option:hover {
+  background: #888;
+}

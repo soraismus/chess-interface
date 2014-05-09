@@ -1,0 +1,103 @@
+define (['mydash', 'types'], (_, y) ->
+
+  validation-pairs = [
+    [y.board?,              'board'             ]
+    [y.bounded?,            'bounded number'    ]
+    [y.castling-right?,     'castling right'    ]
+    [y.castling-right-set?, 'castling right set']
+    [y.chart?,              'chart'             ]
+    [y.chessman?,           'chessman'          ]
+    [y.chessman-type?,      'chessman type'     ]
+    [y.color?,              'color'             ]
+    [y.color-pair?,         'color pair'        ]
+    [y.context?,            'context'           ]
+    [y.index?,              'index'             ]
+    [y.integral-pair?,      'integral pair'     ]
+    [y.map?,                'map'               ]
+    [y.pair?,               'pair'              ]
+    [y.passant-position?,   'passant position'  ]
+    [y.path?,               'path'              ]
+    [y.player?,             'player'            ]
+    [y.position?,           'position'          ]
+    [y.position-code?,      'position code'     ]
+    [y.query?,              'query'             ]
+    [y.rook?,               'rook'              ]
+    [y.setting?,            'setting'           ]
+    [y.square?,             'square'            ]
+    [y.type?,               'type'              ]
+  ]
+
+  generate-singular-validator = ([pred, str]) ->
+    _.vowWith pred "Invalid #{str}"
+
+  singular-validators = [
+    vow-board
+    vow-bounded
+    vow-castling-right
+    vow-castling-right-set
+    vow-chart
+    vow-chessman
+    vow-chessman-type
+    vow-color
+    vow-color-pair
+    vow-context
+    vow-index
+    vow-integral-pair
+    vow-map
+    vow-pair
+    vow-passant-position
+    vow-path
+    vow-player
+    vow-position
+    vow-position-code
+    vow-query
+    vow-rook
+    vow-setting
+    vow-square
+    vow-type
+  ] = _.map generate-singular-validator validation-pairs
+
+  generate-plural-validator = \validator ->
+    _.map validator
+
+  plural-validators = [
+    vow-all-indices
+    vow-all-pairs
+    vow-all-positions
+  ] = _.map generate-plural-validator [
+    vow-index
+    vow-pair
+    vow-position
+  ]
+
+  return {
+    vow-all-indices
+    vow-all-pairs
+    vow-all-positions
+    vow-board
+    vow-bounded
+    vow-castling-right
+    vow-castling-right-set
+    vow-chart
+    vow-chessman
+    vow-chessman-type
+    vow-color
+    vow-color-pair
+    vow-context
+    vow-index
+    vow-integral-pair
+    vow-map
+    vow-pair
+    vow-passant-position
+    vow-path
+    vow-player
+    vow-position
+    vow-position-code
+    vow-query
+    vow-rook
+    vow-setting
+    vow-square
+    vow-type
+  }
+
+)

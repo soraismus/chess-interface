@@ -1,0 +1,64 @@
+#!/bin/sh
+
+COUGH="$HOME/projects/cough-syrup/bin/cough"
+
+open() {
+  FILE=$1
+  tmux send-keys "vim $FILE" C-m
+}
+
+pane() {
+  tmux select-pane $1
+}
+
+split() {
+  tmux split-window $1 $2 $3
+}
+
+transpile() {
+  ODIR=$1
+  CWDIR=$2
+  tmux send-keys "$COUGH -o $ODIR -cw $CWDIR" C-m
+}
+
+BASE="$HOME/Documents/practice/javascript/fn-chess-2"
+
+cd $BASE
+
+SRC_DIR="$BASE/coughsyrup"
+
+GS="$SRC_DIR/game-service.cough"
+
+SPEC_DIR="$BASE/test/cough-spec"
+
+SPEC="$SPEC_DIR/game-service-spec.cough"
+
+CONSTANTS="$SPEC_DIR/gs-spec-constants.cough"
+
+JS_SRC_DIR="$BASE/src"
+
+JS_SPEC_DIR="$BASE/test/spec"
+
+tmux rename-window dev-coding
+split -h -p 50
+open $GS
+
+pane -L
+split -v -l 10
+transpile $JS_SRC_DIR $SRC_DIR
+
+split -v -l 5
+transpile $JS_SPEC_DIR $SPEC_DIR
+
+pane -U
+pane -U
+split -h -p 50
+open $SPEC
+
+pane -L
+open $CONSTANTS
+
+tmux new-window -n dev-testing
+tmux send-keys "cd $BASE; testem" C-m
+
+tmux select-window -t dev-coding

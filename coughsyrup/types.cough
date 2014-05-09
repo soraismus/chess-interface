@@ -1,0 +1,106 @@
+define (['mydash', 'constants'], (_, c) ->
+
+  bounded? = \intg ->
+    # Start testing mode.
+    _.vowInt intg
+    # End testing mode.
+
+    _.iBtw 0 7 intg
+
+  empty? = \square -> square == c.empty-square
+
+  inessent? = \pos -> _.both bounded? pos
+
+  satisfies-regex? = \regex \val ->
+    if (_.isString val) then (_.regexTest regex val) else false
+
+  # -----------------------
+  # Classifying Predicates
+  # -----------------------
+
+  board? = \val ->
+    satisfies-regex?  /^[kqrbnp-]{64,64}$/i  val
+
+  castling-right? = \val -> satisfies-regex? /^[KQkq]$/ val
+
+  castling-right-set? = \val -> satisfies-regex? /(^-$)|(^K?Q?k?q?$)/ val
+
+  chart? = \val -> pair? val && context? val[0] && path? val[1]
+
+  chessman? = \val -> satisfies-regex? /^[kqrbnp]$/i val
+
+  chessman-type? = \val -> _.contains c.chessman-types val
+
+  color? = \val -> _.contains c.colors val
+
+  color-pair? = \val -> pair? val && _.both color? val
+
+  context? = \val ->
+    board? val['board'] &&
+        castling-right-set? val['castlingRights'] &&
+        passant-position? val['passantPosition']
+
+  index? = \val -> _.isInteger val && _.iBtw 0 63 val
+
+  integral-pair? = \val -> pair? val && _.both _.isInteger val
+
+  king? = \val -> satisfies-regex? /^k$/i val
+
+  map? = \val -> pair? val && board? val[0] && path? val[1]
+
+  pair? = \val -> _.isArray val && _.length val == 2
+
+  passant-position? = \pos ->
+    unset-passant-position? pos || position? pos
+
+  path? = \val -> pair? val && _.both position? val
+
+  pawn? = \val -> satisfies-regex? /^p$/i val
+
+  player? = \val -> _.contains c.players val
+
+  position? = \val -> integral-pair? val && inessent? val
+
+  position-code? = \val -> satisfies-regex? /(^-$)|(^[a-h][1-8]$)/ val
+
+  rook? = \val -> satisfies-regex? /^r$/i val
+
+  setting? = \val ->
+    _.isArray val && board? val[0] && position? val[1]
+
+  square? = \val -> chessman? val || empty? val
+
+  type? = \val -> _.contains c.general-types val
+
+  unset-passant-position? = \val -> val == c.unset-passant-position
+
+  return {
+    board?
+    bounded?
+    castling-right?
+    castling-right-set?
+    chart?
+    chessman?
+    chessman-type?
+    color?
+    color-pair?
+    context?
+    empty?
+    index?
+    inessent?
+    integral-pair?
+    king?
+    map?
+    pair?
+    passant-position?
+    path?
+    pawn?
+    player?
+    rook?
+    setting?
+    square?
+    type?
+    unset-passant-position?
+  }
+
+)

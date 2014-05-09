@@ -1,0 +1,152 @@
+define (['mydash'], (_) ->
+
+  black-chessmen = [
+    black-king   = 'k'
+    black-queen  = 'q'
+    black-rook   = 'r'
+    black-bishop = 'b'
+    black-knight = 'n'
+    black-pawn   = 'p'
+  ]
+
+  white-chessmen = [
+    white-king   = 'K'
+    white-queen  = 'Q'
+    white-rook   = 'R'
+    white-bishop = 'B'
+    white-knight = 'N'
+    white-pawn   = 'P'
+  ]
+
+  chessmen = black-chessmen.concat white-chessmen
+
+  absent-color = '-'
+
+  chessman-colors = [white, black] = ['w', 'b']
+
+  colors = [absent-color].concat chessman-colors
+
+  piece-types = [
+    king   = 'king'
+    queen  = 'queen'
+    rook   = 'rook'
+    bishop = 'bishop'
+    knight = 'knight'
+  ]
+
+  chessman-types = piece-types.concat [pawn = 'pawn']
+
+  players = [
+    white-player = 'w'
+    black-player = 'b'
+  ]
+
+  return {
+    absent-color
+
+    bishop
+
+    black
+
+    black-bishop
+
+    black-chessmen
+
+    black-king
+
+    black-knight
+
+    black-pawn
+
+    black-player
+
+    black-queen
+
+    black-rook
+
+    board-indices : _.range [64]
+
+    chessman-colors
+
+    chessman-types
+
+    chessmen
+
+    colors
+
+    empty-square : '-'
+
+    full-castling-rts : 'KQkq'
+
+    king
+
+    knight
+
+    move-offsets :
+      king : [
+        [1, 1], [1, 0], [1, -1], [0, 1], [0, -1], [-1, 1], [-1, 0], [-1, -1]
+      ]
+
+      queen : [
+        [1, 1], [1, 0], [1, -1], [0, 1], [0, -1], [-1, 1], [-1, 0], [-1, -1]
+      ]
+
+      rook : [[1, 0], [0, 1], [0, -1], [-1, 0]]
+
+      bishop : [[1, 1], [1, -1], [-1, 1], [-1, -1]]
+
+      knight : [
+        [1, 2], [1, -2], [-1, 2], [-1, -2], [2, 1], [2, -1], [-2, 1], [-2, -1]
+      ]
+
+    nbr-chessmen-per-color : 16
+
+    no-castling-rts : '-'
+
+    no-pawn-promotion : false
+
+    pawn
+
+    pawn-home-ranks :
+      black : 1
+      white : 6
+
+    piece-home-ranks :
+      black : 0
+      white : 7
+
+    piece-types
+
+    players
+
+    queen
+
+    rook
+
+    unset-check-status : {}
+
+    unset-passant-position : '-'
+
+    unset-position-code : '-'
+
+    white
+
+    white-bishop
+
+    white-chessmen
+
+    white-king
+
+    white-knight
+
+    white-pawn
+
+    white-player
+
+    white-queen
+
+    white-rook
+
+  }
+
+)

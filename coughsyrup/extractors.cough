@@ -1,0 +1,227 @@
+define ([
+  'mydash'
+  'constants'
+  'types'
+  'assertions'
+], (_, c, y, v) ->
+
+  # -----------------
+  # Helper Functions
+  # -----------------
+
+  split-&-indexify = \i \str ->
+    array = _.split '' str
+    indexify = \component ->
+      i += 1
+      [component, i]
+    _.map indexify array
+
+  to-1d = ([rank, file]) ->
+    # Start testing mode.
+    v.vow-position [rank, file]
+    # End testing mode.
+    8 * rank + file
+
+  corresponding-black-chessman = \chessman ->
+    # Start testing mode.
+    v.vow-chessman chessman
+    # End testing mode.
+    if (_.isUC chessman) then (_.toLC chessman) else chessman
+
+  # -----------
+  # Extractors
+  # -----------
+
+  board-from = \val ->
+    # Start testing mode.
+    _.vowStruct [y.setting?, y.map?, y.chart?] val
+    # End testing mode.
+
+    evaluators = [
+      ([board, pos])      -> board
+      ([board, path])     -> board
+      ([{ board }, path]) -> board
+    ]
+
+    _.switch [y.setting?, y.map?, y.chart?] evaluators val
+
+  castling-rights-from = \chart ->
+    # Start testing mode.
+    v.vow-chart chart
+    # End testing mode.
+    chary.castlingRights
+
+  chessman-type-at = \setting ->
+    # Start testing mode.
+    v.vow-setting setting
+    # End testing mode.
+    chessman-type-of (square-at setting)
+
+  chessman-type-of = \chessman ->
+    # Start testing mode.
+    v.vow-chessman chessman
+    # End testing mode.
+
+    abbrev  = corresponding-black-chessman chessman
+    type-of = _.zipAssign c.black-chessmen c.chessman-types
+
+    type-of[abbrev]
+
+  color-at = \setting ->
+    # Start testing mode.
+    v.vow-setting setting
+    # End testing mode.
+    color-of (square-at setting)
+
+  color-of = \square ->
+    # Start testing mode.
+    v.vow-square square
+    # End testing mode.
+    _.switchWith c.absent-color [_.isLC, _.isUC] [c.black, c.white] square
+
+  file-of = ([rank, file]) ->
+    # Start testing mode.
+    v.vow-position [rank, file]
+    # End testing mode.
+    file
+
+  # No validations.
+  get-promotion-msg = \response ->
+    response.promotion-pos
+
+  # No validations.
+  get-ctx = \response -> response.ctx
+
+  map-from = \chart ->
+    # Start testing mode.
+    v.vow-chart chart
+    # End testing mode.
+    [{ board }, path] = chart
+    [board, path]
+
+  chessmen-from = (board, color) ->
+    squares = split-&-indexify (-1) board
+    color-predicate = ([sq, idx]) -> of-color? color sq
+    chessmen-of-specified-color = _.filter color-predicate squares
+
+  path-from = \pair -> pair[1]
+
+  passant-from = \chart ->
+    # Start testing mode.
+    v.vow-chart chart
+    # End testing mode.
+    [{ passantPosition }] = chart
+    passantPosition
+
+  rank-&-file-from = ([rank, file]) ->
+    # Start testing mode.
+    _.vowStruct [y.path?, y.integral-pair?] [rank, file]
+    # End testing mode.
+    [rank, file]
+
+  rank-of = ([rank, file]) ->
+    # Start testing mode.
+    v.vow-position [rank, file]
+    # End testing mode.
+    rank
+
+  square-at = ([board, pos]) ->
+    # Start testing mode.
+    v.vow-setting [board, pos]
+    # End testing mode.
+    _.charAt (to-1d pos) board
+
+  src-chessman-from = \val -> square-at (src-setting-from val)
+
+  src-from = \val ->
+    # Start testing mode.
+    _.vowStruct [y.path?, y.map?, y.chart?] val
+    # End testing mode.
+
+    evaluators = [
+      ([tgt, src])              -> src
+      ([board, [tgt, src]])     -> src
+      ([{ board }, [tgt, src]]) -> src
+    ]
+
+    _.switch [y.path?, y.map?, y.chart?] evaluators val
+
+  src-setting-from = \val ->
+    # Start testing mode.
+    _.vowStruct [y.map?, y.chart?] val
+    # End testing mode.
+
+    evaluators = [
+      ([board, [tgt, src]])     -> [board, src]
+      ([{ board }, [tgt, src]]) -> [board, src]
+    ]
+
+    _.switch [y.map?, y.chart?] evaluators val
+
+  tgt-from = \val ->
+    # Start testing mode.
+    _.vowStruct [y.path?, y.map?, y.chart?] val
+    # End testing mode.
+
+    evaluators = [
+      ([tgt, src])              -> tgt
+      ([board, [tgt, src]])     -> tgt
+      ([{ board }, [tgt, src]]) -> tgt
+    ]
+
+    _.switch [y.path?, y.map?, y.chart?] evaluators val
+
+  tgt-setting-from = \val ->
+    # Start testing mode.
+    _.vowStruct [y.map?, y.chart?] val
+    # End testing mode.
+
+    evaluators = [
+      ([board, [tgt, src]])     -> [board, tgt]
+      ([{ board }, [tgt, src]]) -> [board, tgt]
+    ]
+
+    _.switch [y.map?, y.chart?] evaluators val
+
+  type-from = \val ->
+    # Start testing mode.
+    _.vowStruct [y.setting?, y.map?, y.chart?] val
+    # End testing mode.
+
+    evaluators = [
+      ([board, pos])            -> chessman-type-at [board, pos]
+      ([board, [tgt, src]])     -> chessman-type-at [board, src]
+      ([{ board }, [tgt, src]]) -> chessman-type-at [board, src]
+    ]
+
+    _.switch [y.setting?, y.map?, y.chart?] evaluators val
+
+  return {
+    board-from
+    castling-rights-from
+    chessman-type-at
+    chessman-type-of
+    corresponding-black-chessman
+    color-at
+    color-of
+    file-of
+    get-promotion-msg
+    get-ctx
+    map-from
+    chessmen-from
+    path-from
+    passant-from
+    rank-&-file-from
+    rank-of
+    split-&-indexify
+    square-at
+    src-chessman-from
+    src-from
+    src-setting-from
+    tgt-from
+    tgt-setting-from
+    to-1d
+    type-from
+  }
+
+)
