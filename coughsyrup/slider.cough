@@ -53,7 +53,23 @@ define ([
 
     potential-moves
 
-  getPotentialKingAttacks = getPotentialMoves
+  getPotentialKingAttacks = \board \src ->
+    # Start testing mode.
+    v.vow-board board
+    v.vow-position src
+    # End testing mode.
+    
+    potential-moves = []
+    chessman-type   = x.chessman-type-at board pos
+    offsets         = u.offsets-for chessman-type
+    color           = x.color-at board src
+    accumulate      = accumulate-till-blocked (board, color)
+    [rank, file]    = x.rank-&-file-from src
+
+    for dir in offsets
+      potential-moves = potential-moves.concat (accumulate (rank, file, dir))
+
+    potential-moves
 
   public-fns = _.defaults [piece-fns] {
     getPotentialKingAttacks

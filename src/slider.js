@@ -47,7 +47,24 @@
       }
       return potential_hyphen_moves;
     };
-    getPotentialKingAttacks = getPotentialMoves;
+    getPotentialKingAttacks = function(board) {
+      return function(src) {
+        var accumulate, chessman_hyphen_type, color, dir, file, offsets, potential_hyphen_moves, rank, _i, _len, _ref;
+        v.vow_hyphen_board(board);
+        v.vow_hyphen_position(src);
+        potential_hyphen_moves = [];
+        chessman_hyphen_type = x.chessman_hyphen_type_hyphen_at(board)(pos);
+        offsets = u.offsets_hyphen_for(chessman_hyphen_type);
+        color = x.color_hyphen_at(board)(src);
+        accumulate = accumulate_hyphen_till_hyphen_blocked(board, color);
+        _ref = x.rank_hyphen__ampersand__hyphen_file_hyphen_from(src), rank = _ref[0], file = _ref[1];
+        for (_i = 0, _len = offsets.length; _i < _len; _i++) {
+          dir = offsets[_i];
+          potential_hyphen_moves = potential_hyphen_moves.concat(accumulate(rank, file, dir));
+        }
+        return potential_hyphen_moves;
+      };
+    };
     public_hyphen_fns = _.defaults([piece_hyphen_fns])({
       getPotentialKingAttacks: getPotentialKingAttacks,
       getPotentialMoves: getPotentialMoves
