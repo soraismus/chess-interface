@@ -67,6 +67,10 @@ define ([
   direction-for = \color ->
     directions[color]
 
+  get-diagonal-positions = (rank, file, dir) ->
+    gen-pos = g.generate-position.bind (null, rank + dir)
+    _.map gen-pos [file - 1, file + 1]
+
   get-potential-diagonal-attacks = (board, rank, file, color, dir, passant) ->
     # Start testing mode.
     v.vow-board board
@@ -80,8 +84,7 @@ define ([
     passant?     = \pos -> u.same-position? (pos, passant)
     available?   = _.or [foe-present?, passant?]
     color-at     = x.color-at board
-    gen-pos      = g.generate-position.bind(null, rank + dir)
-    diag-attacks = _.map gen-pos [file - 1, file + 1]
+    diag-attacks = get-diagonal-positions (rank, file, dir)
     
     _.filter available? diag-attacks
 
@@ -116,6 +119,19 @@ define ([
     fwd-moves.push tgt2
 
     return fwd-moves
+
+  getPotentialKingAttacks = \board \src ->
+    # Start testing mode.
+    v.vow-board board
+    v.vow-position src
+    # End testing mode.
+
+    [rank, file] = x.rank-&-file-from src
+
+    color   = x.color-at board src
+    dir     = direction-for color
+
+    get-diagonal-positions (rank, file, dir)
 
   getPotentialMoves = \chart2 ->
     # Start testing mode.
