@@ -1,0 +1,210 @@
+define ([
+  'mydash'
+  'jFns'
+  'constants'
+  'constructors'
+  'extractors'
+  'specConstants'
+], (_, j, c, g, x, sc) ->
+
+  {
+    descr
+    xdescr
+    t
+    xt
+    test-spec
+    to-throw
+    to-be
+    to-equal
+    to-be-true
+    to-be-false
+    satisfies
+    contravenes
+    throws
+    each-satisfies
+    each-contravenes
+    each-throws
+    to-be-fn
+    test-predicate
+    test-transformation
+    test-throwing-transformation
+    gen-pred-guards
+    implement-specs
+    implement-specs2
+    implement-specs3
+  } = j
+
+  to-be-array = \val -> to-equal (jasmine.any Array) val
+  to-be-string = \val -> to-equal (jasmine.any String) val
+  to-be-nbr = \val -> to-equal (jasmine.any Number) val
+  to-have-length = \length \val -> to-equal length (_.length val)
+  each-fn-result-equals = \expected \fn \val ->
+    _.each (\val -> to-equal expected (fn val)) val
+
+  descr 'test extractors.cough' (->
+
+    bd               = sc.boards[0]
+    chart1           = sc.charts[0]
+    chart2           = sc.charts[1]
+    ctx              = sc.contexts[0]
+    map              = sc.maps[0]
+    passant          = sc.passant-positions[0]
+    path             = sc.paths[0]
+    pos1             = sc.positions[0]
+    pos2             = sc.positions[1]
+    pos0-0           = g.generate-position (0, 0)
+    pos4-5           = g.generate-position (4, 5)
+    initial-board    = sc.initial-board
+    invalid-chessman = sc.invalid-chessmen[0]
+    invalid-pos      = sc.invalid-positions[0]
+    rts              = sc.castling-rights[0]
+    setting          = sc.settings[0]
+    src              = sc.positions[0]
+    tgt              = sc.positions[1]
+
+    t 'test x.split-&-indexify' (->
+      fn = x.split-&-indexify
+      split-board = fn bd
+      to-be-array split-board
+      to-have-length 64 split-board
+      component1 = split-board[0]
+      to-be-array component1
+      to-have-length 2 component1
+      to-be-string component1[0]
+      to-be-nbr component1[1]
+    )
+
+    t 'test x.to-1d' (->
+      fn = x.to-1d
+      to-equal 13 (fn pos1)
+      to-equal 61 (fn pos2)
+      to-throw fn invalid-pos
+    )
+
+    t 'test x.corresponding-black-chessman' (->
+      fn = x.corresponding-black-chessman 
+      to-equal c.black-knight (fn c.white-knight)
+      to-equal c.black-rook (fn c.black-rook)
+      to-throw fn invalid-chessman
+    )
+
+    t 'test x.board-from' (->
+      fn = x.board-from
+      each-fn-result-equals initial-board fn [setting, map, chart1]
+      each-throws fn [bd, path, rts]
+    )
+
+    t 'test x.castling-rights-from' (->
+      fn = x.castling-rights-from
+      local-ctx = g.generate-context (bd, c.full-castling-rts, passant)
+      local-chart = g.generate-chart (local-ctx, path)
+      to-equal c.full-castling-rts (fn local-chart)
+      each-throws fn [bd, setting, map]
+    )
+
+    t 'test x.chessman-type-at' (->
+      fn = x.chessman-type-at
+      to-equal c.rook (fn initial-board pos0-0)
+      to-throw (fn pos1) pos2
+    )
+
+    t 'text x.chessman-type-of' (->
+      fn = x.chessman-type-of
+      to-equal c.king (fn c.black-king)
+      to-equal c.king (fn c.white-king)
+      to-equal c.bishop (fn c.black-bishop)
+      each-throws fn [c.king, bd, setting]
+    )
+
+    t 'test x.color-at' (->
+      fn = x.color-at
+      to-equal c.black (fn initial-board pos0-0)
+      to-throw (fn pos0-0) pos0-0
+    )
+
+    t 'test x.color-of' (->
+      fn = x.color-of
+      to-equal c.black (fn c.black-king)
+      to-equal c.white (fn c.white-king)
+      to-equal c.black (fn c.black-bishop)
+      each-throws fn [c.king, bd, setting]
+    )
+
+    t 'test x.file-of' (->
+      fn = x.file-of
+      to-equal 0 (fn pos0-0)
+      to-equal 5 (fn pos4-5)
+      each-throws fn [bd, map, chart1]
+    )
+
+    t 'test x.map-from' (->
+      fn = x.map-from
+      to-equal map (fn chart1)
+      each-throws fn [bd, setting, path, map]
+    )
+
+    t 'test x.path-from' (->
+      fn = x.path-from
+      each-fn-result-equals path fn [map, chart1]
+      each-throws fn [bd, c.white, path]
+    )
+
+    t 'test x.passant-from' (->
+      fn = x.passant-from
+      to-equal c.unset-passant-pos (fn chart1)
+      to-equal pos1 (fn chart2)
+      each-throws fn [bd, setting, map]
+    )
+
+    t 'test x.rank-&-file-from' (->
+      fn = x.rank-&-file-from
+      to-equal [0, 0] (fn pos0-0)
+      to-equal [4, 5] (fn pos4-5)
+      to-equal [1, 5] (fn setting)
+      each-throws fn [bd, map, chart1]
+    )
+
+    t 'test x.rank-of' (->
+      fn = x.rank-of
+      to-equal 0 (fn pos0-0)
+      to-equal 4 (fn pos4-5)
+      each-throws fn [bd, undefined, map]
+    )
+
+    t 'test x.square-at' (->
+      fn = x.square-at
+      local-pos = g.generate-position (2, 0)
+      to-equal c.black-rook (fn initial-board pos0-0)
+      to-equal c.empty-square (fn initial-board local-pos)
+      to-throw (fn pos0-0) pos0-0
+    )
+
+    t 'test x.src-from' (->
+      fn = x.src-from
+      each-fn-result-equals pos1 [path, map, chart1]
+      each-throws fn [pos1, bd, c.white]
+    )
+
+    t 'test x.src-setting-from' (->
+      fn = x.src-setting-from
+      local-setting = g.generate-setting (bd, pos1)
+      each-fn-result-equals local-setting fn [map, chart1]
+      each-throws fn [bd, c.white, pos1, ctx]
+    )
+
+    t 'test x.tgt-from' (->
+      fn = x.tgt-from
+      each-fn-result-equals pos2 [path, map, chart1]
+      each-throws fn [pos1, bd, c.white]
+    )
+
+    t 'test x.tgt-setting-from' (->
+      fn = x.tgt-setting-from
+      local-setting = g.generate-setting (bd, pos2)
+      each-fn-result-equals local-setting fn [map, chart1]
+      each-throws fn [bd, c.white, pos1, ctx]
+    )
+
+  )
+
+)

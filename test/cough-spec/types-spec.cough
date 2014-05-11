@@ -1,0 +1,212 @@
+define ([
+  'jFns'
+  'constants'
+  'types'
+  'constructors'
+  'specConstants'
+], (j, c, y, g, sc) ->
+
+  {
+    descr
+    xdescr
+    t
+    xt
+    test-spec
+    to-throw
+    to-be
+    to-equal
+    to-be-true
+    to-be-false
+    satisfies
+    contravenes
+    throws
+    each-satisfies
+    each-contravenes
+    each-throws
+    to-be-fn
+    test-predicate
+  } = j
+
+  descr 'types.cough' (->
+    bd      = sc.boards[0]
+    chart   = sc.charts[0]
+    ctx     = sc.contexts[0]
+    map     = sc.maps[0]
+    passant = sc.passant-positions[0]
+    path    = sc.paths[0]
+    pos     = sc.positions[0]
+    rts     = sc.castling-rights[0]
+    setting = sc.settings[0]
+    src     = sc.positions[0]
+    tgt     = sc.positions[1]
+
+    t 'test y.black?' (->
+      fn = y.black?
+      satisfies fn c.black
+      each-contravenes fn [c.white, c.emtpy-square, 1, null]
+    )
+    
+    t 'test y.bounded?' (->
+      fn = y.bounded?
+      each-satisfies fn [0, 1, 7]
+      each-contravenes fn [-1, 8]
+      each-throws fn [[0, 0], 'a', true]
+    )
+
+    t 'test y.empty?' (->
+      fn = y.empty?
+      satisfies fn c.empty-square
+      each-contravenes fn [c.white-king, c.black-knight]
+    )
+
+    t 'test y.inessent?' (->
+      fn = y.inessent?
+      satisfies fn [7, 2]
+      contravenes fn [0, -1]
+    )
+
+    t 'test y.board?' (->
+      fn = y.board?
+
+      invalid-bd = 'n--p--pp-----b------------------------PPPPP----KQ----'
+
+      satisfies fn bd
+      contravenes fn invalid-bd
+    )
+
+    t 'test y.castling-right?' (->
+      fn = y.castling-right?
+      each-satisfies fn ['K', 'Q', 'k', 'q']
+      each-contravenes fn ['x', c.no-castling-rts]
+    )
+
+    t 'test y.castling-right-set?' (->
+      fn = y.castling-right-set?
+      each-satisfies fn [c.full-castling-rts, 'Kkq', c.no-castling-rts]
+      contravenes fn 'x'
+    )
+
+    t 'test y.chart?' (->
+      fn = y.chart?
+      satisfies fn chart
+      contravenes fn map
+    )
+
+    t 'test y.chessman?' (->
+      fn = y.chessman?
+      each-satisfies fn [c.white-rook, c.black-queen, c.black-pawn]
+      contravenes fn 'x'
+    )
+
+    t 'test y.chessman-type?' (->
+      fn = y.chessman-type?
+      each-satisfies fn [c.rook, c.bishop, c.knight]
+      contravenes fn 'x'
+    )
+
+    t 'test y.color?' (->
+      fn = y.color?
+      each-satisfies fn [c.white, c.black, c.absent-color]
+      contravenes fn 'x'
+    )
+
+    t 'test y.color-pair?' (->
+      fn = y.color-pair?
+      satisfies fn [c.white, c.black]
+      contravenes fn [c.white, c.black, c.absent-color-pair]
+    )
+
+    t 'test y.context?' (->
+      fn = y.context?
+      satisfies fn ctx
+      contravenes fn map
+    )
+
+    t 'test y.index?' (->
+      fn = y.index?
+      each-satisfies fn c.board-indices
+      each-contravenes fn [100, 'x']
+    )
+
+    t 'test y.integral-pair?' (->
+      fn = y.integral-pair?
+      satisfies fn [-100, 100]
+      each-contravenes fn [[1, 2, 3], [1, 'x']]
+    )
+
+    t 'test y.king?' (->
+      fn = y.king?
+      each-satisfies fn [c.white-king, c.black-king]
+      each-contravenes fn [c.white-bishop, c.black-queen]
+    )
+
+    t 'test y.map?' (->
+      fn = y.map?
+      satisfies fn map
+      contravenes fn chart
+    )
+
+    t 'test y.pair?' (->
+      fn = y.pair?
+      satisfies fn [null, undefined]
+      contravenes fn [null, undefined, null]
+    )
+
+    t 'test y.passant-position?' (->
+      fn = y.passant-position?
+      each-satisfies fn [src, tgt, c.unset-passant-pos]
+      contravenes fn [1, 2, 3]
+    )
+
+    t 'test y.path?' (->
+      fn = y.path?
+      satisfies fn path
+      contravenes fn pos
+    )
+
+    t 'test y.pawn?' (->
+      fn = y.pawn?
+      each-satisfies fn [c.white-pawn, c.black-pawn]
+      contravenes fn c.black-rook
+    )
+
+    t 'test y.player?' (->
+      fn = y.player?
+      each-satisfies fn [c.white-player, c.black-player]
+      contravenes fn 'x'
+    )
+
+    t 'test y.position?' (->
+      fn = y.position?
+      each-satisfies fn [src, tgt]
+      each-contravenes fn [1, 'x', null, [1, 2, 3], path]
+    )
+
+    t 'test y.rook?' (->
+      fn = y.rook?
+      each-satisfies fn [c.white-rook, c.black-rook]
+      each-contravenes fn [c.white-king, c.black-queen]
+    )
+
+    t 'test y.setting?' (->
+      fn = y.setting?
+      satisfies fn setting
+      each-contravenes fn [bd, pos, map, chart]
+    )
+
+    t 'test y.square?' (->
+      fn = y.square?
+      each-satisfies fn [c.white-king, c.black-pawn, c.empty-square]
+      contravenes fn 'x'
+    )
+
+    t 'test y.unset-passant-position?' (->
+      fn = y.unset-passant-position?
+      satisfies fn c.unset-passant-pos
+      each-contravenes fn [src, tgt]
+    )
+
+
+  )
+
+)

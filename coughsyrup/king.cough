@@ -1,0 +1,35 @@
+define ([
+  'mydash'
+  'stepper'
+  'assertions'
+], (_, stepper-fns, v) ->
+
+  get-potential-castling-moves = (setting, castling-rights) ->
+    # Start testing mode.
+    v.vow-setting setting
+    v.vow-castling-rights castling-rights
+    # End testing mode.
+    # UNDEFINED.
+
+  getPotentialKingAttacks = undefined
+
+  public-fns = _.defaults [stepper-fns] {
+    getPotentialKingAttacks
+  }
+
+  public-fns.getPotentialMoves = (chessman-type, setting, castling-rights) ->
+    # Start testing mode.
+    v.vow-chessman-type chessman-type
+    v.vow-setting setting
+    v.vow-castling-rights castling-rights
+    # End testing mode.
+
+    basic-potential-moves =
+      public-fns.getBasicPotentialMoves (chessman-type, setting)
+
+    basic-potential-moves.concat (
+      get-potential-castling-moves (setting, castling-rights))
+
+  return public-fns
+
+)

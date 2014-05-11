@@ -1,0 +1,279 @@
+define ([
+  'mydash'
+  'constants'
+  'extractors'
+  'types'
+  'assertions'
+], (_, c, x, y, v) ->
+
+  ally? = \color-pair ->
+    # Start testing mode.
+    v.vow-color-pair color-pair
+    # End testing mode.
+    _.equiv color-pair && _.neither transparent? color-pair
+
+  available? = (board, pos1) -> \pos2 ->
+    # Start testing mode.
+    v.vow-board board
+    v.vow-all-positions [pos1, pos2]
+    # End testing mode.
+
+    empty-at? board pos2 || do ->
+      color-pair = x.colors-at board [pos1, pos2]
+      opponent? color-pair
+
+  black? = \color ->
+    # Start testing mode.
+    v.vow-color color
+    # End testing mode.
+    color == c.black
+
+  castling-matcher = \predicate \color \path ->
+    # Start testing mode.
+    _.vowFn predicate
+    v.vow-color color
+    v.vow-path path
+    # End testing mode.
+    _.binaryIfBranch [color == c.black, predicate path] [
+      'k', 'q', 'K', 'Q']
+
+  chessman-black? = \chessman ->
+    # Start testing mode.
+    v.vow-chessman chessman
+    # End testing mode.
+    _.isLC chessman
+
+  chessman-white? = \chessman ->
+    # Start testing mode.
+    v.vow-chessman chessman
+    # End testing mode.
+    _.isUC chessman
+
+  empty? = \square ->
+    # Start testing mode.
+    v.vow-square square
+    # End testing mode.
+    y.empty? square
+
+  empty-at? = \board \pos ->
+    # Start testing mode.
+    v.vow-board board
+    v.vow-position pos
+    # End testing mode.
+    empty? (x.square-at board pos)
+
+  en-passant-attack-permitted? = \passant \tgt ->
+    # Start testing mode.
+    v.vow-passant-position passant
+    v.vow-position tgt
+    # End testing mode.
+    passant-position-set? passant && same-position? [passant, tgt]
+
+  file-difference = ([tgt, src]) ->
+    # Start testing mode.
+    v.vow-path [tgt, src]
+    # End testing mode.
+    (x.file-of tgt) - (x.file-of src)
+
+  # No assertions b/c #inessent? is fundamental
+  # to the defintion of the 'position' type.
+  inessent? = \pos ->
+    y.inessent? pos
+
+  king-position = \color \board ->
+    # Start testing mode.
+    v.vow-color color
+    v.vow-expanded-board board
+    # End testing mode.
+    king = if black? color then c.black-king else c.white-king
+    to-2d (_.indexOf board king)
+
+  kingside? = ([tgt, src]) ->
+    # Start testing mode.
+    v.vow-path [tgt, src]
+    # End testing mode.
+    x.file-of src >= 4
+
+  kingward? = \path ->
+    # Start testing mode.
+    v.vow-path path
+    # End testing mode.
+    file-difference path > 0
+
+  motion? = ([tgt, src]) -> not-at? tgt src
+
+  not-at? = \pos2 \pos1 ->
+    # Start testing mode.
+    v.vow-all-positions [pos2, pos1]
+    # End testing mode.
+    ! (same-position? [pos2, pos1])
+
+  occupied? = \square ->
+    # Start testing mode.
+    v.vow-square square
+    # End testing mode.
+    ! (c.empty? square)
+
+  of-color? = \color ->
+    pred = if black? color then chessman-black? else chessman-white?
+    \chessman -> pred chessman
+
+  offsets-for = \chessman-type ->
+    # Start testing mode.
+    v.vow-chessman-type chessman-type
+    # End testing mode.
+    c.move-offsets[chessman-type]
+
+  of-specified-type? = \type \chessman ->
+    # Start testing mode.
+    v.vow-type type
+    v.vow-chessman chessman
+    # End testing mode.
+    _.match type 'ignoreCase' chessman
+
+  opponent? = ([color1, color2]) ->
+    # Start testing mode.
+    v.vow-color-pair [color1, color2]
+    # End testing mode.
+    color2 != c.absent-color &&
+        color2 != color1 &&
+        color1 != c.absent-color
+
+  opponent-at? = (board, pos1) -> \pos2 ->
+    # Start testing mode.
+    v.vow-board board
+    v.vow-all-positions [pos1, pos2]
+    # End testing mode.
+    opponent? (_.map (x.color-at board) [pos1, pos2])
+
+  opposing-color = \active-color ->
+    # Start testing mode.
+    v.vow-color active-color
+    # End testing mode.
+    if black? active-color then c.white else c.black
+
+  passant-position-set? = \passant-position ->
+    # Start testing mode.
+    v.vow-passant-position passant-position
+    # End testing mode.
+    ! (passant-position-unset? passant-position)
+
+  passant-position-unset? = \passant-position ->
+    # Start testing mode.
+    v.vow-passant-position passant-position
+    # End testing mode.
+    passant-position == c.unset-passant-pos
+
+  pawn-direction = \color ->
+    # Start testing mode.
+    v.vow-color color
+    # End testing mode.
+    if black? color then 1 else -1
+
+  permissible-advances = \color \rank ->
+    # Start testing mode.
+    v.vow-color color
+    v.vow-bounded rank
+    # End testing mode.
+    dir   = pawn-direction color
+    steps = if (at-pawn-home-rank? color rank) then [1, 2] else [1]
+    _.scale dir steps
+
+  # Not of functional-programming style.
+  # Note: promotion can cause checkmate.
+  promote = (ctx, pos) -> (chessman) ->
+    new-board = replace chessman [ctx.board, pos]
+    ctx.board = new-board
+    ctx
+
+  queenward? = \path ->
+    # Start testing mode.
+    v.vow-path path
+    # End testing mode.
+    ! (kingward? path)
+
+  rank-difference = (src, tgt) ->
+    # Start testing mode.
+    v.vow-all-positions [src, tgt]
+    # End testing mode.
+
+    (x.rank-of tgt) - (x.rank-of src)
+
+  replace = (square, board, pos) ->
+    # Start testing mode.
+    v.vow-square square
+    v.vow-board board
+    v.vow-position pos
+    # End testing mode.
+    [board-slice, idx] = [(_.sliceOn board), to-1d pos]
+    _.concat [(board-slice [0, idx]), square, board-slice (idx + 1)]
+
+  same-position? = (pos1, pos2) ->
+    # Start testing mode.
+    v.vow-all-passant-positions [pos1, pos2]
+    # End testing mode.
+
+    passant-position-set? pos2 &&
+        pos1[0] == pos2[0] &&
+        pos1[1] == pos2[1]
+
+  sort-by-color = \color-pred -> ([sq1], [sq2]) ->
+    _.binaryIfBranch [(color-pred sq1), (color-pred sq2)] [0, -1, 1, 0]
+
+  to-1d = x.to-1d
+
+  # No assertions b/c #opponent-mated? encounters indices < 0 or > 63.
+  to-2d = \idx -> [_.floor (idx / 8), idx % 8]
+
+  transparent? = \color ->
+    # Start testing mode.
+    v.vow-color color
+    # End testing mode.
+    color == c.absent-color
+
+  unallied? = \colors ->
+    # Start testing mode.
+    v.vow-color-pair colors
+    # End testing mode.
+    colors[0] != colors[1] && _.notBoth transparent? colors
+
+  return {
+    ally?
+    available?
+    black?
+    castling-matcher
+    chessman-black?
+    chessman-white?
+    empty?
+    empty-at?
+    en-passant-attack-permitted?
+    file-difference
+    inessent?
+    king-position
+    kingside?
+    kingward?
+    motion?
+    not-at?
+    occupied?
+    offsets-for
+    of-color?
+    of-specified-type?
+    opponent?
+    opposing-color
+    passant-position-set?
+    passant-position-unset?
+    pawn-direction
+    permissible-advances
+    promote
+    queenward?
+    rank-difference
+    replace
+    same-position?
+    sort-by-color
+    to-1d
+    to-2d
+    transparent?
+    unallied?
+  }
+
+)

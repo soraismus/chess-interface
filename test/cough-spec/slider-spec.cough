@@ -1,0 +1,151 @@
+define ([
+  'mydash'
+  'jFns'
+  'specConstants'
+  'constants'
+  'constructors'
+  'utilities'
+  'slider'
+], (_, j, sc, c, g, u, sl) ->
+
+  {
+    descr
+    xdescr
+    t
+    xt
+    test-spec
+    to-throw
+    to-be
+    to-equal
+    to-be-true
+    to-be-false
+    satisfies
+    contravenes
+    throws
+    each-fn-result-equals
+    each-satisfies
+    each-contravenes
+    each-throws
+    to-be-array
+    to-be-fn
+    to-be-nbr
+    to-be-array
+    to-have-length
+    test-predicate
+    test-transformation
+    test-throwing-transformation
+    gen-pred-guards
+  } = j
+
+  descr 'test slider.cough' (->
+
+    bd               = sc.boards[0]
+    chart1           = sc.charts[0]
+    chart2           = sc.charts[1]
+
+    chart2_1         = sc.chart2s[0]
+
+    ctx              = sc.contexts[0]
+    map              = sc.maps[0]
+    passant          = sc.passant-positions[0]
+    path             = sc.paths[0]
+    pos1             = sc.positions[0]
+    pos2             = sc.positions[1]
+    initial-board    = sc.initial-board
+    invalid-board    = sc.invalid-board
+    invalid-chessman = sc.invalid-chessmen[0]
+    invalid-pos      = sc.invalid-positions[0]
+    rts              = sc.castling-rights[0]
+    setting          = sc.settings[0]
+    src              = sc.positions[0]
+    tgt              = sc.positions[1]
+
+    t 'test sl.basicMove' (->
+      fn = sl.basicMove
+      to-equal sl.basicMove sl.move
+    )
+
+    t 'test sl.getPotentialMoves' (->
+      fn = sl.getPotentialMoves
+
+      local-pos = g.generate-position (0, 0)
+
+      factory = \src \bd ->
+        g.generate-chart2
+          board  : bd
+          source : src
+          castlingRights  : c.no-castling-rts
+          passantPosition : c.unset-passant-pos
+
+      gen-chart2 = factory local-pos
+
+      bd1 = 'rn--------------------------------------------------------------'
+      chart2-3 = gen-chart2 bd1
+      offsets1 = [[1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0]]
+      to-equal offsets1 (fn (chart2-3, c.rook))
+
+      bd2 = 'rN--------------------------------------------------------------'
+      chart2-4 = gen-chart2 bd2
+      offsets2 = [[1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0],
+                  [0, 1]]
+      to-equal offsets2 (fn (chart2-4, c.rook))
+
+      bd3 = 'r-------n-------------------------------------------------------'
+      chart2-5 = gen-chart2 bd3
+      offsets3 = [[0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7]]
+      to-equal offsets3 (fn (chart2-5, c.rook))
+
+      bd4 = 'q-n------------------------n------------------------------------'
+      chart2-6 = gen-chart2 bd4
+      offsets4 =
+        [
+          [1, 1], [2, 2],
+          [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0],
+          [0, 1]
+        ]
+      to-equal offsets4 (fn (chart2-6, c.queen))
+
+      bd5 = '------------------------------------n--------------------------B'
+      chart2-7 = factory (g.generate-position (7, 7)) bd5
+      offsets5 = [[6, 6], [5, 5], [4, 4]]
+      to-equal offsets5 (fn (chart2-7, c.bishop))
+
+      invalid-chart2 = 'x'
+      to-throw fn (invalid-chart2, c.rook)
+
+      expect (-> fn (chart2-7, 'invalid-type')) .toThrow ()
+
+    )
+
+    t 'test sl.getPotentialKingAttacks' (->
+      to-equal sl.getPotentialMoves sl.getPotentialKingAttacks
+    )
+
+    t 'test sl.modifyCastlingRights' (->
+      fn = sl.modifyCastlingRights
+      chart3 = sc.chart2s[0]
+      chart4 = sc.chart2s[2]
+      to-equal c.full-castling-rts (fn chart3)
+      to-equal c.no-castling-rts (fn chart4)
+    )
+
+    t 'test sl.move' (->
+      fn = sl.move
+      result =
+        'rnbqkbnrppppp-pp--------------------------------PPPPPPPPRNBQKpNR'
+      to-equal result (fn chart2_1 pos2)
+    )
+
+    t 'test sl.setPassantPosition' (->
+      fn = sl.setPassantPosition
+      to-equal c.unset-passant-pos (fn chart2_1)
+    )
+
+    t 'test sl.setPromotionPosition' (->
+      fn = sl.setPromotionPosition
+      to-equal c.unset-promotion-position (fn chart2_1)
+    )
+
+  )
+
+)

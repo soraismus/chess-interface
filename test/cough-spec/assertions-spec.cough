@@ -1,11 +1,4 @@
-define ([
-  'mydash'
-  'jFns'
-  'constants'
-  'types'
-  'extractors'
-  'assertions'
-], (_, j, c, y, x, v) ->
+define (['jFns', 'constants', 'assertions'], (j, c, v) ->
 
   {
     descr
@@ -29,59 +22,13 @@ define ([
     test-transformation
     test-throwing-transformation
     gen-pred-guards
-    implement-specs
-    implement-specs2
-    implement-specs3
   } = j
-  
-  describe ('test description', ->
-    it ('test spec', ->
-      expect(5).toEqual(5)
-    )
-  )
-
-  descr 'test description2' (->
-    t 'test spec' (->
-      to-equal (5) (5)
-    )
-  )
-
-  descr  'test constants.cough' (->
-    t 'test c.bishop' (->
-      to-equal ('bishop') c.bishop
-    )
-
-    t 'test c.empty-square' (->
-      to-equal ('-') c.empty-square
-    )
-
-  )
-
-  descr 'test types.cough' (->
-    t 'test y.empty?' (->
-      satisfies y.empty? c.empty-square
-    )
-
-    t 'test y.color?' (->
-      satisfies y.color? ('w')
-    )
-
-    t 'test y.bounded?' (->
-      satisfies y.bounded? 5
-    )
-
-  )
 
   descr 'test assertions.cough' (->
-    t 'test v.vow-path' (->
-      to-throw v.vow-path ([1, 2, 3])
-    )
-  )
 
-  descr 'test extractors.cough' (->
     bd = '--------------------Q-------------------------------------------'
-    rts = 'KQ'
-    passant = '-'
+    rts = c.full-castling-rts
+    passant = c.unset-passant-pos
 
     ctx = { board : bd, castlingRights : rts, passantPosition : passant }
 
@@ -160,9 +107,82 @@ define ([
       to-equal 62 (fn 62)
     )
 
-    setting = [bd, src]
+    t 'test v.vow-integral-pair' (->
+      fn = v.vow-integral-pair 
+      to-throw fn [5, 5.5]
+      i-pair = [7, 4]
+      to-equal i-pair (fn i-pair)
+    )
 
-    #console.log (x.square-at.toString())
+    t 'test v.vow-map' (->
+      fn = v.vow-map
+      to-throw fn ctx
+      map = [bd, path]
+      to-equal map (fn map)
+    )
+
+    t 'test v.vow-pair' (->
+      fn = v.vow-pair
+      to-throw fn [1, 'a', true]
+      pair = [1, 'a']
+      to-equal pair (fn pair)
+    )
+
+    t 'test v.vow-passant-position' (->
+      fn = v.vow-passant-position
+      to-throw fn [1, 8]
+      to-equal passant (fn passant)
+    )
+
+    t 'test v.vow-path' (->
+      fn = v.vow-path
+      to-throw fn ([1, 2, 3])
+      path = [[4, 2], [1, 5]]
+      to-equal path (fn path)
+    )
+
+    t 'test v.vow-player' (->
+      fn = v.vow-player
+      to-throw fn 'x'
+      player = c.white
+      to-equal player (fn player)
+    )
+
+    t 'test v.vow-position' (->
+      fn = v.vow-position
+      to-throw fn passant
+      to-equal src (fn src)
+    )
+
+    t 'test v.vow-rook' (->
+      fn = v.vow-rook
+      to-throw fn c.white-king
+      to-equal c.white-rook (fn c.white-rook)
+    )
+
+    t 'test v.vow-setting' (->
+      fn = v.vow-setting
+
+      invalid-bd = '-------------'
+      to-throw fn [invalid-bd, tgt]
+
+      setting = [bd, src]
+      to-equal setting (fn setting)
+    )
+
+    t 'test v.vow-square' (->
+      fn = v.vow-square
+      to-throw fn 'x'
+      to-equal c.empty-square (fn c.empty-square)
+      to-equal c.black-bishop (fn c.black-bishop)
+    )
+
+    t 'test v.vow-chessman-type' (->
+      fn = v.vow-chessman-type
+      to-throw fn 'x'
+      to-equal c.pawn (fn c.pawn)
+    )
+
   )
 
 )

@@ -1,0 +1,39 @@
+define ([
+  'mydash'
+  'slider'
+  'king'
+  #'rook'
+  #'knight'
+  #'pawn'
+  'assertions'
+], (_, slider-fns, king-fns, v) ->
+
+  dispatch-table =
+    king   : king-fns
+    queen  : slider-fns
+    #rook   : rook-fns
+    bishop : slider-fns
+    #knight : knight-fns
+    #pawn   : pawn-fns
+
+  call = access-dispatch-table = \fn-name \chessman-type ->
+    # Start testing mode.
+    _.vowStr fn-name
+    v.vow-chessman-type chessman-type
+    # End testing mode.
+
+    dispatch-table[chessman-type][fn-name]
+
+  # Start testing mode.
+
+  test-mode = { call }
+
+  return test-mode
+
+  # End testing mode.
+
+  # Start production mode.
+  # return { query-game-service }
+  # End production mode.
+
+)

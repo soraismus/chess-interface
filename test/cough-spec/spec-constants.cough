@@ -1,0 +1,115 @@
+define (['constants', 'constructors'], (c, g) ->
+
+  invalid-chessmen = [
+    'x'
+  ]
+
+  boards = [
+    'rnbqkbnrpppppppp--------------------------------PPPPPPPPRNBQKBNR'
+    'rnbqkbnr-ppppppp----------------pP--------------P-PPPPPPRNBQKBNR'
+  ]
+
+  initial-board = boards[0]
+
+  invalid-board = '-----------x-y---'
+
+  castling-rights = [
+    c.full-castling-rts
+    c.no-castling-rts
+  ]
+
+  full-castling-rts = castling-rights[0]
+  no-castling-rts   = castling-rights[1]
+
+  positions = [
+    g.generate-position (1, 5)
+    g.generate-position (7, 5)
+    g.generate-position (3, 4)
+    g.generate-position (4, 0)
+    g.generate-position (5, 1)
+  ]
+
+  invalid-positions = [
+    [1, 2, 3]
+  ]
+
+  passant-positions = [
+    c.unset-passant-pos
+    positions[0]
+    positions[1]
+  ]
+
+  unset-passant-position = passant-positions[0]
+
+  contexts = [
+    g.generate-context (
+      initial-board, full-castling-rts, unset-passant-position)
+    g.generate-context (
+      initial-board, full-castling-rts, passant-positions[1])
+    g.generate-context (
+      initial-board, no-castling-rts, unset-passant-position)
+  ]
+
+  paths = [
+    g.generate-path (positions[0], positions[1])
+  ]
+
+  charts = [
+    g.generate-chart (contexts[0], paths[0])
+    g.generate-chart (contexts[1], paths[0])
+    g.generate-chart (contexts[2], paths[0])
+  ]
+
+  chart2s = [
+    g.generate-chart2
+      board  : initial-board
+      source : positions[0]
+      castlingRights  : full-castling-rts
+      passantPosition : unset-passant-position
+    g.generate-chart2
+      board  : initial-board
+      source : positions[0]
+      castlingRights  : full-castling-rts
+      passantPosition : positions[0]
+    g.generate-chart2
+      board  : initial-board
+      source : positions[0]
+      castlingRights  : no-castling-rts
+      passantPosition : unset-passant-position
+    g.generate-chart2
+      board  : boards[1]
+      source : positions[3]
+      castlingRights  : no-castling-rts
+      passantPosition : positions[4]
+  ]
+
+  maps = [
+    g.generate-map (initial-board, paths[0])
+  ]
+
+  settings = [
+    g.generate-setting (initial-board, positions[0])
+    g.generate-setting (initial-board, positions[2])
+  ]
+
+  return {
+    boards
+    castling-rights
+    charts
+    chart2s
+    contexts
+    full-castling-rts
+    initial-board
+    invalid-board
+    invalid-chessmen
+    invalid-positions
+    maps
+    no-castling-rts
+    passant-positions
+    paths
+    positions
+    settings
+    unset-passant-position
+  }
+
+)

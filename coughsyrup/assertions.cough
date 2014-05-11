@@ -6,6 +6,7 @@ define (['mydash', 'types'], (_, y) ->
     [y.castling-right?,     'castling right'    ]
     [y.castling-right-set?, 'castling right set']
     [y.chart?,              'chart'             ]
+    [y.chart2?,             'chart2'            ]
     [y.chessman?,           'chessman'          ]
     [y.chessman-type?,      'chessman type'     ]
     [y.color?,              'color'             ]
@@ -17,14 +18,14 @@ define (['mydash', 'types'], (_, y) ->
     [y.pair?,               'pair'              ]
     [y.passant-position?,   'passant position'  ]
     [y.path?,               'path'              ]
+    [y.pawn-direction?,     'pawn direction'    ]
     [y.player?,             'player'            ]
     [y.position?,           'position'          ]
-    [y.position-code?,      'position code'     ]
+    [y.position-component?, 'position component']
     [y.query?,              'query'             ]
     [y.rook?,               'rook'              ]
     [y.setting?,            'setting'           ]
     [y.square?,             'square'            ]
-    [y.type?,               'type'              ]
   ]
 
   generate-singular-validator = ([pred, str]) ->
@@ -36,6 +37,7 @@ define (['mydash', 'types'], (_, y) ->
     vow-castling-right
     vow-castling-right-set
     vow-chart
+    vow-chart2
     vow-chessman
     vow-chessman-type
     vow-color
@@ -47,38 +49,48 @@ define (['mydash', 'types'], (_, y) ->
     vow-pair
     vow-passant-position
     vow-path
+    vow-pawn-direction
     vow-player
     vow-position
-    vow-position-code
+    vow-position-component
     vow-query
     vow-rook
     vow-setting
     vow-square
-    vow-type
   ] = _.map generate-singular-validator validation-pairs
 
   generate-plural-validator = \validator ->
     _.map validator
 
   plural-validators = [
+    vow-all-colors
     vow-all-indices
     vow-all-pairs
+    vow-all-passant-positions
     vow-all-positions
+    vow-all-position-components
   ] = _.map generate-plural-validator [
+    vow-color
     vow-index
     vow-pair
+    vow-passant-position
     vow-position
+    vow-position-component
   ]
 
   return {
+    vow-all-colors
     vow-all-indices
     vow-all-pairs
+    vow-all-passant-positions
+    vow-all-position-components
     vow-all-positions
     vow-board
     vow-bounded
     vow-castling-right
     vow-castling-right-set
     vow-chart
+    vow-chart2
     vow-chessman
     vow-chessman-type
     vow-color
@@ -90,14 +102,13 @@ define (['mydash', 'types'], (_, y) ->
     vow-pair
     vow-passant-position
     vow-path
+    vow-pawn-direction
     vow-player
     vow-position
-    vow-position-code
     vow-query
     vow-rook
     vow-setting
     vow-square
-    vow-type
   }
 
 )

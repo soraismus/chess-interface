@@ -1,0 +1,141 @@
+define ([
+  'mydash'
+  'jFns'
+  'constants'
+  'constructors'
+  'extractors'
+  'specConstants'
+  'utilities'
+], (_, j, c, g, x, sc, u) ->
+
+  {
+    descr
+    xdescr
+    t
+    xt
+    test-spec
+    to-throw
+    to-be
+    to-equal
+    to-be-true
+    to-be-false
+    satisfies
+    contravenes
+    throws
+    each-fn-result-equals
+    each-satisfies
+    each-contravenes
+    each-throws
+    to-be-array
+    to-be-fn
+    to-be-nbr
+    to-be-array
+    to-have-length
+    test-predicate
+    test-transformation
+    test-throwing-transformation
+    gen-pred-guards
+  } = j
+
+  descr 'test utilities.cough' (->
+
+    bd               = sc.boards[0]
+    chart1           = sc.charts[0]
+    chart2           = sc.charts[1]
+    ctx              = sc.contexts[0]
+    map              = sc.maps[0]
+    passant          = sc.passant-positions[0]
+    path             = sc.paths[0]
+    pos1             = sc.positions[0]
+    pos2             = sc.positions[1]
+    pos3             = sc.positions[2]
+    pos0-0 = g.generate-position (0, 0)
+    pos4-5 = g.generate-position (4, 5)
+    initial-board    = sc.initial-board
+    invalid-chessman = sc.invalid-chessmen[0]
+    invalid-pos      = sc.invalid-positions[0]
+    rts              = sc.castling-rights[0]
+    setting          = sc.settings[0]
+    src              = sc.positions[0]
+    tgt              = sc.positions[1]
+
+    initial-bd-@-0-0 = g.generate-setting (
+      initial-board, g.generate-position (0, 0))
+
+    t 'test u.ally?' (->
+      fn = u.ally?
+      allied-pairs = [
+        [c.white, c.white]
+        [c.black, c.black]
+      ]
+
+      unallied-pairs = [
+        [c.white, c.black]
+        [c.black, c.white]
+        [c.white, c.absent-color]
+        [c.absent-color, c.white]
+        [c.black, c.absent-color]
+        [c.absent-color, c.black]
+      ]
+
+      each-satisfies fn allied-pairs
+      each-contravenes fn unallied-pairs
+      each-throws fn [c.white, bd, pos1]
+    )
+
+    t 'test u.available?' (->
+      local-bds = [
+        'r---------------------------------------------------------------'
+        'rR--------------------------------------------------------------'
+        'rr--------------------------------------------------------------'
+        'R---------------------------------------------------------------'
+        'Rr--------------------------------------------------------------'
+        'RR--------------------------------------------------------------'
+      ]
+
+      local-src  = g.generate-position (0, 0)
+      local-tgt  = g.generate-position (0, 1)
+      local-path = g.generate-path (local-src, local-tgt)
+
+      gen-map = \bd -> g.generate-map (bd, local-path)
+
+      [
+        local-map1, local-map2, local-map3,
+        local-map4, local-map5, local-map6
+      ] = _.map gen-map local-bds
+
+      fn = \board -> u.available? (board, local-src) local-tgt
+
+      each-satisfies fn [
+        local-bds[0], local-bds[1], local-bds[3], local-bds[4]]
+
+      each-contravenes fn [local-bds[2], local-bds[5]]
+
+      throws fn pos1
+    )
+
+    t 'test u.black?' (->
+      fn = u.black?
+      satisfies fn c.black
+      each-contravenes fn [c.white, c.absent-color]
+      throws fn [bd]
+    )
+
+    t 'test u.empty?' (->
+      fn = u.empty?
+      satisfies fn c.empty-square
+      each-contravenes fn [c.black-queen, c.white-pawn]
+      throws fn bd
+    )
+
+    t 'test u.empty-at?' (->
+      fn = u.empty-at? initial-board
+      satisfies fn pos3
+      contravenes fn pos1
+      throws fn bd
+    )
+
+
+  )
+
+)

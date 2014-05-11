@@ -1,12 +1,13 @@
 require.config({
   baseUrl : "../src/",
   paths : {
-    jasmine     : '../test/lib/jasmine',
-    jasmineHtml : '../test/lib/jasmine-html',
-    mydash      : 'lib/mydash',
-    testem      : '/testem',
-    spec        : '../test/spec',
-    jFns        : '../test/spec/jasmine-fns',
+    jasmine       : '../test/lib/jasmine',
+    jasmineHtml   : '../test/lib/jasmine-html',
+    jFns          : '../test/spec/jasmine-fns',
+    mydash        : 'lib/mydash',
+    spec          : '../test/spec',
+    specConstants : '../test/spec/spec-constants',
+    testem        : '/testem',
   },
   shim : {
     jasmine : {
@@ -32,13 +33,16 @@ require (['jasmineHtml', 'testem'], function () {
     return htmlReporter.specFilter(spec);
   };
 
-  var specs = [];
-
-	specs.push ('spec/test-spec');
-  //specs.push ('spec/assertions-spec');
-  //specs.push ('spec/constants-spec');
-  //specs.push ('spec/extractors-spec');
-  //specs.push ('spec/types-spec');
+  var specs = [
+    'spec/assertions-spec',
+    'spec/extractors-spec',
+    'spec/pawn-spec',
+    'spec/piece-spec',
+    'spec/slider-spec',
+    'spec/stepper-spec',
+    'spec/types-spec',
+    'spec/utilities-spec'
+  ]
 
 	require (specs, function () {
 		jasmineEnv.execute ();

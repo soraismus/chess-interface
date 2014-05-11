@@ -125,9 +125,9 @@ define (['mydash'], (_) ->
 
     unset-check-status : {}
 
-    unset-passant-position : '-'
+    unset-passant-pos: '-'
 
-    unset-position-code : '-'
+    unset-promotion-pos: false
 
     white
 

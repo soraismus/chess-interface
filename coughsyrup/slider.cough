@@ -1,0 +1,67 @@
+define ([
+  'mydash'
+  'constructors'
+  'extractors'
+  'types'
+  'utilities'
+  'piece'
+  'assertions'
+], (_, g, x, y, u, piece-fns, v) ->
+
+  accumulate-till-blocked = (board, color1) -> (rank, file, dir) ->
+    possible-moves = []
+
+    [rank-diff, file-diff] = x.rank-&-file-from dir
+
+    gen-pos   = g.generate-position!
+    inessent? = u.inessent?
+    empty-at? = u.empty-at? board
+    color-at  = x.color-at board
+
+    loop
+      [rank, file] = [rank + rank-diff, file + file-diff]
+
+      new-pos = gen-pos (rank, file)
+
+      break unless inessent? new-pos
+
+      if empty-at? new-pos
+        possible-moves.push new-pos
+      else
+        color2 = color-at new-pos
+        possible-moves.push new-pos if u.opponent? ([color1, color2])
+        break
+
+    possible-moves
+
+  getPotentialMoves = (chart2, chessman-type) ->
+    # Start testing mode.
+    v.vow-chart2 chart2
+    v.vow-chessman-type chessman-type
+    # End testing mode.
+
+    potential-moves = []
+    board           = x.board-from chart2
+    src             = x.position-from chart2
+    offsets         = u.offsets-for chessman-type
+    color           = x.color-at board src
+    accumulate      = accumulate-till-blocked (board, color)
+    [rank, file]    = x.rank-&-file-from src
+
+    for dir in offsets
+      potential-moves = potential-moves.concat (accumulate (rank, file, dir))
+
+    potential-moves
+
+  getPotentialKingAttacks = getPotentialMoves
+
+  public-fns = _.defaults [piece-fns] {
+    getPotentialKingAttacks
+    getPotentialMoves
+  }
+
+  public-fns.move = public-fns.basicMove
+
+  return public-fns
+
+)

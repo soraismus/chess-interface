@@ -1,5 +1,20 @@
 define (['mydash', 'constants'], (_, c) ->
 
+  # ------------------------
+  # Private Helper Function
+  # ------------------------
+
+  has = \owner ->
+    fn = Object.hasOwnProperty.bind(owner)
+    \prop -> fn prop
+
+  satisfies-regex? = \regex \val ->
+    if (_.isString val) then (_.regexTest regex val) else false
+
+  # -------------------------
+  # Public Helper Functions
+  # -------------------------
+
   bounded? = \intg ->
     # Start testing mode.
     _.vowInt intg
@@ -11,12 +26,12 @@ define (['mydash', 'constants'], (_, c) ->
 
   inessent? = \pos -> _.both bounded? pos
 
-  satisfies-regex? = \regex \val ->
-    if (_.isString val) then (_.regexTest regex val) else false
-
   # -----------------------
   # Classifying Predicates
   # -----------------------
+
+  black? = \color ->
+    color == c.black
 
   board? = \val ->
     satisfies-regex?  /^[kqrbnp-]{64,64}$/i  val
@@ -26,6 +41,13 @@ define (['mydash', 'constants'], (_, c) ->
   castling-right-set? = \val -> satisfies-regex? /(^-$)|(^K?Q?k?q?$)/ val
 
   chart? = \val -> pair? val && context? val[0] && path? val[1]
+
+  chart2? = \val ->
+    _.isHash val && do (has = has val) ->
+        has 'board' &&
+        has 'source' &&
+        has 'castlingRights' &&
+        has 'passantPosition'
 
   chessman? = \val -> satisfies-regex? /^[kqrbnp]$/i val
 
@@ -57,11 +79,13 @@ define (['mydash', 'constants'], (_, c) ->
 
   pawn? = \val -> satisfies-regex? /^p$/i val
 
+  pawn-direction? = \val -> val == 1 || val == -1
+
   player? = \val -> _.contains c.players val
 
   position? = \val -> integral-pair? val && inessent? val
 
-  position-code? = \val -> satisfies-regex? /(^-$)|(^[a-h][1-8]$)/ val
+  position-component? = \val -> bounded? val && _.isInteger val
 
   rook? = \val -> satisfies-regex? /^r$/i val
 
@@ -70,16 +94,16 @@ define (['mydash', 'constants'], (_, c) ->
 
   square? = \val -> chessman? val || empty? val
 
-  type? = \val -> _.contains c.general-types val
-
-  unset-passant-position? = \val -> val == c.unset-passant-position
+  unset-passant-position? = \val -> val == c.unset-passant-pos
 
   return {
+    black?
     board?
     bounded?
     castling-right?
     castling-right-set?
     chart?
+    chart2?
     chessman?
     chessman-type?
     color?
@@ -95,11 +119,13 @@ define (['mydash', 'constants'], (_, c) ->
     passant-position?
     path?
     pawn?
+    pawn-direction?
     player?
+    position?
+    position-component?
     rook?
     setting?
     square?
-    type?
     unset-passant-position?
   }
 

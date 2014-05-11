@@ -1,0 +1,76 @@
+define (['mydash', 'constants', 'types', 'assertions'], (_, c, y, v) ->
+
+  generate-chart = (context, path) ->
+    # Start testing mode.
+    v.vow-context context
+    v.vow-path path
+    # End testing mode.
+
+    [context, path]
+
+  generate-chart2 = \conf ->
+    # Start testing mode.
+    v.vow-chart2 conf
+    # End testing mode.
+    conf
+
+  generate-chessman = (chessman-type, color) ->
+    # Start testing mode.
+    v.vow-chessman-type chessman-type
+    v.vow-color color
+    # End testing mode.
+
+    black-chessman-from = _.zipAssign c.chessman-types c.black-chessmen
+    black-chessman = black-chessman-from[chessman-type]
+    if (y.black? color) then black-chessman else (_.toUC black-chessman)
+
+  generate-context = (board, rts, passant) ->
+    # Start testing mode.
+    v.vow-board board
+    v.vow-castling-right-set rts
+    v.vow-passant-position passant
+    # End testing mode.
+
+    board: board, castlingRights: rts, passantPosition: passant
+
+  generate-map = (board, path) ->
+    # Start testing mode.
+    v.vow-board board
+    v.vow-path path
+    # End testing mode.
+    [board, path]
+
+  generate-path = (src, tgt) ->
+    # Start testing mode.
+    v.vow-all-positions [src, tgt]
+    # End testing mode.
+    [tgt, src]
+
+  generate-position = (rank, file) ->
+    # Start testing mode.
+    v.vow-position [rank, file]
+    # End testing mode.
+    generate-position! (rank, file)
+
+  generate-position! = (rank, file) -> [rank, file]
+
+  generate-setting = (board, pos) ->
+    # Start testing mode.
+    v.vow-board board
+    v.vow-position pos
+    # End testing mode.
+    [board, pos]
+
+  return {
+    generate-chart
+    generate-chart2
+    generate-chessman
+    generate-context
+    generate-map
+    generate-path
+    generate-position
+    generate-position!
+    generate-setting
+  } 
+
+)

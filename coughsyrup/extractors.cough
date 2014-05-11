@@ -1,25 +1,27 @@
-define ([
-  'mydash'
-  'constants'
-  'types'
-  'assertions'
-], (_, c, y, v) ->
+define (['mydash', 'constants', 'types', 'assertions'], (_, c, y, v) ->
 
   # -----------------
   # Helper Functions
   # -----------------
 
-  split-&-indexify = \i \str ->
+  split-&-indexify = \str ->
     array = _.split '' str
+
+    i = -1
+
     indexify = \component ->
       i += 1
       [component, i]
+
     _.map indexify array
 
-  to-1d = ([rank, file]) ->
+  to-1d = \pos ->
     # Start testing mode.
-    v.vow-position [rank, file]
+    v.vow-position pos
     # End testing mode.
+
+    rank = rank-of pos
+    file = file-of pos
     8 * rank + file
 
   corresponding-black-chessman = \chessman ->
@@ -34,28 +36,41 @@ define ([
 
   board-from = \val ->
     # Start testing mode.
-    _.vowStruct [y.setting?, y.map?, y.chart?] val
+    _.vowStruct [y.setting?, y.map?, y.chart?, y.chart2?] val
     # End testing mode.
 
     evaluators = [
       ([board, pos])      -> board
       ([board, path])     -> board
       ([{ board }, path]) -> board
+      ({ board })         -> board
     ]
 
-    _.switch [y.setting?, y.map?, y.chart?] evaluators val
+    _.switch [y.setting?, y.map?, y.chart?, y.chart2?] evaluators val
 
-  castling-rights-from = \chart ->
+  castling-rights-from = \val ->
     # Start testing mode.
-    v.vow-chart chart
+    _.vowStruct [y.chart?, y.chart2?] val
     # End testing mode.
-    chary.castlingRights
 
-  chessman-type-at = \setting ->
+    evaluators = [
+      ([{ castlingRights }]) -> castlingRights
+      ({ castlingRights })   -> castlingRights
+    ]
+
+    _.switch [y.chart?, y.chart2?] evaluators val
+
+  chessmen-from = (board, color) ->
+    squares = split-&-indexify (-1) board
+    color-predicate = ([sq, idx]) -> of-color? color sq
+    chessmen-of-specified-color = _.filter color-predicate squares
+
+  chessman-type-at = \board \pos ->
     # Start testing mode.
-    v.vow-setting setting
+    v.vow-board board
+    v.vow-position pos
     # End testing mode.
-    chessman-type-of (square-at setting)
+    chessman-type-of (square-at board pos)
 
   chessman-type-of = \chessman ->
     # Start testing mode.
@@ -67,11 +82,12 @@ define ([
 
     type-of[abbrev]
 
-  color-at = \setting ->
+  color-at = \board \pos ->
     # Start testing mode.
-    v.vow-setting setting
+    v.vow-board board
+    v.vow-position pos
     # End testing mode.
-    color-of (square-at setting)
+    color-of (square-at board pos)
 
   color-of = \square ->
     # Start testing mode.
@@ -79,19 +95,26 @@ define ([
     # End testing mode.
     _.switchWith c.absent-color [_.isLC, _.isUC] [c.black, c.white] square
 
-  file-of = ([rank, file]) ->
+  colors-at = \board \positions ->
     # Start testing mode.
-    v.vow-position [rank, file]
+    v.vow-board board
+    v.vow-all-positions positions
     # End testing mode.
-    file
+    _.map (color-at board) positions
 
-  # No validations.
-  get-promotion-msg = \response ->
-    response.promotion-pos
+  file-of = \val ->
+    # Start testing mode.
+    _.vowStruct [y.position?, y.setting?] val
+    # End testing mode.
 
-  # No validations.
-  get-ctx = \response -> response.ctx
+    evaluators = [
+      ([rank, file])          -> file
+      ([board, [rank, file]]) -> file
+    ]
 
+    _.switch [y.position?, y.setting?] evaluators val
+
+  # Not possible for the type 'chart2'.
   map-from = \chart ->
     # Start testing mode.
     v.vow-chart chart
@@ -99,65 +122,101 @@ define ([
     [{ board }, path] = chart
     [board, path]
 
-  chessmen-from = (board, color) ->
-    squares = split-&-indexify (-1) board
-    color-predicate = ([sq, idx]) -> of-color? color sq
-    chessmen-of-specified-color = _.filter color-predicate squares
-
-  path-from = \pair -> pair[1]
-
-  passant-from = \chart ->
+  # Not possible for the type 'chart2'.
+  path-from = \val ->
     # Start testing mode.
-    v.vow-chart chart
+    _.vowStruct [y.map?, y.chart?] val
     # End testing mode.
-    [{ passantPosition }] = chart
-    passantPosition
+    val[1]
 
-  rank-&-file-from = ([rank, file]) ->
+  passant-from = \val ->
     # Start testing mode.
-    _.vowStruct [y.path?, y.integral-pair?] [rank, file]
+    _.vowStruct [y.chart?, y.chart2?] val
     # End testing mode.
-    [rank, file]
 
-  rank-of = ([rank, file]) ->
-    # Start testing mode.
-    v.vow-position [rank, file]
-    # End testing mode.
-    rank
+    evaluators = [
+      ([{ passantPosition }]) -> passantPosition
+      ({ passantPosition })   -> passantPosition
+    ]
 
-  square-at = ([board, pos]) ->
+    _.switch [y.chart?, y.chart2?] evaluators val
+
+  position-from = \val ->
     # Start testing mode.
-    v.vow-setting [board, pos]
+    _.vowStruct [y.setting?, y.map?, y.chart2?] val
     # End testing mode.
+
+    evaluators = [
+      ([board, pos])        -> pos
+      ([board, [tgt, src]]) -> src
+      ({ source })          -> source
+    ]
+
+    _.switch [y.setting?, y.map?, y.chart2?] evaluators val
+
+  rank-&-file-from = \val ->
+    # Start testing mode.
+    _.vowStruct [y.position?, y.integral-pair?, y.setting?, y.chart2?] val
+    # End testing mode.
+
+    types = [y.position?, y.integral-pair?, y.setting?, y.chart2?]
+
+    evaluators = [
+      _.identity
+      _.identity
+      _.second
+      ({ source }) -> source
+    ]
+
+    _.switch types evaluators val
+
+  rank-of = \val ->
+    # Start testing mode.
+    _.vowStruct [y.position?, y.setting?] val
+    # End testing mode.
+
+    evaluators = [
+      ([rank, file])          -> rank
+      ([board, [rank, file]]) -> rank
+    ]
+
+    _.switch [y.position?, y.setting?] evaluators val
+
+  square-at = \board \pos ->
+    # Start testing mode.
+    v.vow-board board
+    v.vow-position pos
+    # End testing mode
     _.charAt (to-1d pos) board
-
-  src-chessman-from = \val -> square-at (src-setting-from val)
 
   src-from = \val ->
     # Start testing mode.
-    _.vowStruct [y.path?, y.map?, y.chart?] val
+    _.vowStruct [y.path?, y.map?, y.chart?, y.chart2?] val
     # End testing mode.
 
     evaluators = [
       ([tgt, src])              -> src
       ([board, [tgt, src]])     -> src
       ([{ board }, [tgt, src]]) -> src
+      ({ source })              -> source
     ]
 
-    _.switch [y.path?, y.map?, y.chart?] evaluators val
+    _.switch [y.path?, y.map?, y.chart?, y.chart?] evaluators val
 
   src-setting-from = \val ->
     # Start testing mode.
-    _.vowStruct [y.map?, y.chart?] val
+    _.vowStruct [y.map?, y.chart?, y.chart2?] val
     # End testing mode.
 
     evaluators = [
       ([board, [tgt, src]])     -> [board, src]
       ([{ board }, [tgt, src]]) -> [board, src]
+      ({ board, source})        -> g.generate-setting (board, source)
     ]
 
-    _.switch [y.map?, y.chart?] evaluators val
+    _.switch [y.map?, y.chart?, y.chart?] evaluators val
 
+  # Not possible for the type 'chart2'.
   tgt-from = \val ->
     # Start testing mode.
     _.vowStruct [y.path?, y.map?, y.chart?] val
@@ -171,6 +230,7 @@ define ([
 
     _.switch [y.path?, y.map?, y.chart?] evaluators val
 
+  # Not possible for the type 'chart2'.
   tgt-setting-from = \val ->
     # Start testing mode.
     _.vowStruct [y.map?, y.chart?] val
@@ -183,19 +243,6 @@ define ([
 
     _.switch [y.map?, y.chart?] evaluators val
 
-  type-from = \val ->
-    # Start testing mode.
-    _.vowStruct [y.setting?, y.map?, y.chart?] val
-    # End testing mode.
-
-    evaluators = [
-      ([board, pos])            -> chessman-type-at [board, pos]
-      ([board, [tgt, src]])     -> chessman-type-at [board, src]
-      ([{ board }, [tgt, src]]) -> chessman-type-at [board, src]
-    ]
-
-    _.switch [y.setting?, y.map?, y.chart?] evaluators val
-
   return {
     board-from
     castling-rights-from
@@ -204,24 +251,22 @@ define ([
     corresponding-black-chessman
     color-at
     color-of
+    colors-at
     file-of
-    get-promotion-msg
-    get-ctx
     map-from
     chessmen-from
     path-from
     passant-from
+    position-from
     rank-&-file-from
     rank-of
     split-&-indexify
     square-at
-    src-chessman-from
     src-from
     src-setting-from
     tgt-from
     tgt-setting-from
     to-1d
-    type-from
   }
 
 )

@@ -1,0 +1,34 @@
+define ([
+  'extractors'
+  'utilities'
+  'constructors'
+  'assertions'
+], (x, u, g, v) ->
+
+  getBasicPotentialMoves = (setting, chessman-type) ->
+  getBasicPotentialMoves = (board, src, chessman-type) ->
+    # Start testing mode.
+    v.vow-board board
+    v.vow-position src
+    v.vow-chessman-type chessman-type
+    # End testing mode.
+
+    [rank, file] = x.rank-&-file-from src
+    offsets      = u.offsets-for chessman-type
+    available?   = u.available? (board, src)
+
+    possible-moves = []
+
+    for dir in offsets
+      [rank-diff, file-diff] = x.rank-&-file-from dir
+      [new-rank, new-file]   = [rank + rank-diff, file + file-diff]
+
+      tgt = g.generate-position (new-rank, new-file)
+
+      possible-moves.push tgt if available? tgt
+
+    possible-moves
+
+  return { getBasicPotentialMoves }
+
+)
