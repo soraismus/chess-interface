@@ -8,11 +8,50 @@ define ([
   'assertions'
 ], (_, c, g, x, u, stepper-fns, v) ->
 
-  empty-string = ''
+  KQ = 'KQ'
+  kq = 'kq'
+  K  = 'K'
+  Q  = 'Q'
+  k  = 'k'
+  q  = 'q'
+  NO = '-'
 
-  file-diffs = [2, -2]
+  c1 = [7, 2]
+  g1 = [7, 6]
+  c8 = [0, 2]
+  g8 = [0, 6]
 
-  hyphen = '-'
+  t0  = []
+  t1  = [c1]
+  t2  = [g1]
+  t12 = [c1, g1]
+  t3  = [c8]
+  t4  = [g8]
+  t34 = [c8, g8]
+
+  new-castling-rts = {}
+
+  new-castling-rts[c.white] =
+    KQkq : kq, KQk : k, KQq : q, KQ : NO, Kkq : kq, Kk : k, Kq : q, K   : NO
+    Qkq  : kq, Qk  : k, Qq  : q, Q  : NO, kq  : kq, k  : k, q  : q, '-' : NO
+
+  new-castling-rts[c.black] =
+    KQkq : KQ, Qkq : Q, Kkq : K, kq : NO, KQq : KQ, Qq : Q, Kq : K, q   : NO
+    KQk  : KQ, Qk  : Q, Kk  : K, k  : NO, KQ  : KQ, Q  : Q, K  : K, '-' : NO 
+
+  castling-tgts = {}
+
+  castling-tgts[c.white] =
+    KQkq : t12, KQk : t12, KQq : t12, KQ  : t12
+    Qkq  : t1,  Qk  : t1,  Qq  : t1,  Q   : t1
+    Kkq  : t2,  Kk  : t2,  Kq  : t2,  K   : t2
+    kq   : t0,  k   : t0,  q   : t0,  '-' : t0
+
+  castling-tgts[c.black] =
+    KQkq : t34, Qkq : t34, Kkq : t34, kq  : t34
+    KQq  : t3,  Qq : t3,   Kq  : t3,  q   : t3
+    KQk  : t4,  Qk : t4,   Kk  : t4,  k   : t4
+    KQ   : t0,  Q  : t0,   K   : t0,  '-' : t0 
 
   castle = (board, src, tgt) ->
     # Start testing mode.
@@ -51,43 +90,29 @@ define ([
     matcher = u.castling-matcher (black?, kingward?)
     _.match matcher 'noFlags' castling-rts
 
-  get-castling-revocations = \color ->
-    if (u.black? color) then c.castling-black else c.castling-white
-
-  get-potential-castling-moves = \chart2 ->
-    # Start testing mode.
-    v.vow-chart2 chart2
-    # End testing mode.
-
-    board        = x.board-from chart2
-    src          = x.position-from chart2
-    [rank, file] = x.rank-&-file-from src
-    castling-rts = x.castling-rights-from chart2
-    king-color   = x.color-at board src
-    black?       = u.black? king-color
-    permitted?   = castling-permitted? (castling-rts, black?)
-
-    permitted-file-diffs = _.filter permitted? file-diffs
-
-    gen-castling-tgt = (rank, file) -> \file-diff ->
-      g.generate-position (rank, file + file-diff)
-
-    if castling-rts == c.no-castling-rts
-      get-potential-castling-moves = \chart2 -> []
-
-    _.map (gen-castling-tgt (rank, file)) permitted-file-diffs
+  get-potential-castling-moves = (color, castling-rts) ->
+    castling-tgts[color][castling-rts]
 
   getPotentialKingAttacks = \chart2 \tgt -> []
 
+  # TODO: Rewrite #color.at to take a 'chart2' type as an argument.
   getPotentialMoves = \chart2 ->
     # Start testing mode.
     v.vow-chart2 chart2
     # End testing mode.
 
+    board        = x.board-from chart2
+    source       = x.position-from chart2
+    king-color   = x.color-at board source
+    castling-rts = x.castling-rights-from chart2
+
     basic-potential-moves =
       pf.getBasicPotentialMoves (chart2, c.king)
 
-    basic-potential-moves.concat (get-potential-castling-moves chart2)
+    reset-getPotentialMoves castling-rts
+
+    basic-potential-moves.concat (
+      get-potential-castling-moves (king-color, castling-rts))
 
   modifyCastlingRights = \chart2 ->
     # Start testing mode.
@@ -98,12 +123,10 @@ define ([
     src          = x.position-from chart2
     king-color   = x.color-at board src
     castling-rts = x.castling-rights-from chart2
-    revocations  = get-castling-revocations king-color
 
-    if castling-rts == c.no-castling-rts
-      modifyCastlingRights = \chart2 -> c.no-castling-rts
+    reset-modifyCastlingRights castling-rts
 
-    _.pipe (_.map u.revoke-castling-right revocations) castling-rts
+    new-castling-rts[color][castling-rts]
 
   move = \chart2 ->
     # Start testing mode.
@@ -118,6 +141,19 @@ define ([
 
   non-castling-move = \chart2 \tgt ->
     pk.basicMove chart2 tgt
+
+  reset-getPotentialMoves = \castling-rts ->
+    if castling-rts == c.no-castling-rts
+      pf.getPotentialMoves = \chart2 ->
+        # Start testing mode.
+        v.vow-chart2 chart2
+        # End testing mode.
+
+        pf.getBasicPotentialMoves (chart2, c.king)
+
+  reset-modifyCastlingRights = \castling-rts ->
+    if castling-rts == c.no-castling-rts
+      pf.modifyCastlingRights = x.castling-rights-from
 
   # Coupling to position structure implementation.
   rook-castling-path = (king-color, king-src, king-tgt) ->
