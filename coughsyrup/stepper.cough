@@ -1,23 +1,23 @@
 define ([
+  'mydash'
   'extractors'
   'utilities'
   'constructors'
+  'piece'
   'assertions'
-], (x, u, g, v) ->
+], (_, x, u, g, piece-fns, v) ->
 
-  getBasicPotentialMoves = (setting, chessman-type) ->
-  getBasicPotentialMoves = (board, src, chessman-type) ->
+  get-basic-potential-moves = (rank, file, offsets, available?) ->
     # Start testing mode.
-    v.vow-board board
-    v.vow-position src
-    v.vow-chessman-type chessman-type
+    v.vow-all-position-components [rank, file]
+    
+    # TODO: Add a more specific assertion for offsets.
+    _.vowAllAry offsets
+
+    _.vowFn available?
     # End testing mode.
 
-    [rank, file] = x.rank-&-file-from src
-    offsets      = u.offsets-for chessman-type
-    available?   = u.available? (board, src)
-
-    possible-moves = []
+    potential-moves = []
 
     for dir in offsets
       [rank-diff, file-diff] = x.rank-&-file-from dir
@@ -25,10 +25,34 @@ define ([
 
       tgt = g.generate-position (new-rank, new-file)
 
-      possible-moves.push tgt if available? tgt
+      potential-moves.push tgt if available? tgt
 
-    possible-moves
+    potential-moves
 
-  return { getBasicPotentialMoves }
+  getBasicPotentialMoves = (chart2, chessman-type) ->
+    # Start testing mode.
+    v.vow-chart2 chart2
+    v.vow-chessman-type chessman-type
+    # End testing mode.
+
+    board        = x.board-from chart2
+    src          = x.position-from chart2
+    [rank, file] = x.rank-&-file-from src
+    offsets      = u.offsets-for chessman-type
+    available?   = u.available? (board, src)
+
+    get-basic-potential-moves (
+      x.rank-of src
+      x.file-of src
+      u.offsets-for chessman-type
+      u.available? (board, src)
+    )
+
+  public-fns = _.defaults [piece-fns] {
+    get-basic-potential-moves
+    getBasicPotentialMoves
+  }
+
+  return public-fns
 
 )
