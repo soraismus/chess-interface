@@ -1,12 +1,11 @@
 define ([
   'mydash'
   'jFns'
-  'specConstants'
   'constants'
   'constructors'
   'utilities'
   'stepper'
-], (_, j, sc, c, g, u, st) ->
+], (_, j, c, g, u, st) ->
 
   {
     descr
@@ -39,25 +38,37 @@ define ([
 
   descr 'test stepper.cough' (->
 
+    factory = \pos \bd ->
+      g.generate-chart2
+        board  : bd
+        source : pos
+        castlingRights  : c.no-castling-rts
+        passantPosition : c.unset-passant-position
+
     t 'test st.getBasicPotentialMoves' (->
       fn = st.getBasicPotentialMoves
 
       local-pos = g.generate-position (3, 3)
+    
+      gen-chart2 = factory local-pos
 
       bd1 = '---------------------------n------------------------------------'
+      chart1 = gen-chart2 bd1
 
       potential-moves = [
         [4, 5], [4, 1], [2, 5], [2, 1]
         [5, 4], [5, 2], [1, 4], [1, 2]
       ]
 
-      to-equal potential-moves (fn (bd1, local-pos, c.knight))
+      to-equal potential-moves (fn (chart1, c.knight))
 
       bd2 = '----------p-p----p---p-----n------------------------------------'
+      chart2 = gen-chart2 bd2
       potential-moves2 = [[4, 5], [4, 1], [5, 4], [5, 2]]
-      to-equal potential-moves2 (fn (bd2, local-pos, c.knight))
+      to-equal potential-moves2 (fn (chart2, c.knight))
 
       bd3 = '---------------------------K------------------------------------'
+      chart3 = gen-chart2 bd3
 
       potential-moves3 = [
         [4, 4], [4, 3], [4, 2]
@@ -65,7 +76,7 @@ define ([
         [2, 4], [2, 3], [2, 2]
       ]
 
-      to-equal potential-moves3 (fn (bd3, local-pos, c.king))
+      to-equal potential-moves3 (fn (chart3, c.king))
 
     )
 
