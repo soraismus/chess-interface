@@ -142,7 +142,7 @@ define ([
 
     t 'test sl.setPromotionPosition' (->
       fn = sl.setPromotionPosition
-      to-equal c.unset-promotion-position (fn chart2_1)
+      to-equal c.unset-promotion-pos (fn chart2_1)
     )
 
   )
