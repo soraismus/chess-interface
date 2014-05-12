@@ -28,14 +28,17 @@ define ([
     # End testing mode.
     color == c.black
 
-  castling-matcher = \predicate \color \path ->
+  castling-matcher = (bool1, bool2) ->
     # Start testing mode.
-    _.vowFn predicate
-    v.vow-color color
-    v.vow-path path
+    _.vowAllBool [bool1, bool2]
     # End testing mode.
-    _.binaryIfBranch [color == c.black, predicate path] [
-      'k', 'q', 'K', 'Q']
+
+    _.bindaryIfBranch [bool1, bool2] [
+      c.castling-black-kingward
+      c.castling-black-queenward
+      c.castling-white-kingward
+      c.castling-white-queenward
+    ]
 
   chessman-black? = \chessman ->
     # Start testing mode.
@@ -69,10 +72,18 @@ define ([
     # End testing mode.
     passant-position-set? passant && same-position? [passant, tgt]
 
-  file-difference = ([tgt, src]) ->
+  rank-difference = (src, tgt) ->
     # Start testing mode.
-    v.vow-path [tgt, src]
+    v.vow-all-positions [src, tgt]
     # End testing mode.
+
+    (x.rank-of tgt) - (x.rank-of src)
+
+  file-difference = (src, tgt) ->
+    # Start testing mode.
+    v.vow-all-positions [src, tgt]
+    # End testing mode.
+
     (x.file-of tgt) - (x.file-of src)
 
   # No assertions b/c #inessent? is fundamental
@@ -88,17 +99,17 @@ define ([
     king = if black? color then c.black-king else c.white-king
     to-2d (_.indexOf board king)
 
-  kingside? = ([tgt, src]) ->
+  kingside? = (src, tgt) ->
     # Start testing mode.
-    v.vow-path [tgt, src]
+    v.vow-all-positions [tgt, src]
     # End testing mode.
     x.file-of src >= 4
 
-  kingward? = \path ->
+  kingward? = (src, tgt) ->
     # Start testing mode.
-    v.vow-path path
+    v.vow-all-positions [src, tgt]
     # End testing mode.
-    file-difference path > 0
+    file-difference (src, tgt) > 0
 
   motion? = ([tgt, src]) -> not-at? tgt src
 
@@ -208,6 +219,20 @@ define ([
     [board-slice, idx] = [(_.sliceOn board), to-1d pos]
     _.concat [(board-slice [0, idx]), square, board-slice (idx + 1)]
 
+  revoke-castling-right = \revoked-right \castling-rts ->
+    # Start testing mode.
+    v.vow-castling-right revoked-right
+    v.vow-castling-right-set castling-rts
+    # End testing mode.
+    
+    unless _.match revoked-right 'noFlags' castling-rts
+      return castling-rts
+
+    replacement =
+      if _.length castling-rts == 1 then hyphen else empty-string
+
+    _.strReplace revoked-right replacement 'noFlags' castling-rts
+
   same-position? = (pos1, pos2) ->
     # Start testing mode.
     v.vow-all-passant-positions [pos1, pos2]
@@ -268,6 +293,7 @@ define ([
     queenward?
     rank-difference
     replace
+    revoke-castling-right
     same-position?
     sort-by-color
     to-1d
