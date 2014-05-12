@@ -1,34 +1,145 @@
 define ([
   'mydash'
+  'constants'
+  'constructors'
+  'extractors'
+  'utilities'
   'stepper'
   'assertions'
-], (_, stepper-fns, v) ->
+], (_, c, g, x, u, stepper-fns, v) ->
 
-  get-potential-castling-moves = (setting, castling-rights) ->
+  empty-string = ''
+
+  file-diffs = [2, -2]
+
+  hyphen = '-'
+
+  castle = (board, src, tgt) ->
     # Start testing mode.
-    v.vow-setting setting
-    v.vow-castling-rights castling-rights
+    v.vow-board board
+    v.vow-all-positions [src, tgt]
     # End testing mode.
-    # UNDEFINED.
+    
+    king = x.chessman-from board src
+    [rook-tgt, rook-src] = rook-castling-path ((x.color-of king), src, tgt)
+    bd-after-king-moves = non-castling-move (board, src, tgt)
 
-  getPotentialKingAttacks = undefined
+    chart2 = g.generate-chart2
+      board  : bd-after-king-moves
+      source : rook-src
+      castlingRights  : c.no-castling-rts
+      passantPosition : c.unset-passant-position
 
-  public-fns = _.defaults [stepper-fns] {
-    getPotentialKingAttacks
-  }
+    castle-rook chart2 rook-tgt
 
-  public-fns.getPotentialMoves = (chessman-type, setting, castling-rights) ->
+  castle-rook = \chart2 \tgt ->
     # Start testing mode.
-    v.vow-chessman-type chessman-type
-    v.vow-setting setting
-    v.vow-castling-rights castling-rights
+    v.vow-chart2 chart2
+    v.vow-position tgt
+    # End testing mode.
+    pk.basicMove chart2 tgt
+
+  castling? = (src, tgt) ->
+    # Start testing mode.
+    v.vow-all-positions [src, tgt]
+    # End testing mode.
+    u.rank-difference (src, tgt) == 0 &&
+        _.abs (u.file-difference (src, tgt)) == 2
+
+  castling-permitted? = (castling-rts, black?) -> \rank-diff ->
+    kingward? = rank-diff > 0
+    matcher = u.castling-matcher (black?, kingward?)
+    _.match matcher 'noFlags' castling-rts
+
+  get-castling-revocations = \color ->
+    if (u.black? color) then c.castling-black else c.castling-white
+
+  get-potential-castling-moves = \chart2 ->
+    # Start testing mode.
+    v.vow-chart2 chart2
+    # End testing mode.
+
+    board        = x.board-from chart2
+    src          = x.position-from chart2
+    [rank, file] = x.rank-&-file-from src
+    castling-rts = x.castling-rights-from chart2
+    king-color   = x.color-at board src
+    black?       = u.black? king-color
+    permitted?   = castling-permitted? (castling-rts, black?)
+
+    permitted-file-diffs = _.filter permitted? file-diffs
+
+    gen-castling-tgt = (rank, file) -> \file-diff ->
+      g.generate-position (rank, file + file-diff)
+
+    if castling-rts == c.no-castling-rts
+      get-potential-castling-moves = \chart2 -> []
+
+    _.map (gen-castling-tgt (rank, file)) permitted-file-diffs
+
+  getPotentialKingAttacks = \chart2 \tgt -> []
+
+  getPotentialMoves = \chart2 ->
+    # Start testing mode.
+    v.vow-chart2 chart2
     # End testing mode.
 
     basic-potential-moves =
-      public-fns.getBasicPotentialMoves (chessman-type, setting)
+      pf.getBasicPotentialMoves (chart2, c.king)
 
-    basic-potential-moves.concat (
-      get-potential-castling-moves (setting, castling-rights))
+    basic-potential-moves.concat (get-potential-castling-moves chart2)
+
+  modifyCastlingRights = \chart2 ->
+    # Start testing mode.
+    v.vow-chart2 chart2
+    # End testing mode.
+
+    board        = x.board-from chart2
+    src          = x.position-from chart2
+    king-color   = x.color-at board src
+    castling-rts = x.castling-rights-from chart2
+    revocations  = get-castling-revocations king-color
+
+    if castling-rts == c.no-castling-rts
+      modifyCastlingRights = \chart2 -> c.no-castling-rts
+
+    _.pipe (_.map u.revoke-castling-right revocations) castling-rts
+
+  move = \chart2 ->
+    # Start testing mode.
+    v.vow-chart2 chart2
+    v.vow-position tgt
+    # End testing mode.
+
+    if castling? (src, tgt)
+      castle chart2 tgt
+    else
+      non-castling-move chart2 tgt
+
+  non-castling-move = \chart2 \tgt ->
+    pk.basicMove chart2 tgt
+
+  # Coupling to position structure implementation.
+  rook-castling-path = (king-color, king-src, king-tgt) ->
+    # Start testing mode.
+    v.vow-color king-color
+    v.vow-all-positions [king-src, king-tgt]
+    # End testing mode.
+
+    conditions = [(u.black? king-color), u.kingward? (king-src, king-tgt)]
+    possible-rook-paths = [[5, 7], [3, 0], [61, 63], [59, 56]]
+
+    rook-path = all-to-2d (
+      _.binaryIfBranch conditions possible-rook-paths)
+
+  # -----------------------------------------------------------------
+
+  pf = public-fns = _.defaults [stepper-fns] {
+    getPotentialKingAttacks
+    getPotentialMoves
+    modifyCastlingRights
+    move
+  }
 
   return public-fns
 
