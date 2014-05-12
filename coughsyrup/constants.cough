@@ -36,6 +36,16 @@ define (['mydash'], (_) ->
 
   chessman-types = piece-types.concat [pawn = 'pawn']
 
+  castling-black = [
+    castling-black-kingward  = 'k'
+    castling-black-queenward = 'q'
+  ]
+
+  castling-white = [
+    castling-white-kingward  = 'K'
+    castling-white-queenward = 'Q'
+  ]
+
   players = [
     white-player = 'w'
     black-player = 'b'
@@ -65,6 +75,18 @@ define (['mydash'], (_) ->
     black-rook
 
     board-indices : _.range [64]
+
+    castling-black
+
+    castling-black-kingward
+
+    castling-black-queenward
+
+    castling-white
+
+    castling-white-kingward
+
+    castling-white-queenward
 
     chessman-colors
 
