@@ -69,9 +69,7 @@
           return fn(chart2_hyphen_7, 'invalid-type');
         }).toThrow();
       });
-      t('test sl.getPotentialKingAttacks')(function() {
-        return to_hyphen_equal(sl.getPotentialMoves)(sl.getPotentialKingAttacks);
-      });
+      t('test sl.getPotentialKingAttacks')(function() {});
       t('test sl.modifyCastlingRights')(function() {
         var chart3, chart4, fn;
         fn = sl.modifyCastlingRights;
