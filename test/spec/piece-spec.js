@@ -44,7 +44,7 @@
       return t('test p.setPromotionPosition')(function() {
         var fn;
         fn = p.setPromotionPosition;
-        return to_hyphen_equal(c.unset_hyphen_promotion_hyphen_position)(fn(chart2_1));
+        return to_hyphen_equal(c.unset_hyphen_promotion_hyphen_pos)(fn(chart2_1));
       });
     });
   });
