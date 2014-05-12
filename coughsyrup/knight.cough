@@ -1,0 +1,32 @@
+define ([
+  'mydash'
+  'constructors'
+  'extractors'
+  'utilities'
+  'stepper'
+  'assertions'
+], (_, g, x, u, stepper-fns, v) ->
+    
+  pf = public-fns = _.defaults [stepper-fns] {}
+
+  pf.getPotentialKingAttacks = \board \src ->
+    # Start testing mode.
+    v.vow-board board
+    v.vow-position src
+    # End testing mode.
+
+    chessman-type = x.chessman-type-at board src
+
+    pf.get-basic-potential-moves (
+      x.rank-of src
+      x.file-of src
+      u.offsets-for chessman-type
+      u.available (board, src)
+    )
+
+  pf.getPotentialMoves = pf.getBasicPotentialMoves
+  pf.move              = pf.basicMove
+
+  return public-fns
+
+)
