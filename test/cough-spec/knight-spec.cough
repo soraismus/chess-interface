@@ -1,0 +1,130 @@
+define ([
+  'mydash'
+  'jFns'
+  'specConstants'
+  'constants'
+  'constructors'
+  'utilities'
+  'knight'
+], (_, j, sc, c, g, u, n) ->
+
+  {
+    descr
+    xdescr
+    t
+    xt
+    test-spec
+    to-throw
+    to-be
+    to-equal
+    to-be-true
+    to-be-false
+    satisfies
+    contravenes
+    throws
+    each-fn-result-equals
+    each-satisfies
+    each-contravenes
+    each-throws
+    to-be-array
+    to-be-fn
+    to-be-nbr
+    to-be-array
+    to-have-length
+    test-predicate
+    test-transformation
+    test-throwing-transformation
+    gen-pred-guards
+  } = j
+
+  descr 'test knight.cough' (->
+    no-castling-rts = c.no-castling-rts
+    unset-passant-pos = c.unset-passant-pos
+    knight = c.knight
+
+    pos1 = g.generate-position (3, 3)
+
+    gen-chart2 = \bd ->
+      g.generate-chart2
+        board  : bd
+        source : pos1
+        castlingRights  : no-castling-rts
+        passantPosition : unset-passant-pos
+
+    bd1 = '---------------------------n------------------------------------'
+    chart1 = gen-chart2 bd1
+
+    results1 = [
+      [4, 5], [4, 1], [2, 5], [2, 1], [5, 4], [5, 2], [1, 4], [1, 2]
+    ]
+
+
+    bd2 = '----------p-p----p---p-----n-----p---p----p---------------------'
+    chart2 = gen-chart2 bd2
+    results2 = [[5, 4]]
+
+    bd3 = '----------P-p----P---p-----n-----p---p----p---------------------'
+    chart3 = gen-chart2 bd3
+    results3 = [[2, 1], [5, 4], [1, 2]]
+
+    t 'test n.getPotentialKingAttacks' (->
+      fn = n.getPotentialKingAttacks
+
+      to-equal results1 (fn bd1 pos1)
+      to-equal results1 (fn bd3 pos1)
+    )
+
+    t 'test n.getPotentialMoves' (->
+      fn = n.getPotentialMoves
+
+      to-equal results1 (fn (chart1, knight))
+      to-equal results2 (fn (chart2, knight))
+      to-equal results3 (fn (chart3, knight))
+    )
+
+    t 'test n.modifyCastlingRights' (->
+      fn = n.modifyCastlingRights
+
+      to-equal no-castling-rts (fn chart1)
+
+      Kkq = 'Kkq'
+
+      chart4 = g.generate-chart2
+        board  : bd1
+        source : pos1
+        castlingRights  : Kkq
+        passantPosition : unset-passant-pos
+
+      to-equal Kkq (fn chart4)
+    )
+
+    t 'test n.move' (->
+      fn = n.move
+
+      bd4 = '-n--------P-p----P---p-----------p---p----p---------------------'
+      tgt = g.generate-position (0, 1)
+      to-equal bd4 (fn chart3 tgt)
+    )
+
+    t 'test n.setPassantPosition' (->
+      fn = n.setPassantPosition
+
+      to-equal unset-passant-pos (fn chart1)
+
+      chart5 = g.generate-chart2
+        board  : bd1
+        source : pos1
+        castlingRights  : no-castling-rts
+        passantPosition : g.generate-position (5, 3)
+
+      to-equal unset-passant-pos (fn chart5)
+    )
+
+    t 'test n.setPromotionPosition' (->
+      fn = n.setPromotionPosition
+      to-equal c.unset-promotion-pos (fn chart1)
+    )
+
+  )
+
+)
