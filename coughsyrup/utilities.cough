@@ -99,9 +99,9 @@ define ([
     king = if black? color then c.black-king else c.white-king
     to-2d (_.indexOf board king)
 
-  kingside? = (src, tgt) ->
+  kingside? = \src ->
     # Start testing mode.
-    v.vow-all-positions [tgt, src]
+    v.vow-position src
     # End testing mode.
     x.file-of src >= 4
 

@@ -71,8 +71,8 @@
         return to_hyphen_2d(_.indexOf(board)(king));
       };
     };
-    kingside_question_ = function(src, tgt) {
-      v.vow_hyphen_all_hyphen_positions([tgt, src]);
+    kingside_question_ = function(src) {
+      v.vow_hyphen_position(src);
       return x.file_hyphen_of(src) >= 4;
     };
     kingward_question_ = function(src, tgt) {
