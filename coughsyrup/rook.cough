@@ -1,44 +1,82 @@
 define ([
   'mydash'
+  'constants'
   'extractors'
   'utilities'
   'slider'
   'assertions'
-], (_, x, u, slider-fns, v) ->
+], (_, c, x, u, slider-fns, v) ->
 
-  modifyCastlingRights = \chart2 \tgt ->
+  KQk = 'KQk'
+  KQq = 'KQq'
+  Kkq = 'Kkq'
+  Qkq = 'Qkq'
+  KQ  = 'KQ'
+  Kk  = 'Kk'
+  Kq  = 'Kq'
+  Qk  = 'Qk'
+  Qq  = 'Qq'
+  kq  = 'kq'
+  K   = 'K'
+  Q   = 'Q'
+  k   = 'k'
+  q   = 'q'
+  NO  = '-'
+
+  new-castling-rts = {}
+
+  new-castling-rts[c.white] =
+    kingside :
+      KQkq : Qkq, KQk : Qk, KQq : Qq, KQ  : Q
+      Kkq  : kq,  Kk  : k,  Kq  : q,  K   : NO
+      Qkq  : Qkq, Qk  : Qk, Qq  : Qq, Q   : Q
+      kq   : kq,  k   : k,  q   : q,  '-' : NO
+    queenside :
+      KQkq : Kkq, KQk : Kk, KQq : Kq, KQ  : K
+      Kkq : Kkq,  Kk  : Kk, Kq  : Kq, K   : K
+      Qkq : kq,   Qk  : k,  Qq  : q,  Q   : NO
+      kq  : kq,   k   : k,  q   : q,  '-' : NO
+
+  new-castling-rts[c.black] =
+    kingside :
+      KQkq : KQq, Qkq : Qq, Kkq : Kq, kq  : q
+      KQq  : KQq, Qq  : Qq, Kq  : Kq, q   : q
+      KQk  : KQ,  Qk  : Q,  Kk  : K,  k   : NO
+      KQ   : KQ,  Q   : Q,  K   : K,  '-' : NO 
+    queenside :
+      KQkq : KQk, Qkq : Qk, Kkq : Kk, kq  : k
+      KQk  : KQk, Qk  : Qk, Kk  : Kk, k   : k
+      KQq  : KQ,  Qq  : Q,  Kq  : K,  q   : NO
+      KQ   : KQ,  Q   : Q,  K   : K,  '-' : NO 
+
+  get-new-castling-rts = (color, side, orig-rts) ->
+    new-rts = new-castling-rts[color][side][orig-rts]
+    if _.vacant new-rts then NO else new-rts
+
+  reset-modifyCastlingRights = \castling-rts ->
+    no-castling-rts = c.no-castling-rts
+    if castling-rts == no-castling-rts
+      pf.modifyCastlingRights = \chart2 -> no-castling-rts
+
+  modifyCastlingRights = \chart2 ->
     # Start testing mode.
     v.vow-chart2 chart2
-    v.vow-position tgt
     # End testing mode.
 
     board         = x.board-from chart2
     src           = x.position-from chart2
     rook-color    = x.color-at board src
     castling-rts  = x.castling-rights-from chart2
-    black?        = u.black? rook-color
-    kingside?     = u.kingside? (src, tgt)
-    revoked-right = u.castling-matcher (black?, kingside?)
 
-    u.revoke-castling-right revoked-right castling-rts
+    side = if u.kingside? src then 'kingside' else 'queenside'
+
+    reset-modifyCastlingRights castling-rts
+
+    get-new-castling-rts (rook-color, side, castling-rts)
 
   pf = public-fns = _.defaults [slider-fns] {
-    getPotentialKingAttacks
     modifyCastlingRights
   }
-
-  pf.getPotentialKingAttacks = \chart2 \tgt ->
-    # Start testing mode.
-    v.vow-board board
-    v.vow-position src
-    # End testing mode.
-
-    pf.get-basic-potential-moves (
-      x.rank-of src
-      x.file-of src
-      u.offsets-for c.rook
-      u.available? (board, src)
-    )
 
   pf.move = pf.basicMove
 
