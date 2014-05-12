@@ -20,7 +20,7 @@
     };
     setPromotionPosition = function(chart2) {
       v.vow_hyphen_chart2(chart2);
-      return c.unset_hyphen_promotion_hyphen_position;
+      return c.unset_hyphen_promotion_hyphen_pos;
     };
     setPassantPosition = function(chart2) {
       v.vow_hyphen_chart2(chart2);

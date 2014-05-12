@@ -32,7 +32,7 @@ define ([
     v.vow-chart2 chart2
     # End testing mode.
 
-    c.unset-promotion-position
+    c.unset-promotion-pos
 
   setPassantPosition = \chart2 ->
     # Start testing mode.
