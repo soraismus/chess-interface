@@ -53,7 +53,7 @@
         v.vow_hyphen_board(board);
         v.vow_hyphen_position(src);
         potential_hyphen_moves = [];
-        chessman_hyphen_type = x.chessman_hyphen_type_hyphen_at(board)(pos);
+        chessman_hyphen_type = x.chessman_hyphen_type_hyphen_at(board)(src);
         offsets = u.offsets_hyphen_for(chessman_hyphen_type);
         color = x.color_hyphen_at(board)(src);
         accumulate = accumulate_hyphen_till_hyphen_blocked(board, color);

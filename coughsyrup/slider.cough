@@ -60,7 +60,7 @@ define ([
     # End testing mode.
     
     potential-moves = []
-    chessman-type   = x.chessman-type-at board pos
+    chessman-type   = x.chessman-type-at board src
     offsets         = u.offsets-for chessman-type
     color           = x.color-at board src
     accumulate      = accumulate-till-blocked (board, color)
