@@ -9,7 +9,7 @@
         v.vow_hyphen_board(board);
         v.vow_hyphen_position(src);
         chessman_hyphen_type = x.chessman_hyphen_type_hyphen_at(board)(src);
-        return pf.get_hyphen_basic_hyphen_potential_hyphen_moves(x.rank_hyphen_of(src), x.file_hyphen_of(src), u.offsets_hyphen_for(chessman_hyphen_type), u.available(board, src));
+        return pf.get_hyphen_basic_hyphen_potential_hyphen_moves(x.rank_hyphen_of(src), x.file_hyphen_of(src), u.offsets_hyphen_for(chessman_hyphen_type), _["true"]);
       };
     };
     pf.getPotentialMoves = pf.getBasicPotentialMoves;

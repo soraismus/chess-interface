@@ -21,7 +21,7 @@ define ([
       x.rank-of src
       x.file-of src
       u.offsets-for chessman-type
-      u.available (board, src)
+      _.true
     )
 
   pf.getPotentialMoves = pf.getBasicPotentialMoves
