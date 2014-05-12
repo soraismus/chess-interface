@@ -36,8 +36,10 @@ require (['jasmineHtml', 'testem'], function () {
   var specs = [
     'spec/assertions-spec',
     'spec/extractors-spec',
+    'spec/knight-spec',
     'spec/pawn-spec',
     'spec/piece-spec',
+    'spec/rook-spec',
     'spec/slider-spec',
     'spec/stepper-spec',
     'spec/types-spec',
