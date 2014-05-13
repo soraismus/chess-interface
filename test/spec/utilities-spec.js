@@ -25,15 +25,6 @@
       src = sc.positions[0];
       tgt = sc.positions[1];
       initial_hyphen_bd_hyphen__arobase__hyphen_0_hyphen_0 = g.generate_hyphen_setting(initial_hyphen_board, g.generate_hyphen_position(0, 0));
-      t('test u.ally?')(function() {
-        var allied_hyphen_pairs, fn, unallied_hyphen_pairs;
-        fn = u.ally_question_;
-        allied_hyphen_pairs = [[c.white, c.white], [c.black, c.black]];
-        unallied_hyphen_pairs = [[c.white, c.black], [c.black, c.white], [c.white, c.absent_hyphen_color], [c.absent_hyphen_color, c.white], [c.black, c.absent_hyphen_color], [c.absent_hyphen_color, c.black]];
-        each_hyphen_satisfies(fn)(allied_hyphen_pairs);
-        each_hyphen_contravenes(fn)(unallied_hyphen_pairs);
-        return each_hyphen_throws(fn)([c.white, bd, pos1]);
-      });
       t('test u.available?')(function() {
         var fn, gen_hyphen_map, local_hyphen_bds, local_hyphen_map1, local_hyphen_map2, local_hyphen_map3, local_hyphen_map4, local_hyphen_map5, local_hyphen_map6, local_hyphen_path, local_hyphen_src, local_hyphen_tgt, _ref;
         local_hyphen_bds = ['r---------------------------------------------------------------', 'rR--------------------------------------------------------------', 'rr--------------------------------------------------------------', 'R---------------------------------------------------------------', 'Rr--------------------------------------------------------------', 'RR--------------------------------------------------------------'];
@@ -57,13 +48,6 @@
         satisfies(fn)(c.black);
         each_hyphen_contravenes(fn)([c.white, c.absent_hyphen_color]);
         return throws(fn)([bd]);
-      });
-      t('test u.empty?')(function() {
-        var fn;
-        fn = u.empty_question_;
-        satisfies(fn)(c.empty_hyphen_square);
-        each_hyphen_contravenes(fn)([c.black_hyphen_queen, c.white_hyphen_pawn]);
-        return throws(fn)(bd);
       });
       return t('test u.empty-at?')(function() {
         var fn;

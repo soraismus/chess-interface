@@ -62,27 +62,6 @@ define ([
     initial-bd-@-0-0 = g.generate-setting (
       initial-board, g.generate-position (0, 0))
 
-    t 'test u.ally?' (->
-      fn = u.ally?
-      allied-pairs = [
-        [c.white, c.white]
-        [c.black, c.black]
-      ]
-
-      unallied-pairs = [
-        [c.white, c.black]
-        [c.black, c.white]
-        [c.white, c.absent-color]
-        [c.absent-color, c.white]
-        [c.black, c.absent-color]
-        [c.absent-color, c.black]
-      ]
-
-      each-satisfies fn allied-pairs
-      each-contravenes fn unallied-pairs
-      each-throws fn [c.white, bd, pos1]
-    )
-
     t 'test u.available?' (->
       local-bds = [
         'r---------------------------------------------------------------'
@@ -119,13 +98,6 @@ define ([
       satisfies fn c.black
       each-contravenes fn [c.white, c.absent-color]
       throws fn [bd]
-    )
-
-    t 'test u.empty?' (->
-      fn = u.empty?
-      satisfies fn c.empty-square
-      each-contravenes fn [c.black-queen, c.white-pawn]
-      throws fn bd
     )
 
     t 'test u.empty-at?' (->
