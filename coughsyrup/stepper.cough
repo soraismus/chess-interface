@@ -3,9 +3,12 @@ define ([
   'extractors'
   'utilities'
   'constructors'
+  'types'
   'piece'
   'assertions'
-], (_, x, u, g, piece-fns, v) ->
+], (_, x, u, g, y, piece-fns, v) ->
+
+  position? = y.position?
 
   get-basic-potential-moves = (rank, file, offsets, available?) ->
     # Start testing mode.
@@ -23,9 +26,9 @@ define ([
       [rank-diff, file-diff] = x.rank-&-file-from dir
       [new-rank, new-file]   = [rank + rank-diff, file + file-diff]
 
-      tgt = g.generate-position (new-rank, new-file)
+      tgt = g.generate-position! (new-rank, new-file)
 
-      potential-moves.push tgt if available? tgt
+      potential-moves.push tgt if position? tgt && available? tgt
 
     potential-moves
 
