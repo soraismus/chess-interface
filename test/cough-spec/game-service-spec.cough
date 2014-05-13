@@ -265,8 +265,6 @@ define ([
     t 'test gs.vulnerable-positions-for' (->
       fn = gs.vulnerable-positions-for
 
-      bd4 = '--------P---------------------------------------p--------N------'
-
       to-equal [gen-pos (7, 1)] (fn (bd4, c.white))
 
       res2 = [gen-pos (0, 1), gen-pos (6, 3), gen-pos (5, 2), gen-pos (5, 0)]
@@ -275,10 +273,28 @@ define ([
       pos-w/-rank-7 = \file -> gen-pos (7, file)
       pos-w/-file-2 = \rank -> gen-pos (rank, 2)
 
-      res3 = (_.map pos-w/-rank-7 [3, 4, 5, 6, 7]).concat (
-        [gen-pos (7, 1), gen-pos (7, 0)],
-        (_.map pos-w/-file-2 [6, 5, 4, 3, 2, 1, 0])
-      )
+      res3 = [
+        gen-pos (1, 7)
+        gen-pos (1, 6)
+        gen-pos (0, 6)
+
+        gen-pos (7, 3)
+        gen-pos (7, 4)
+        gen-pos (7, 5)
+        gen-pos (7, 6)
+        gen-pos (7, 7)
+
+        gen-pos (7, 1)
+        gen-pos (7, 0)
+
+        gen-pos (6, 2)
+        gen-pos (5, 2)
+        gen-pos (4, 2)
+        gen-pos (3, 2)
+        gen-pos (2, 2)
+        gen-pos (1, 2)
+        gen-pos (0, 2)
+      ]
 
       to-equal res3 (fn (bd13, c.white))
 

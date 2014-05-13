@@ -162,7 +162,6 @@
       return t('test gs.vulnerable-positions-for')(function() {
         var fn, pos_hyphen_w_slash__hyphen_file_hyphen_2, pos_hyphen_w_slash__hyphen_rank_hyphen_7, res2, res3;
         fn = gs.vulnerable_hyphen_positions_hyphen_for;
-        bd4 = '--------P---------------------------------------p--------N------';
         to_hyphen_equal([gen_hyphen_pos(7, 1)])(fn(bd4, c.white));
         res2 = [gen_hyphen_pos(0, 1), gen_hyphen_pos(6, 3), gen_hyphen_pos(5, 2), gen_hyphen_pos(5, 0)];
         to_hyphen_equal(res2)(fn(bd4, c.black));
@@ -172,7 +171,7 @@
         pos_hyphen_w_slash__hyphen_file_hyphen_2 = function(rank) {
           return gen_hyphen_pos(rank, 2);
         };
-        res3 = (_.map(pos_hyphen_w_slash__hyphen_rank_hyphen_7)([3, 4, 5, 6, 7])).concat([gen_hyphen_pos(7, 1), gen_hyphen_pos(7, 0)], _.map(pos_hyphen_w_slash__hyphen_file_hyphen_2)([6, 5, 4, 3, 2, 1, 0]));
+        res3 = [gen_hyphen_pos(1, 7), gen_hyphen_pos(1, 6), gen_hyphen_pos(0, 6), gen_hyphen_pos(7, 3), gen_hyphen_pos(7, 4), gen_hyphen_pos(7, 5), gen_hyphen_pos(7, 6), gen_hyphen_pos(7, 7), gen_hyphen_pos(7, 1), gen_hyphen_pos(7, 0), gen_hyphen_pos(6, 2), gen_hyphen_pos(5, 2), gen_hyphen_pos(4, 2), gen_hyphen_pos(3, 2), gen_hyphen_pos(2, 2), gen_hyphen_pos(1, 2), gen_hyphen_pos(0, 2)];
         return to_hyphen_equal(res3)(fn(bd13, c.white));
       });
     });
