@@ -46,8 +46,8 @@ define ([
     directions[color]
 
   get-diagonal-positions = (rank, file, dir) ->
-    gen-pos = g.generate-position.bind (null, rank + dir)
-    _.map gen-pos [file - 1, file + 1]
+    gen-pos = g.generate-position!.bind (null, rank + dir)
+    _.filter u.inessent? (_.map gen-pos [file - 1, file + 1])
 
   get-potential-diagonal-attacks = (board, rank, file, color, dir, passant) ->
     # Start testing mode.
@@ -177,6 +177,7 @@ define ([
       c.unset-passant-pos
 
   setPromotionPosition = (chart2, tgt) ->
+    # Start testing mode.
     v.vow-chart2 chart2
     v.vow-position tgt
     # End testing mode.

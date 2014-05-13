@@ -34,8 +34,8 @@
     };
     get_hyphen_diagonal_hyphen_positions = function(rank, file, dir) {
       var gen_hyphen_pos;
-      gen_hyphen_pos = g.generate_hyphen_position.bind(null, rank + dir);
-      return _.map(gen_hyphen_pos)([file - 1, file + 1]);
+      gen_hyphen_pos = g.generate_hyphen_position_bang_.bind(null, rank + dir);
+      return _.filter(u.inessent_question_)(_.map(gen_hyphen_pos)([file - 1, file + 1]));
     };
     get_hyphen_potential_hyphen_diagonal_hyphen_attacks = function(board, rank, file, color, dir, passant) {
       var available_question_, color_hyphen_at, diag_hyphen_attacks, foe_hyphen_present_question_, passant_question_;
