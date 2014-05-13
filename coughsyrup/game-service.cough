@@ -1,22 +1,25 @@
 define ([
   'mydash'
+  'constants'
+  'utilities'
+  'extractors'
   'slider'
   'king'
-  #'rook'
-  #'knight'
-  #'pawn'
+  'rook'
+  'knight'
+  'pawn'
   'assertions'
-], (_, slider-fns, king-fns, v) ->
+], (_, c, u, x, slider-fns, king-fns, rook-fns, knight-fns, pawn-fns, v) ->
 
-  dispatch-table =
-    king   : king-fns
-    queen  : slider-fns
-    #rook   : rook-fns
-    bishop : slider-fns
-    #knight : knight-fns
-    #pawn   : pawn-fns
+  dispatch-table = {}
+  dispatch-table[c.king  ] = king-fns
+  dispatch-table[c.queen ] = slider-fns
+  dispatch-table[c.rook  ] = rook-fns
+  dispatch-table[c.bishop] = slider-fns
+  dispatch-table[c.knight] = knight-fns
+  dispatch-table[c.pawn  ] = pawn-fns
 
-  call = access-dispatch-table = \fn-name \chessman-type ->
+  call = \fn-name \chessman-type ->
     # Start testing mode.
     _.vowStr fn-name
     v.vow-chessman-type chessman-type
@@ -24,9 +27,91 @@ define ([
 
     dispatch-table[chessman-type][fn-name]
 
+  contains = (potential-positions, tgt) ->
+    _.any (u.same-position? tgt) potential-positions
+
+  getPotentialKingAttacks = \board \src ->
+    # Start testing mode.
+    v.vow-board board
+    v.vow-position src
+    # End testing mode.
+
+    chessman-type = x.chessman-type-at board src
+    call 'getPotentialKingAttacks' chessman-type board src
+
+  getPotentialMoves = (chessman-type, chart2) ->
+    # Start testing mode.
+    v.vow-chessman-type chessman-type
+    v.vow-chart2 chart2
+    # End testing mode.
+
+    call 'getPotentialMoves' chessman-type (chart2, chessman-type)
+
+  modifyCastlingRights = \chart2 ->
+    # Start testing mode.
+    v.vow-chart2 chart2
+    # End testing mode.
+
+    chessman-type = x.chessman-type-from chart2
+    call 'modifyCastlingRights' chessman-type chart2
+
+  move = \chart2 \tgt ->
+    # Start testing mode.
+    v.vow-chart2 chart2
+    v.vow-position tgt
+    # End testing mode.
+
+    chessman-type = x.chessman-type-from chart2
+    call 'move' chessman-type chart2 tgt
+
+  move-legal? = (chart2, tgt) ->
+    # Start testing mode.
+    v.vow-chart2 chart2
+    v.vow-position tgt
+    # End testing mode.
+
+    chessman-type  = x.chessman-type-from chart2
+    potential-tgts = getPotentialMoves (chessman-type, chart2)
+    
+    contains (potential-tgts, tgt)
+
+  query-game-service = \chart2 \tgt ->
+    # Start testing mode.
+    v.vow-chart2 chart2
+    v.vow-position tgt
+    # End testing mode.
+
+  setPassantPosition = (chart2, tgt) ->
+    # Start testing mode.
+    v.vow-chart2 chart2
+    v.vow-position tgt
+    # End testing mode.
+
+    chessman-type = x.chessman-type-from chart2
+    call 'setPassantPosition' chessman-type (chart2, tgt)
+
+  setPromotionPosition = (chart2, tgt) ->
+    # Start testing mode.
+    v.vow-chart2 chart2
+    v.vow-position tgt
+    # End testing mode.
+
+    chessman-type = x.chessman-type-from chart2
+    call 'setPromotionPosition' chessman-type (chart2, tgt)
+
   # Start testing mode.
 
-  test-mode = { call }
+  test-mode = {
+    call
+    getPotentialKingAttacks
+    getPotentialMoves
+    modifyCastlingRights
+    move
+    move-legal?
+    query-game-service
+    setPassantPosition
+    setPromotionPosition
+  }
 
   return test-mode
 
