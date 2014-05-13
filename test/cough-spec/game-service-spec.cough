@@ -45,6 +45,8 @@ define ([
     bd2 = '---q-------------------------------------------------------K----'
     bd3 = '----k-------------------------------------------------------K---'
     bd4 = '--------P---------------------------------------p--------N------'
+    bd13 = '-------k---------------------------------------------PPP--r----K'
+    bd14 = 'r-bqkb-rpppp-Qpp--n--n------p-----B-P-----------PPPP-PPPRNB-K-NR'
 
     # Castling boards
     bd5 = 'r---k--r------------------------------------------------R---K--R'
@@ -144,12 +146,22 @@ define ([
 
     )
 
-    t 'test gs.king-position' (->
-      fn = gs.king-position
+    t 'test gs.in-check?' (->
+      fn = gs.in-check?
+      to-be-false (fn (bd1, c.black))
+      to-be-false (fn (bd1, c.white))
+      to-be-false (fn (bd13, c.black))
+      to-be-true  (fn (bd13, c.white))
+      to-be-true  (fn (bd14, c.black))
+      to-be-false (fn (bd14, c.white))
+    )
 
-      to-equal pos0-4 (fn c.black bd3)
-      to-equal pos7-4 (fn c.white bd3)
-      to-equal pos7-6 (fn c.white bd9)
+    t 'test gs.king-position-for' (->
+      fn = gs.king-position-for
+
+      to-equal pos0-4 (fn (bd3, c.black))
+      to-equal pos7-4 (fn (bd3, c.white))
+      to-equal pos7-6 (fn (bd9, c.white))
       
     )
 
@@ -247,6 +259,28 @@ define ([
 
       chart10 = gen-chart (bd4, gen-pos (6, 0))
       to-equal pos7-1 (fn (chart10, pos7-1))
+
+    )
+
+    t 'test gs.vulnerable-positions-for' (->
+      fn = gs.vulnerable-positions-for
+
+      bd4 = '--------P---------------------------------------p--------N------'
+
+      to-equal [gen-pos (7, 1)] (fn (bd4, c.white))
+
+      res2 = [gen-pos (0, 1), gen-pos (6, 3), gen-pos (5, 2), gen-pos (5, 0)]
+      to-equal res2 (fn (bd4, c.black))
+
+      pos-w/-rank-7 = \file -> gen-pos (7, file)
+      pos-w/-file-2 = \rank -> gen-pos (rank, 2)
+
+      res3 = (_.map pos-w/-rank-7 [3, 4, 5, 6, 7]).concat (
+        [gen-pos (7, 1), gen-pos (7, 0)],
+        (_.map pos-w/-file-2 [6, 5, 4, 3, 2, 1, 0])
+      )
+
+      to-equal res3 (fn (bd13, c.white))
 
     )
 
