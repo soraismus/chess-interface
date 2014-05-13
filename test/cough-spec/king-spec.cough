@@ -60,6 +60,8 @@ define ([
     src              = sc.positions[0]
     tgt              = sc.positions[1]
 
+    gen-pos = g.generate-position
+
     factory = \src \bd ->
       g.generate-chart2
         board  : bd
@@ -75,7 +77,13 @@ define ([
 
     t 'test k.getPotentialKingAttacks' (->
       fn = k.getPotentialKingAttacks
-      to-equal [] (fn bd pos1)
+      res = [
+        gen-pos (1, 5)
+        gen-pos (1, 3)
+        gen-pos (0, 3)
+      ]
+        
+      to-equal res (fn bd4 (gen-pos (0, 4)))
     )
 
     t 'test k.getPotentialMoves' (->
