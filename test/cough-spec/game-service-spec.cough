@@ -103,19 +103,6 @@ define ([
 
     )
 
-    t 'test gs.move-legal?' (->
-      fn = gs.move-legal?
-
-      chart2 = gen-chart (bd1, pos7-1)
-      chart3 = gen-chart (bd1, pos0-3)
-
-      to-be-true  (fn (chart1, pos3-4))
-      to-be-false (fn (chart1, pos2-3))
-      to-be-true  (fn (chart2, pos5-2))
-      to-be-false (fn (chart3, pos7-3))
-      to-be-true  (fn (chart4, pos7-3))
-    )
-
     t 'test gs.getPotentialMoves' (->
       fn = gs.getPotentialMoves
 
@@ -205,6 +192,19 @@ define ([
         passantPosition : pos2-6
 
       to-equal bd12 (fn chart14 pos2-6)
+    )
+
+    t 'test gs.move-legal?' (->
+      fn = gs.move-legal?
+
+      chart2 = gen-chart (bd1, pos7-1)
+      chart3 = gen-chart (bd1, pos0-3)
+
+      to-be-true  (fn (chart1, pos3-4))
+      to-be-false (fn (chart1, pos2-3))
+      to-be-true  (fn (chart2, pos5-2))
+      to-be-false (fn (chart3, pos7-3))
+      to-be-true  (fn (chart4, pos7-3))
     )
 
     t 'test gs.setPassantPosition' (->

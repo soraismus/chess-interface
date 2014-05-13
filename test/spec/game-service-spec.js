@@ -57,17 +57,6 @@
         res2 = [gen_hyphen_pos(6, 3), gen_hyphen_pos(5, 2), gen_hyphen_pos(5, 0)];
         return to_hyphen_equal(res2)(fn(bd1)(pos7_hyphen_1));
       });
-      t('test gs.move-legal?')(function() {
-        var chart2, chart3, fn;
-        fn = gs.move_hyphen_legal_question_;
-        chart2 = gen_hyphen_chart(bd1, pos7_hyphen_1);
-        chart3 = gen_hyphen_chart(bd1, pos0_hyphen_3);
-        to_hyphen_be_hyphen_true(fn(chart1, pos3_hyphen_4));
-        to_hyphen_be_hyphen_false(fn(chart1, pos2_hyphen_3));
-        to_hyphen_be_hyphen_true(fn(chart2, pos5_hyphen_2));
-        to_hyphen_be_hyphen_false(fn(chart3, pos7_hyphen_3));
-        return to_hyphen_be_hyphen_true(fn(chart4, pos7_hyphen_3));
-      });
       t('test gs.getPotentialMoves')(function() {
         var fn, res1;
         fn = gs.getPotentialMoves;
@@ -115,6 +104,17 @@
           passantPosition: pos2_hyphen_6
         });
         return to_hyphen_equal(bd12)(fn(chart14)(pos2_hyphen_6));
+      });
+      t('test gs.move-legal?')(function() {
+        var chart2, chart3, fn;
+        fn = gs.move_hyphen_legal_question_;
+        chart2 = gen_hyphen_chart(bd1, pos7_hyphen_1);
+        chart3 = gen_hyphen_chart(bd1, pos0_hyphen_3);
+        to_hyphen_be_hyphen_true(fn(chart1, pos3_hyphen_4));
+        to_hyphen_be_hyphen_false(fn(chart1, pos2_hyphen_3));
+        to_hyphen_be_hyphen_true(fn(chart2, pos5_hyphen_2));
+        to_hyphen_be_hyphen_false(fn(chart3, pos7_hyphen_3));
+        return to_hyphen_be_hyphen_true(fn(chart4, pos7_hyphen_3));
       });
       t('test gs.setPassantPosition')(function() {
         var chart8, fn, to_hyphen_unset;
