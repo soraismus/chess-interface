@@ -53,6 +53,12 @@ define ([
     new-rts = new-castling-rts[color][side][orig-rts]
     if _.vacant new-rts then NO else new-rts
 
+  kingside? = \src ->
+    x.file-of src >= 4
+
+  which-side? = \src ->
+    if kingside? src then 'kingside' else 'queenside'
+
   reset-modifyCastlingRights = \castling-rts ->
     no-castling-rts = c.no-castling-rts
     if castling-rts == no-castling-rts
@@ -67,8 +73,7 @@ define ([
     src           = x.position-from chart2
     rook-color    = x.color-at board src
     castling-rts  = x.castling-rights-from chart2
-
-    side = if u.kingside? src then 'kingside' else 'queenside'
+    side          = which-side? src
 
     reset-modifyCastlingRights castling-rts
 
