@@ -103,7 +103,14 @@ define ([
   get-potential-castling-moves = (color, castling-rts) ->
     castling-tgts[color][castling-rts]
 
-  getPotentialKingAttacks = \board \src -> []
+  getPotentialKingAttacks = \board \src ->
+    temporary-chart2 = g.generate-chart2
+      board  : board
+      source : src
+      castlingRights  : c.no-castling-rts
+      passantPosition : c.unset-passant-pos
+
+    pf.getBasicPotentialMoves (temporary-chart2, c.king)
 
   # TODO: Rewrite #color.at to take a 'chart2' type as an argument.
   getPotentialMoves = \chart2 ->

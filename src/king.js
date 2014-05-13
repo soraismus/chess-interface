@@ -138,7 +138,14 @@
     };
     getPotentialKingAttacks = function(board) {
       return function(src) {
-        return [];
+        var temporary_hyphen_chart2;
+        temporary_hyphen_chart2 = g.generate_hyphen_chart2({
+          board: board,
+          source: src,
+          castlingRights: c.no_hyphen_castling_hyphen_rts,
+          passantPosition: c.unset_hyphen_passant_hyphen_pos
+        });
+        return pf.getBasicPotentialMoves(temporary_hyphen_chart2, c.king);
       };
     };
     getPotentialMoves = function(chart2) {
