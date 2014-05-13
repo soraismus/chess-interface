@@ -22,15 +22,16 @@
       setting = sc.settings[0];
       src = sc.positions[0];
       tgt = sc.positions[1];
-      t('test p.basicMove')(function() {
-        var chart2_2, fn, res2, result, tgt2;
-        fn = p.basicMove;
-        result = 'rnbqkbnrppppp-pp--------------------------------PPPPPPPPRNBQKpNR';
-        to_hyphen_equal(result)(fn(chart2_1)(pos2));
-        chart2_2 = sc.chart2s[3];
-        tgt2 = sc.positions[4];
-        res2 = 'rnbqkbnr-ppppppp-------------------------p------P-PPPPPPRNBQKBNR';
-        return to_hyphen_equal(res2)(fn(chart2_2)(tgt2));
+      descr('p.getPotentialKingAttacks')(function() {
+        var bd1, bd2, fn, local_hyphen_pos, res1, res2;
+        fn = p.getPotentialKingAttacks;
+        local_hyphen_pos = g.generate_hyphen_position(1, 1);
+        bd1 = '---------p------------------------------------------------------';
+        res1 = [g.generate_hyphen_position(2, 0), g.generate_hyphen_position(2, 2)];
+        to_hyphen_equal(res1)(fn(bd1)(local_hyphen_pos));
+        bd2 = '---------P------------------------------------------------------';
+        res2 = [g.generate_hyphen_position(0, 0), g.generate_hyphen_position(0, 2)];
+        return to_hyphen_equal(res2)(fn(bd2)(local_hyphen_pos));
       });
       descr('p.getPotentialMoves')(function() {
         var fn;
@@ -78,6 +79,16 @@
         chart4 = sc.chart2s[2];
         to_hyphen_equal(c.full_hyphen_castling_hyphen_rts)(fn(chart3));
         return to_hyphen_equal(c.no_hyphen_castling_hyphen_rts)(fn(chart4));
+      });
+      t('test p.move')(function() {
+        var chart2_2, fn, res2, result, tgt2;
+        fn = p.move;
+        result = 'rnbqkbnrppppp-pp--------------------------------PPPPPPPPRNBQKpNR';
+        to_hyphen_equal(result)(fn(chart2_1)(pos2));
+        chart2_2 = sc.chart2s[3];
+        tgt2 = sc.positions[4];
+        res2 = 'rnbqkbnr-ppppppp-------------------------p------P-PPPPPPRNBQKBNR';
+        return to_hyphen_equal(res2)(fn(chart2_2)(tgt2));
       });
       t('test p.setPassantPosition')(function() {
         var expected_hyphen_passant, fn, local_hyphen_chart2, tgt2;

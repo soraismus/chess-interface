@@ -57,16 +57,18 @@ define ([
     src              = sc.positions[0]
     tgt              = sc.positions[1]
 
-    t 'test p.basicMove' (->
-      fn = p.basicMove
-      result =
-        'rnbqkbnrppppp-pp--------------------------------PPPPPPPPRNBQKpNR'
-      to-equal result (fn chart2_1 pos2)
+    descr 'p.getPotentialKingAttacks' (->
+      fn = p.getPotentialKingAttacks
 
-      chart2_2 = sc.chart2s[3]
-      tgt2 = sc.positions[4]
-      res2 = 'rnbqkbnr-ppppppp-------------------------p------P-PPPPPPRNBQKBNR'
-      to-equal res2 (fn chart2_2 tgt2)
+      local-pos = g.generate-position (1, 1)
+
+      bd1 = '---------p------------------------------------------------------'
+      res1 = [g.generate-position (2, 0), g.generate-position (2, 2)]
+      to-equal res1 (fn bd1 local-pos)
+
+      bd2 = '---------P------------------------------------------------------'
+      res2 = [g.generate-position (0, 0), g.generate-position (0, 2)]
+      to-equal res2 (fn bd2 local-pos)
     )
 
     descr 'p.getPotentialMoves' (->
@@ -127,6 +129,18 @@ define ([
       chart4 = sc.chart2s[2]
       to-equal c.full-castling-rts (fn chart3)
       to-equal c.no-castling-rts (fn chart4)
+    )
+
+    t 'test p.move' (->
+      fn = p.move
+      result =
+        'rnbqkbnrppppp-pp--------------------------------PPPPPPPPRNBQKpNR'
+      to-equal result (fn chart2_1 pos2)
+
+      chart2_2 = sc.chart2s[3]
+      tgt2 = sc.positions[4]
+      res2 = 'rnbqkbnr-ppppppp-------------------------p------P-PPPPPPRNBQKBNR'
+      to-equal res2 (fn chart2_2 tgt2)
     )
 
     t 'test p.setPassantPosition' (->
