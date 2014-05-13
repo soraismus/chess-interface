@@ -94,9 +94,7 @@
         return passant_hyphen_position_hyphen_set_question_(pos1) && pos1[0] === pos2[0] && pos1[1] === pos2[1];
       };
     };
-    to_hyphen_2d = function(idx) {
-      return [_.floor(idx / 8), idx % 8];
-    };
+    to_hyphen_2d = x.to_hyphen_2d;
     unallied_question_ = function(colors) {
       v.vow_hyphen_color_hyphen_pair(colors);
       return colors[0] !== colors[1] && _.notBoth(color_hyphen_absent_question_)(colors);
