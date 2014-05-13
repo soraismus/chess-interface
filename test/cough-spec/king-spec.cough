@@ -1,0 +1,177 @@
+define ([
+  'mydash'
+  'jFns'
+  'specConstants'
+  'constants'
+  'constructors'
+  'utilities'
+  'king'
+], (_, j, sc, c, g, u, k) ->
+
+  {
+    descr
+    xdescr
+    t
+    xt
+    test-spec
+    to-throw
+    to-be
+    to-equal
+    to-be-true
+    to-be-false
+    satisfies
+    contravenes
+    throws
+    each-fn-result-equals
+    each-satisfies
+    each-contravenes
+    each-throws
+    to-be-array
+    to-be-fn
+    to-be-nbr
+    to-be-array
+    to-have-length
+    test-predicate
+    test-transformation
+    test-throwing-transformation
+    gen-pred-guards
+  } = j
+
+  descr 'test king.cough' (->
+
+    bd               = sc.boards[0]
+    chart1           = sc.charts[0]
+    chart2           = sc.charts[1]
+
+    chart2_1         = sc.chart2s[0]
+
+    ctx              = sc.contexts[0]
+    map              = sc.maps[0]
+    passant          = sc.passant-positions[0]
+    path             = sc.paths[0]
+    pos1             = sc.positions[0]
+    pos2             = sc.positions[1]
+    initial-board    = sc.initial-board
+    invalid-board    = sc.invalid-board
+    invalid-chessman = sc.invalid-chessmen[0]
+    invalid-pos      = sc.invalid-positions[0]
+    rts              = sc.castling-rights[0]
+    setting          = sc.settings[0]
+    src              = sc.positions[0]
+    tgt              = sc.positions[1]
+
+    factory = \src \bd ->
+      g.generate-chart2
+        board  : bd
+        source : src
+        castlingRights  : c.no-castling-rts
+        passantPosition : c.unset-passant-pos
+
+
+    bd3 = '----k-----------------------------------------------------------'
+    bd4 = '----kb-----Np---------------------------------------------------'
+
+    pos3 = g.generate-position (0, 4)
+
+    t 'test k.getPotentialKingAttacks' (->
+      fn = k.getPotentialKingAttacks
+      to-equal [] (fn bd pos1)
+    )
+
+    t 'test k.getPotentialMoves' (->
+      fn = k.getPotentialMoves
+
+      gen-chart1 = factory pos3
+
+      chart3 = gen-chart1 bd3
+
+      results3 = [[1, 5], [1, 4], [1, 3], [0, 5], [0, 3]]
+      to-equal results3 (fn chart3)
+
+      chart4 = gen-chart1 bd4
+      results4 = [[1, 5], [1, 3], [0, 3]]
+      to-equal results4 (fn chart4)
+
+      chart5 = g.generate-chart2
+        board  : bd3
+        source : pos3
+        castlingRights  : c.full-castling-rts
+        passantPosition : c.no-passant-pos
+
+      results5 = [[1, 5], [1, 4], [1, 3], [0, 5], [0, 3], [0, 2], [0, 6]]
+      to-equal results5 (fn chart5)
+    )
+
+    t 'test k.modifyCastlingRights' (->
+      fn = k.modifyCastlingRights
+
+      chart1 = g.generate-chart2
+        board  : bd3
+        source : pos3
+        castlingRights  : c.full-castling-rts
+        passantPosition : c.unset-passant-pos
+
+      to-equal 'KQ' (fn chart1)
+
+      bd2 = '------------------------------------------------------------K---'
+
+      chart2 = g.generate-chart2
+        board  : bd2
+        source : g.generate-position (7, 4)
+        castlingRights  : 'KQ'
+        passantPosition : c.unset-passant-pos
+
+      to-equal c.no-castling-rts (fn chart2)
+    )
+
+    t 'test k.move' (->
+      fn = k.move
+
+      bd1 = 'r---k-----------------------------------------------------------'
+      tgt1 = g.generate-position (0, 2)
+      chart1 = g.generate-chart2
+        board  : bd1
+        source : pos3
+        castlingRights  : c.no-castling-rts
+        passantPosition : c.unset-passant-pos
+
+      res1 = '--kr------------------------------------------------------------'
+      to-equal res1 (fn chart1 tgt1)
+
+      bd2 = 'r---k--r--------------------------------------------------------'
+      tgt2 = g.generate-position (0, 6)
+      chart2 = g.generate-chart2
+        board  : bd2
+        source : pos3
+        castlingRights  : c.no-castling-rts
+        passantPosition : c.unset-passant-pos
+
+      res2 = 'r----rk---------------------------------------------------------'
+      to-equal res2 (fn chart2 tgt2)
+
+      bd5 = '------------------------------------------------------------K--R'
+      src5 = g.generate-position (7, 4)
+      tgt5 = g.generate-position (7, 6)
+      chart5 = g.generate-chart2
+        board  : bd5
+        source : src5
+        castlingRights  : c.no-castling-rts
+        passantPosition : c.unset-passant-pos
+
+      res5 = '-------------------------------------------------------------RK-'
+      to-equal res5 (fn chart5 tgt5)
+    )
+
+    t 'test k.setPassantPosition' (->
+      fn = k.setPassantPosition
+      to-equal c.unset-passant-pos (fn chart2_1)
+    )
+
+    t 'test k.setPromotionPosition' (->
+      fn = k.setPromotionPosition
+      to-equal c.unset-promotion-pos (fn chart2_1)
+    )
+
+  )
+
+)
