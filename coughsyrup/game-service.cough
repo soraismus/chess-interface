@@ -47,6 +47,15 @@ define ([
 
     call 'getPotentialMoves' chessman-type (chart2, chessman-type)
 
+  king-position = \color \board ->
+    # Start testing mode.
+    v.vow-color color
+    v.vow-board board
+    # End testing mode.
+
+    king = if u.black? color then c.black-king else c.white-king
+    u.to-2d (_.indexOf board king)
+
   modifyCastlingRights = \chart2 ->
     # Start testing mode.
     v.vow-chart2 chart2
@@ -105,6 +114,7 @@ define ([
     call
     getPotentialKingAttacks
     getPotentialMoves
+    king-position
     modifyCastlingRights
     move
     move-legal?

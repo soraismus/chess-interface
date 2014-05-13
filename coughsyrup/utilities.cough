@@ -60,14 +60,6 @@ define ([
   inessent? = \pos ->
     y.inessent? pos
 
-  king-position = \color \board ->
-    # Start testing mode.
-    v.vow-color color
-    v.vow-expanded-board board
-    # End testing mode.
-    king = if black? color then c.black-king else c.white-king
-    to-2d (_.indexOf board king)
-
   offsets-for = \chessman-type ->
     # Start testing mode.
     v.vow-chessman-type chessman-type
@@ -148,7 +140,6 @@ define ([
     empty-at?
     file-difference
     inessent?
-    king-position
     offsets-for
     opponent?
     opposing-color
