@@ -62,18 +62,6 @@ define ([
     src              = sc.positions[0]
     tgt              = sc.positions[1]
 
-    t 'test x.split-&-indexify' (->
-      fn = x.split-&-indexify
-      split-board = fn bd
-      to-be-array split-board
-      to-have-length 64 split-board
-      component1 = split-board[0]
-      to-be-array component1
-      to-have-length 2 component1
-      to-be-string component1[0]
-      to-be-nbr component1[1]
-    )
-
     t 'test x.to-1d' (->
       fn = x.to-1d
       to-equal 13 (fn pos1)

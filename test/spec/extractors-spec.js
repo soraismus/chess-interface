@@ -46,18 +46,6 @@
       setting = sc.settings[0];
       src = sc.positions[0];
       tgt = sc.positions[1];
-      t('test x.split-&-indexify')(function() {
-        var component1, fn, split_hyphen_board;
-        fn = x.split_hyphen__ampersand__hyphen_indexify;
-        split_hyphen_board = fn(bd);
-        to_hyphen_be_hyphen_array(split_hyphen_board);
-        to_hyphen_have_hyphen_length(64)(split_hyphen_board);
-        component1 = split_hyphen_board[0];
-        to_hyphen_be_hyphen_array(component1);
-        to_hyphen_have_hyphen_length(2)(component1);
-        to_hyphen_be_hyphen_string(component1[0]);
-        return to_hyphen_be_hyphen_nbr(component1[1]);
-      });
       t('test x.to-1d')(function() {
         var fn;
         fn = x.to_hyphen_1d;
