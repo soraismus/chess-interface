@@ -47,10 +47,20 @@ define ([
 
     call 'getPotentialMoves' chessman-type (chart2, chessman-type)
 
-  king-position = \color \board ->
+  in-check? = (board, color) ->
     # Start testing mode.
-    v.vow-color color
     v.vow-board board
+    v.vow-color color
+    # End testing mode.
+
+    king-pos = king-position-for (board, color)
+    vuln-positions = vulnerable-positions-for (board, color)
+    contains (vuln-positions, king-pos)
+
+  king-position-for = (board, color) ->
+    # Start testing mode.
+    v.vow-board board
+    v.vow-color color
     # End testing mode.
 
     king = if u.black? color then c.black-king else c.white-king
@@ -108,19 +118,32 @@ define ([
     chessman-type = x.chessman-type-from chart2
     call 'setPromotionPosition' chessman-type (chart2, tgt)
 
+  vulnerable-positions-for = (board, color) ->
+    # Start testing mode.
+    v.vow-board board
+    v.vow-color color
+    # End testing mode.
+
+    foe-color     = u.opposing-color (color)
+    foe-positions = x.chessman-positions-from (board, foe-color)
+
+    _.meld (_.map (getPotentialKingAttacks board) foe-positions)
+
   # Start testing mode.
 
   test-mode = {
     call
     getPotentialKingAttacks
     getPotentialMoves
-    king-position
+    in-check?
+    king-position-for
     modifyCastlingRights
     move
     move-legal?
     query-game-service
     setPassantPosition
     setPromotionPosition
+    vulnerable-positions-for
   }
 
   return test-mode
