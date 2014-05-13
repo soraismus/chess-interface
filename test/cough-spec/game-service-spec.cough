@@ -1,0 +1,245 @@
+define ([
+  'mydash'
+  'jFns'
+  'specConstants'
+  'constants'
+  'constructors'
+  'game-service'
+], (_, j, sc, c, g, gs) ->
+
+  {
+    descr
+    xdescr
+    t
+    xt
+    test-spec
+    to-throw
+    to-be
+    to-equal
+    to-be-true
+    to-be-false
+    satisfies
+    contravenes
+    throws
+    each-fn-result-equals
+    each-satisfies
+    each-contravenes
+    each-throws
+    to-be-array
+    to-be-fn
+    to-be-nbr
+    to-be-array
+    to-have-length
+    test-predicate
+    test-transformation
+    test-throwing-transformation
+    gen-pred-guards
+  } = j
+
+  descr 'test game-service.cough' (->
+
+    gen-pos    = g.generate-position
+    gen-chart2 = g.generate-chart2
+
+    bd1 = sc.initial-board
+    bd2 = '---q-------------------------------------------------------K----'
+    bd3 = '----k-------------------------------------------------------K---'
+    bd4 = '--------P---------------------------------------p--------N------'
+
+    # Castling boards
+    bd5 = 'r---k--r------------------------------------------------R---K--R'
+    bd6 = '--kr---r------------------------------------------------R---K--R'
+    bd7 = 'r----rk-------------------------------------------------R---K--R'
+    bd8 = 'r---k--r--------------------------------------------------KR---R'
+    bd9 = 'r---k--r------------------------------------------------R----RK-'
+
+    # Passant-capture boards.
+    bd10 = '------------------------------pPpP------------------------------'
+    bd11 = '------------------------------pP---------p----------------------'
+    bd12 = '----------------------P---------pP------------------------------'
+
+    pos0-0 = gen-pos (0, 0)
+    pos0-3 = gen-pos (0, 3)
+    pos0-4 = gen-pos (0, 4)
+    pos1-4 = gen-pos (1, 4)
+    pos2-3 = gen-pos (2, 3)
+    pos2-4 = gen-pos (2, 4)
+    pos2-6 = gen-pos (2, 6)
+    pos3-4 = gen-pos (3, 4)
+    pos5-1 = gen-pos (5, 1)
+    pos5-2 = gen-pos (5, 2)
+    pos7-1 = gen-pos (7, 1)
+    pos7-3 = gen-pos (7, 3)
+    pos7-4 = gen-pos (7, 4)
+
+    Kkq = 'Kkq'
+
+    gen-chart = (board, pos) ->
+      gen-chart2
+        board  : board
+        source : pos
+        castlingRights  : c.no-castling-rts
+        passantPosition : c.unset-passant-pos
+      
+    chart1 = gen-chart (bd1, pos1-4)
+
+    chart4 = gen-chart (bd2, pos0-3)
+
+    chart5 = gen-chart2
+      board  : bd1
+      source : pos0-3
+      castlingRights  : Kkq
+      passantPosition : c.unset-passant-pos
+
+    t 'test gs.getPotentialKingAttacks' (->
+
+      fn = gs.getPotentialKingAttacks
+
+      res1 = [gen-pos (2, 3), gen-pos (2, 5)]
+      to-equal res1 (fn bd1 pos1-4)
+
+      res2 = [gen-pos (6, 3), gen-pos (5, 2), gen-pos (5, 0)]
+      to-equal res2 (fn bd1 pos7-1)
+
+    )
+
+    t 'test gs.move-legal?' (->
+      fn = gs.move-legal?
+
+      chart2 = gen-chart (bd1, pos7-1)
+      chart3 = gen-chart (bd1, pos0-3)
+
+      to-be-true  (fn (chart1, pos3-4))
+      to-be-false (fn (chart1, pos2-3))
+      to-be-true  (fn (chart2, pos5-2))
+      to-be-false (fn (chart3, pos7-3))
+      to-be-true  (fn (chart4, pos7-3))
+    )
+
+    t 'test gs.getPotentialMoves' (->
+      fn = gs.getPotentialMoves
+
+      res1 = [
+        # direction : [1, 1]
+        gen-pos (1, 4)
+        gen-pos (2, 5)
+        gen-pos (3, 6)
+        gen-pos (4, 7)
+
+        # direction : [1, 0]
+        gen-pos (1, 3)
+        gen-pos (2, 3)
+        gen-pos (3, 3)
+        gen-pos (4, 3)
+        gen-pos (5, 3)
+        gen-pos (6, 3)
+        gen-pos (7, 3)
+
+        # direction : [1, -1]
+        gen-pos (1, 2)
+        gen-pos (2, 1)
+        gen-pos (3, 0)
+
+        # direction : [0, 1]
+        gen-pos (0, 4)
+        gen-pos (0, 5)
+        gen-pos (0, 6)
+        gen-pos (0, 7)
+
+        # direction : [0, -1]
+        gen-pos (0, 2)
+        gen-pos (0, 1)
+        gen-pos (0, 0)
+      ]
+
+      to-equal res1 (fn (c.queen, chart4))
+
+    )
+
+    t 'test gs.modifyCastlingRights' (->
+      fn = gs.modifyCastlingRights
+
+      to-equal Kkq (fn chart5)
+
+      chart6 = gen-chart2
+        board  : bd3
+        source : gen-pos (0, 4)
+        castlingRights  : Kkq
+        passantPosition : c.unset-passant-pos
+
+      chart7 = gen-chart2
+        board  : bd3
+        source : gen-pos (7, 4)
+        castlingRights  : Kkq
+        passantPosition : c.unset-passant-pos
+
+      to-equal 'kq' (fn chart7)
+      
+    )
+
+    t 'test gs.move' (->
+      fn = gs.move
+
+      chart11 = gen-chart (bd5, pos0-4)
+
+      to-equal bd6 (fn chart11 (gen-pos (0, 2)))
+      to-equal bd7 (fn chart11 (gen-pos (0, 6)))
+
+      chart12 = gen-chart (bd5, pos7-4)
+
+      to-equal bd8 (fn chart12 (gen-pos (7, 2)))
+      to-equal bd9 (fn chart12 (gen-pos (7, 6)))
+
+      chart13 = g.generate-chart2
+        board  : bd10
+        source : gen-pos (4, 0)
+        castlingRights  : c.no-castling-rts
+        passantPosition : pos5-1
+
+      to-equal bd11 (fn chart13 pos5-1)
+
+      chart14 = g.generate-chart2
+        board  : bd10
+        source : gen-pos (3, 7)
+        castlingRights  : c.no-castling-rts
+        passantPosition : pos2-6
+
+      to-equal bd12 (fn chart14 pos2-6)
+    )
+
+    t 'test gs.setPassantPosition' (->
+      fn = gs.setPassantPosition
+
+      to-unset = to-equal c.unset-passant-pos
+
+      to-unset (fn (chart1, pos2-4))
+      to-unset (fn (chart4, pos0-3))
+      to-unset (fn (chart5, pos0-3))
+
+      to-equal pos2-4 (fn (chart1, pos3-4))
+
+      chart8 = gen-chart (bd1, gen-pos (6, 7))
+      to-equal (gen-pos (5, 7)) (fn (chart8, gen-pos (4, 7)))
+
+    )
+
+    t 'test setPromotionPosition' (->
+      fn = gs.setPromotionPosition
+
+      to-unset = to-equal c.unset-promotion-pos
+
+      to-unset (fn (chart1, pos2-4))
+      to-unset (fn (chart4, pos0-3))
+      to-unset (fn (chart5, pos0-3))
+
+      chart9 = gen-chart (bd4, gen-pos (1, 0))
+      to-equal pos0-0 (fn (chart9, pos0-0))
+
+      chart10 = gen-chart (bd4, gen-pos (6, 0))
+      to-equal pos7-1 (fn (chart10, pos7-1))
+
+    )
+
+  )
+
+)
