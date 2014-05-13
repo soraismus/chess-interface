@@ -4,17 +4,6 @@ define (['mydash', 'constants', 'types', 'assertions'], (_, c, y, v) ->
   # Helper Functions
   # -----------------
 
-  split-&-indexify = \str ->
-    array = _.split '' str
-
-    i = -1
-
-    indexify = \component ->
-      i += 1
-      [component, i]
-
-    _.map indexify array
-
   to-1d = \pos ->
     # Start testing mode.
     v.vow-position pos
@@ -24,11 +13,22 @@ define (['mydash', 'constants', 'types', 'assertions'], (_, c, y, v) ->
     file = file-of pos
     8 * rank + file
 
+  # No assertions b/c #opponent-mated? encounters indices < 0 or > 63.
+  to-2d = \idx -> [_.floor (idx / 8), idx % 8]
+
   corresponding-black-chessman = \chessman ->
     # Start testing mode.
     v.vow-chessman chessman
     # End testing mode.
     if (_.isUC chessman) then (_.toLC chessman) else chessman
+
+  of-color? = \color \square ->
+    # Start testing mode.
+    v.vow-color color
+    v.vow-square square
+    # End testing mode.
+
+    color == color-of square
 
   # -----------
   # Extractors
@@ -60,10 +60,26 @@ define (['mydash', 'constants', 'types', 'assertions'], (_, c, y, v) ->
 
     _.switch [y.chart?, y.chart2?] evaluators val
 
-  chessmen-from = (board, color) ->
-    squares = split-&-indexify (-1) board
-    color-predicate = ([sq, idx]) -> of-color? color sq
-    chessmen-of-specified-color = _.filter color-predicate squares
+  chessman-positions-from = (board, color) ->
+    # Start testing mode.
+    v.vow-board board
+    v.vow-color color
+    # End testing mode.
+
+    i = -1
+    split-board = board.split ''
+    positions = []
+
+    get-pos = \color ->
+      color-pred = of-color? color
+
+      \sq ->
+        i += 1
+        positions.push (to-2d i) if color-pred sq
+
+    _.each (get-pos color) split-board
+
+    positions
 
   chessman-type-at = \board \pos ->
     # Start testing mode.
@@ -192,7 +208,7 @@ define (['mydash', 'constants', 'types', 'assertions'], (_, c, y, v) ->
     # Start testing mode.
     v.vow-board board
     v.vow-position pos
-    # End testing mode
+    # End testing mode.
     _.charAt (to-1d pos) board
 
   src-from = \val ->
@@ -252,6 +268,7 @@ define (['mydash', 'constants', 'types', 'assertions'], (_, c, y, v) ->
   return {
     board-from
     castling-rights-from
+    chessman-positions-from
     chessman-type-at
     chessman-type-of
     chessman-type-from
@@ -261,19 +278,18 @@ define (['mydash', 'constants', 'types', 'assertions'], (_, c, y, v) ->
     colors-at
     file-of
     map-from
-    chessmen-from
     path-from
     passant-from
     position-from
     rank-&-file-from
     rank-of
-    split-&-indexify
     square-at
     src-from
     src-setting-from
     tgt-from
     tgt-setting-from
     to-1d
+    to-2d
   }
 
 )
