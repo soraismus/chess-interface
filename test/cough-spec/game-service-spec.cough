@@ -71,6 +71,7 @@ define ([
     pos7-1 = gen-pos (7, 1)
     pos7-3 = gen-pos (7, 3)
     pos7-4 = gen-pos (7, 4)
+    pos7-6 = gen-pos (7, 6)
 
     Kkq = 'Kkq'
 
@@ -143,6 +144,15 @@ define ([
 
     )
 
+    t 'test gs.king-position' (->
+      fn = gs.king-position
+
+      to-equal pos0-4 (fn c.black bd3)
+      to-equal pos7-4 (fn c.white bd3)
+      to-equal pos7-6 (fn c.white bd9)
+      
+    )
+
     t 'test gs.modifyCastlingRights' (->
       fn = gs.modifyCastlingRights
 
@@ -175,7 +185,7 @@ define ([
       chart12 = gen-chart (bd5, pos7-4)
 
       to-equal bd8 (fn chart12 (gen-pos (7, 2)))
-      to-equal bd9 (fn chart12 (gen-pos (7, 6)))
+      to-equal bd9 (fn chart12 pos7-6)
 
       chart13 = g.generate-chart2
         board  : bd10
