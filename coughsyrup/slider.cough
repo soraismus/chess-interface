@@ -34,42 +34,36 @@ define ([
 
     possible-moves
 
+  getPotentialKingAttacks = \board \src ->
+    # Start testing mode.
+    v.vow-board board
+    v.vow-position src
+    # End testing mode.
+
+    get-potential-moves (board, src, x.chessman-type-at board src)
+
+  get-potential-moves = (board, src, chessman-type) ->
+    potential-moves = []
+    offsets         = u.offsets-for chessman-type
+    color           = x.color-at board src
+    accumulate      = accumulate-till-blocked (board, color)
+    [rank, file]    = x.rank-&-file-from src
+
+    for dir in offsets
+      potential-moves = potential-moves.concat (accumulate (rank, file, dir))
+
+    potential-moves
+
   getPotentialMoves = (chart2, chessman-type) ->
     # Start testing mode.
     v.vow-chart2 chart2
     v.vow-chessman-type chessman-type
     # End testing mode.
 
-    potential-moves = []
-    board           = x.board-from chart2
-    src             = x.position-from chart2
-    offsets         = u.offsets-for chessman-type
-    color           = x.color-at board src
-    accumulate      = accumulate-till-blocked (board, color)
-    [rank, file]    = x.rank-&-file-from src
+    board = x.board-from chart2
+    src   = x.position-from chart2
 
-    for dir in offsets
-      potential-moves = potential-moves.concat (accumulate (rank, file, dir))
-
-    potential-moves
-
-  getPotentialKingAttacks = \board \src ->
-    # Start testing mode.
-    v.vow-board board
-    v.vow-position src
-    # End testing mode.
-    
-    potential-moves = []
-    chessman-type   = x.chessman-type-at board src
-    offsets         = u.offsets-for chessman-type
-    color           = x.color-at board src
-    accumulate      = accumulate-till-blocked (board, color)
-    [rank, file]    = x.rank-&-file-from src
-
-    for dir in offsets
-      potential-moves = potential-moves.concat (accumulate (rank, file, dir))
-
-    potential-moves
+    get-potential-moves (board, src, chessman-type)
 
   public-fns = _.defaults [piece-fns] {
     getPotentialKingAttacks
