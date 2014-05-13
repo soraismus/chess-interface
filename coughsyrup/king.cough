@@ -16,10 +16,32 @@ define ([
   q  = 'q'
   NO = '-'
 
-  c1 = [7, 2]
-  g1 = [7, 6]
-  c8 = [0, 2]
-  g8 = [0, 6]
+  gen-pos = g.generate-position
+
+  king-castling-tgt-files = [2, 6]
+
+  king-castling-tgts = [
+    c1 = gen-pos (7, 2)
+    g1 = gen-pos (7, 6)
+    c8 = gen-pos (0, 2)
+    g8 = gen-pos (0, 6)
+  ]
+
+  [c1-key, g1-key, c8-key, g8-key] = _.map JSON.stringify king-castling-tgts
+
+  possible-rook-paths = [[5, 7], [3, 0], [61, 63], [59, 56]]
+
+  rook-castling-srcs = {}
+  rook-castling-srcs[c8-key] = gen-pos (0, 0)
+  rook-castling-srcs[g8-key] = gen-pos (0, 7)
+  rook-castling-srcs[c1-key] = gen-pos (7, 0)
+  rook-castling-srcs[g1-key] = gen-pos (7, 7)
+
+  rook-castling-tgts = {}
+  rook-castling-tgts[c8-key] = gen-pos (0, 3)
+  rook-castling-tgts[g8-key] = gen-pos (0, 5)
+  rook-castling-tgts[c1-key] = gen-pos (7, 3)
+  rook-castling-tgts[g1-key] = gen-pos (7, 5)
 
   t0  = []
   t1  = [c1]
@@ -53,47 +75,35 @@ define ([
     KQk  : t4,  Qk : t4,   Kk  : t4,  k   : t4
     KQ   : t0,  Q  : t0,   K   : t0,  '-' : t0 
 
-  castle = (board, src, tgt) ->
-    # Start testing mode.
-    v.vow-board board
-    v.vow-all-positions [src, tgt]
-    # End testing mode.
-    
-    king = x.chessman-from board src
-    [rook-tgt, rook-src] = rook-castling-path ((x.color-of king), src, tgt)
-    bd-after-king-moves = non-castling-move (board, src, tgt)
+  castle = \chart2 \tgt ->
+    [rook-src, rook-tgt] = rook-castling-path tgt
+    bd-after-king-moves  = basicMove chart2 tgt
 
-    chart2 = g.generate-chart2
-      board  : bd-after-king-moves
-      source : rook-src
-      castlingRights  : c.no-castling-rts
-      passantPosition : c.unset-passant-position
+    chart2 = gen-chart2 (bd-after-king-moves, rook-src)
 
-    castle-rook chart2 rook-tgt
-
-  castle-rook = \chart2 \tgt ->
-    # Start testing mode.
-    v.vow-chart2 chart2
-    v.vow-position tgt
-    # End testing mode.
-    pk.basicMove chart2 tgt
+    basicMove chart2 rook-tgt
 
   castling? = (src, tgt) ->
-    # Start testing mode.
-    v.vow-all-positions [src, tgt]
-    # End testing mode.
-    u.rank-difference (src, tgt) == 0 &&
-        _.abs (u.file-difference (src, tgt)) == 2
+    _.abs (u.file-difference (src, tgt)) > 1
 
   castling-permitted? = (castling-rts, black?) -> \rank-diff ->
     kingward? = rank-diff > 0
     matcher = u.castling-matcher (black?, kingward?)
     _.match matcher 'noFlags' castling-rts
 
+  gen-chart2 = (board, src) ->
+    g.generate-chart2
+      board  : board
+      source : src
+      castlingRights  : c.no-catling-rts
+      passantPosition : c.unset-passant-pos
+
+  # TODO: Check for non-transitable castling paths.
+  # TODO: Check that no pos in the castling path is attackable.
   get-potential-castling-moves = (color, castling-rts) ->
     castling-tgts[color][castling-rts]
 
-  getPotentialKingAttacks = \chart2 \tgt -> []
+  getPotentialKingAttacks = \board \src -> []
 
   # TODO: Rewrite #color.at to take a 'chart2' type as an argument.
   getPotentialMoves = \chart2 ->
@@ -126,21 +136,23 @@ define ([
 
     reset-modifyCastlingRights castling-rts
 
-    new-castling-rts[color][castling-rts]
+    new-castling-rts[king-color][castling-rts]
 
-  move = \chart2 ->
+  move = \chart2 \tgt ->
     # Start testing mode.
     v.vow-chart2 chart2
     v.vow-position tgt
     # End testing mode.
 
+    src = x.position-from chart2
+    
     if castling? (src, tgt)
       castle chart2 tgt
     else
       non-castling-move chart2 tgt
 
-  non-castling-move = \chart2 \tgt ->
-    pk.basicMove chart2 tgt
+  basicMove = non-castling-move = \chart2 \tgt ->
+    pf.basicMove chart2 tgt
 
   reset-getPotentialMoves = \castling-rts ->
     if castling-rts == c.no-castling-rts
@@ -155,18 +167,11 @@ define ([
     if castling-rts == c.no-castling-rts
       pf.modifyCastlingRights = x.castling-rights-from
 
-  # Coupling to position structure implementation.
-  rook-castling-path = (king-color, king-src, king-tgt) ->
-    # Start testing mode.
-    v.vow-color king-color
-    v.vow-all-positions [king-src, king-tgt]
-    # End testing mode.
-
-    conditions = [(u.black? king-color), u.kingward? (king-src, king-tgt)]
-    possible-rook-paths = [[5, 7], [3, 0], [61, 63], [59, 56]]
-
-    rook-path = all-to-2d (
-      _.binaryIfBranch conditions possible-rook-paths)
+  rook-castling-path = \king-tgt ->
+    key = JSON.stringify king-tgt
+    src = rook-castling-srcs[key]
+    tgt = rook-castling-tgts[key]
+    [src, tgt]
 
   # -----------------------------------------------------------------
 
