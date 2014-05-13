@@ -31,28 +31,6 @@ define ([
   at-promotion-rank? = (color, rank) ->
     promotion-ranks[color] == rank
 
-  basicMove = \chart2 \tgt ->
-    # Start testing mode.
-    v.vow-chart2 chart2
-    v.vow-position tgt
-    # End testing mode.
-
-    board        = x.board-from chart2
-    src          = x.position-from chart2
-    src-chessman = x.square-at board src
-    passant      = x.passant-from chart2
-
-    bd-w/-duplicate-piece = u.replace (src-chessman, board, tgt)
-
-    result = u.replace (c.empty-square, bd-w/-duplicate-piece, src)
-
-    return result if u.passant-position-unset? passant
-
-    color        = x.color-at board src
-    dir          = direction-for color
-
-    u.replace (c.empty-square, result, behind (dir, passant))
-
   behind = (dir, position) ->
     # Start testing mode.
     v.vow-pawn-direction dir
@@ -81,7 +59,7 @@ define ([
     # End testing mode.
 
     foe-present? = \pos -> u.opponent? [color, color-at pos]
-    passant?     = \pos -> u.same-position? (pos, passant)
+    passant?     = u.same-position? passant
     available?   = _.or [foe-present?, passant?]
     color-at     = x.color-at board
     diag-attacks = get-diagonal-positions (rank, file, dir)
@@ -100,7 +78,7 @@ define ([
     tgt1       = g.generate-position (rank + dir, file)
     tgt1-color = x.color-at board tgt1
 
-    return fwd-moves unless u.transparent? tgt1-color
+    return fwd-moves unless u.color-absent? tgt1-color
 
     fwd-moves.push tgt1
 
@@ -108,13 +86,13 @@ define ([
 
     # Because, for the vast majority of the game, pawns may
     # only advance one square, 'g.generate-position',
-    # 'x.color-at board', and 'u.transparent?' are not memoized
+    # 'x.color-at board', and 'u.color-absent?' are not memoized
     # with local variables.
 
     tgt2       = g.generate-position (rank + 2 * dir, file)
     tgt2-color = x.color-at board tgt2
 
-    return fwd-moves unless u.transparent? tgt2-color
+    return fwd-moves unless u.color-absent? tgt2-color
 
     fwd-moves.push tgt2
 
@@ -133,6 +111,7 @@ define ([
 
     get-diagonal-positions (rank, file, dir)
 
+  # TODO: Only filter forward moves with 'u.inessent?'.
   getPotentialMoves = \chart2 ->
     # Start testing mode.
     v.vow-chart2 chart2
@@ -158,6 +137,28 @@ define ([
     # End testing mode.
 
     x.castling-rights-from chart2
+
+  move = \chart2 \tgt ->
+    # Start testing mode.
+    v.vow-chart2 chart2
+    v.vow-position tgt
+    # End testing mode.
+
+    board        = x.board-from chart2
+    src          = x.position-from chart2
+    src-chessman = x.square-at board src
+    passant      = x.passant-from chart2
+
+    bd-w/-duplicate-piece = u.replace (src-chessman, board, tgt)
+
+    result = u.replace (c.empty-square, bd-w/-duplicate-piece, src)
+
+    return result if u.passant-position-unset? passant
+
+    color        = x.color-at board src
+    dir          = direction-for color
+
+    u.replace (c.empty-square, result, behind (dir, passant))
 
   setPassantPosition = (chart2, tgt) ->
     # Start testing mode.
@@ -188,9 +189,10 @@ define ([
     if at-promotion-rank? (color, rank) then tgt else c.unset-promotion-pos
 
   return {
-    basicMove
+    getPotentialKingAttacks
     getPotentialMoves
     modifyCastlingRights
+    move
     setPassantPosition
     setPromotionPosition
   }
