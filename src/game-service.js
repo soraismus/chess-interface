@@ -16,7 +16,26 @@
         return dispatch_hyphen_table[chessman_hyphen_type][fn_hyphen_name];
       };
     };
-    checkmate_question_ = function() {};
+    checkmate_question_ = function(bd, rts, passant, color) {
+      var ally_hyphen_pos, ally_hyphen_positions, new_hyphen_bd, potential_hyphen_moves, potential_hyphen_mv, _i, _j, _len, _len1;
+      v.vow_hyphen_board(bd);
+      v.vow_hyphen_castling_hyphen_right_hyphen_set(rts);
+      v.vow_hyphen_passant_hyphen_position(passant);
+      v.vow_hyphen_color(color);
+      ally_hyphen_positions = x.chessman_hyphen_positions_hyphen_from(bd, color);
+      for (_i = 0, _len = ally_hyphen_positions.length; _i < _len; _i++) {
+        ally_hyphen_pos = ally_hyphen_positions[_i];
+        potential_hyphen_moves = getPotentialMoves(bd, ally_hyphen_pos, rts, passant);
+        for (_j = 0, _len1 = potential_hyphen_moves.length; _j < _len1; _j++) {
+          potential_hyphen_mv = potential_hyphen_moves[_j];
+          new_hyphen_bd = move(bd, ally_hyphen_pos, passant)(potential_hyphen_mv);
+          if (!in_hyphen_check_question_(new_hyphen_bd, rts, color)) {
+            return false;
+          }
+        }
+      }
+      return true;
+    };
     contains = function(potential_hyphen_positions, tgt) {
       return _.any(u.same_hyphen_position_question_(tgt))(potential_hyphen_positions);
     };
@@ -116,6 +135,7 @@
     };
     test_hyphen_mode = {
       call: call,
+      checkmate_question_: checkmate_question_,
       getPotentialKingAttacks: getPotentialKingAttacks,
       getPotentialMoves: getPotentialMoves,
       in_hyphen_check_question_: in_hyphen_check_question_,
