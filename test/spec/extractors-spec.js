@@ -60,20 +60,6 @@
         to_hyphen_equal(c.black_hyphen_rook)(fn(c.black_hyphen_rook));
         return to_hyphen_throw(fn)(invalid_hyphen_chessman);
       });
-      t('test x.board-from')(function() {
-        var fn;
-        fn = x.board_hyphen_from;
-        each_hyphen_fn_hyphen_result_hyphen_equals(initial_hyphen_board)(fn)([setting, map, chart1]);
-        return each_hyphen_throws(fn)([bd, path, rts]);
-      });
-      t('test x.castling-rights-from')(function() {
-        var fn, local_hyphen_chart, local_hyphen_ctx;
-        fn = x.castling_hyphen_rights_hyphen_from;
-        local_hyphen_ctx = g.generate_hyphen_context(bd, c.full_hyphen_castling_hyphen_rts, passant);
-        local_hyphen_chart = g.generate_hyphen_chart(local_hyphen_ctx, path);
-        to_hyphen_equal(c.full_hyphen_castling_hyphen_rts)(fn(local_hyphen_chart));
-        return each_hyphen_throws(fn)([bd, setting, map]);
-      });
       t('test x.chessman-type-at')(function() {
         var fn;
         fn = x.chessman_hyphen_type_hyphen_at;
@@ -109,31 +95,11 @@
         to_hyphen_equal(5)(fn(pos4_hyphen_5));
         return each_hyphen_throws(fn)([bd, map, chart1]);
       });
-      t('test x.map-from')(function() {
-        var fn;
-        fn = x.map_hyphen_from;
-        to_hyphen_equal(map)(fn(chart1));
-        return each_hyphen_throws(fn)([bd, setting, path, map]);
-      });
-      t('test x.path-from')(function() {
-        var fn;
-        fn = x.path_hyphen_from;
-        each_hyphen_fn_hyphen_result_hyphen_equals(path)(fn)([map, chart1]);
-        return each_hyphen_throws(fn)([bd, c.white, path]);
-      });
-      t('test x.passant-from')(function() {
-        var fn;
-        fn = x.passant_hyphen_from;
-        to_hyphen_equal(c.unset_hyphen_passant_hyphen_pos)(fn(chart1));
-        to_hyphen_equal(pos1)(fn(chart2));
-        return each_hyphen_throws(fn)([bd, setting, map]);
-      });
       t('test x.rank-&-file-from')(function() {
         var fn;
         fn = x.rank_hyphen__ampersand__hyphen_file_hyphen_from;
         to_hyphen_equal([0, 0])(fn(pos0_hyphen_0));
         to_hyphen_equal([4, 5])(fn(pos4_hyphen_5));
-        to_hyphen_equal([1, 5])(fn(setting));
         return each_hyphen_throws(fn)([bd, map, chart1]);
       });
       t('test x.rank-of')(function() {
@@ -143,39 +109,13 @@
         to_hyphen_equal(4)(fn(pos4_hyphen_5));
         return each_hyphen_throws(fn)([bd, void 0, map]);
       });
-      t('test x.square-at')(function() {
+      return t('test x.square-at')(function() {
         var fn, local_hyphen_pos;
         fn = x.square_hyphen_at;
         local_hyphen_pos = g.generate_hyphen_position(2, 0);
         to_hyphen_equal(c.black_hyphen_rook)(fn(initial_hyphen_board)(pos0_hyphen_0));
         to_hyphen_equal(c.empty_hyphen_square)(fn(initial_hyphen_board)(local_hyphen_pos));
         return to_hyphen_throw(fn(pos0_hyphen_0))(pos0_hyphen_0);
-      });
-      t('test x.src-from')(function() {
-        var fn;
-        fn = x.src_hyphen_from;
-        each_hyphen_fn_hyphen_result_hyphen_equals(pos1)([path, map, chart1]);
-        return each_hyphen_throws(fn)([pos1, bd, c.white]);
-      });
-      t('test x.src-setting-from')(function() {
-        var fn, local_hyphen_setting;
-        fn = x.src_hyphen_setting_hyphen_from;
-        local_hyphen_setting = g.generate_hyphen_setting(bd, pos1);
-        each_hyphen_fn_hyphen_result_hyphen_equals(local_hyphen_setting)(fn)([map, chart1]);
-        return each_hyphen_throws(fn)([bd, c.white, pos1, ctx]);
-      });
-      t('test x.tgt-from')(function() {
-        var fn;
-        fn = x.tgt_hyphen_from;
-        each_hyphen_fn_hyphen_result_hyphen_equals(pos2)([path, map, chart1]);
-        return each_hyphen_throws(fn)([pos1, bd, c.white]);
-      });
-      return t('test x.tgt-setting-from')(function() {
-        var fn, local_hyphen_setting;
-        fn = x.tgt_hyphen_setting_hyphen_from;
-        local_hyphen_setting = g.generate_hyphen_setting(bd, pos2);
-        each_hyphen_fn_hyphen_result_hyphen_equals(local_hyphen_setting)(fn)([map, chart1]);
-        return each_hyphen_throws(fn)([bd, c.white, pos1, ctx]);
       });
     });
   });

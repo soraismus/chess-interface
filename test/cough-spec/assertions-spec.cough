@@ -37,8 +37,6 @@ define (['jFns', 'constants', 'assertions'], (j, c, v) ->
     
     path = [tgt, src]
 
-    chart = [ctx, path]
-
     t 'test v.vow-board' (->
       fn = v.vow-board
       to-throw fn ctx
@@ -61,12 +59,6 @@ define (['jFns', 'constants', 'assertions'], (j, c, v) ->
       fn = v.vow-castling-right-set 
       to-throw fn 'KQxkq'
       to-equal ('KQk') (fn 'KQk')
-    )
-
-    t 'test v.chart' (->
-      fn = v.vow-chart
-      to-throw fn bd
-      to-equal chart (fn chart)
     )
 
     t 'test v.vow-chessman' (->
@@ -101,31 +93,11 @@ define (['jFns', 'constants', 'assertions'], (j, c, v) ->
       to-equal ctx (fn ctx)
     )
 
-    t 'test v.vow-index' (->
-      fn = v.vow-index
-      to-throw fn 100
-      to-equal 62 (fn 62)
-    )
-
     t 'test v.vow-integral-pair' (->
       fn = v.vow-integral-pair 
       to-throw fn [5, 5.5]
       i-pair = [7, 4]
       to-equal i-pair (fn i-pair)
-    )
-
-    t 'test v.vow-map' (->
-      fn = v.vow-map
-      to-throw fn ctx
-      map = [bd, path]
-      to-equal map (fn map)
-    )
-
-    t 'test v.vow-pair' (->
-      fn = v.vow-pair
-      to-throw fn [1, 'a', true]
-      pair = [1, 'a']
-      to-equal pair (fn pair)
     )
 
     t 'test v.vow-passant-position' (->
@@ -141,33 +113,10 @@ define (['jFns', 'constants', 'assertions'], (j, c, v) ->
       to-equal path (fn path)
     )
 
-    t 'test v.vow-player' (->
-      fn = v.vow-player
-      to-throw fn 'x'
-      player = c.white
-      to-equal player (fn player)
-    )
-
     t 'test v.vow-position' (->
       fn = v.vow-position
       to-throw fn passant
       to-equal src (fn src)
-    )
-
-    t 'test v.vow-rook' (->
-      fn = v.vow-rook
-      to-throw fn c.white-king
-      to-equal c.white-rook (fn c.white-rook)
-    )
-
-    t 'test v.vow-setting' (->
-      fn = v.vow-setting
-
-      invalid-bd = '-------------'
-      to-throw fn [invalid-bd, tgt]
-
-      setting = [bd, src]
-      to-equal setting (fn setting)
     )
 
     t 'test v.vow-square' (->

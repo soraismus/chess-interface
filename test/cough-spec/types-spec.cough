@@ -105,40 +105,16 @@ define ([
       contravenes fn [c.white, c.black, c.absent-color-pair]
     )
 
-    t 'test y.king?' (->
-      fn = y.king?
-      each-satisfies fn [c.white-king, c.black-king]
-      each-contravenes fn [c.white-bishop, c.black-queen]
-    )
-
     t 'test y.passant-position?' (->
       fn = y.passant-position?
       each-satisfies fn [src, tgt, c.unset-passant-pos]
       contravenes fn [1, 2, 3]
     )
 
-    t 'test y.pawn?' (->
-      fn = y.pawn?
-      each-satisfies fn [c.white-pawn, c.black-pawn]
-      contravenes fn c.black-rook
-    )
-
-    t 'test y.player?' (->
-      fn = y.player?
-      each-satisfies fn [c.white-player, c.black-player]
-      contravenes fn 'x'
-    )
-
     t 'test y.position?' (->
       fn = y.position?
       each-satisfies fn [src, tgt]
       each-contravenes fn [1, 'x', null, [1, 2, 3]]
-    )
-
-    t 'test y.rook?' (->
-      fn = y.rook?
-      each-satisfies fn [c.white-rook, c.black-rook]
-      each-contravenes fn [c.white-king, c.black-queen]
     )
 
     t 'test y.square?' (->

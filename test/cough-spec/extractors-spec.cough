@@ -76,20 +76,6 @@ define ([
       to-throw fn invalid-chessman
     )
 
-    t 'test x.board-from' (->
-      fn = x.board-from
-      each-fn-result-equals initial-board fn [setting, map, chart1]
-      each-throws fn [bd, path, rts]
-    )
-
-    t 'test x.castling-rights-from' (->
-      fn = x.castling-rights-from
-      local-ctx = g.generate-context (bd, c.full-castling-rts, passant)
-      local-chart = g.generate-chart (local-ctx, path)
-      to-equal c.full-castling-rts (fn local-chart)
-      each-throws fn [bd, setting, map]
-    )
-
     t 'test x.chessman-type-at' (->
       fn = x.chessman-type-at
       to-equal c.rook (fn initial-board pos0-0)
@@ -125,30 +111,10 @@ define ([
       each-throws fn [bd, map, chart1]
     )
 
-    t 'test x.map-from' (->
-      fn = x.map-from
-      to-equal map (fn chart1)
-      each-throws fn [bd, setting, path, map]
-    )
-
-    t 'test x.path-from' (->
-      fn = x.path-from
-      each-fn-result-equals path fn [map, chart1]
-      each-throws fn [bd, c.white, path]
-    )
-
-    t 'test x.passant-from' (->
-      fn = x.passant-from
-      to-equal c.unset-passant-pos (fn chart1)
-      to-equal pos1 (fn chart2)
-      each-throws fn [bd, setting, map]
-    )
-
     t 'test x.rank-&-file-from' (->
       fn = x.rank-&-file-from
       to-equal [0, 0] (fn pos0-0)
       to-equal [4, 5] (fn pos4-5)
-      to-equal [1, 5] (fn setting)
       each-throws fn [bd, map, chart1]
     )
 
@@ -165,32 +131,6 @@ define ([
       to-equal c.black-rook (fn initial-board pos0-0)
       to-equal c.empty-square (fn initial-board local-pos)
       to-throw (fn pos0-0) pos0-0
-    )
-
-    t 'test x.src-from' (->
-      fn = x.src-from
-      each-fn-result-equals pos1 [path, map, chart1]
-      each-throws fn [pos1, bd, c.white]
-    )
-
-    t 'test x.src-setting-from' (->
-      fn = x.src-setting-from
-      local-setting = g.generate-setting (bd, pos1)
-      each-fn-result-equals local-setting fn [map, chart1]
-      each-throws fn [bd, c.white, pos1, ctx]
-    )
-
-    t 'test x.tgt-from' (->
-      fn = x.tgt-from
-      each-fn-result-equals pos2 [path, map, chart1]
-      each-throws fn [pos1, bd, c.white]
-    )
-
-    t 'test x.tgt-setting-from' (->
-      fn = x.tgt-setting-from
-      local-setting = g.generate-setting (bd, pos2)
-      each-fn-result-equals local-setting fn [map, chart1]
-      each-throws fn [bd, c.white, pos1, ctx]
     )
 
   )

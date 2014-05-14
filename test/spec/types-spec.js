@@ -79,41 +79,17 @@
         satisfies(fn)([c.white, c.black]);
         return contravenes(fn)([c.white, c.black, c.absent_hyphen_color_hyphen_pair]);
       });
-      t('test y.king?')(function() {
-        var fn;
-        fn = y.king_question_;
-        each_hyphen_satisfies(fn)([c.white_hyphen_king, c.black_hyphen_king]);
-        return each_hyphen_contravenes(fn)([c.white_hyphen_bishop, c.black_hyphen_queen]);
-      });
       t('test y.passant-position?')(function() {
         var fn;
         fn = y.passant_hyphen_position_question_;
         each_hyphen_satisfies(fn)([src, tgt, c.unset_hyphen_passant_hyphen_pos]);
         return contravenes(fn)([1, 2, 3]);
       });
-      t('test y.pawn?')(function() {
-        var fn;
-        fn = y.pawn_question_;
-        each_hyphen_satisfies(fn)([c.white_hyphen_pawn, c.black_hyphen_pawn]);
-        return contravenes(fn)(c.black_hyphen_rook);
-      });
-      t('test y.player?')(function() {
-        var fn;
-        fn = y.player_question_;
-        each_hyphen_satisfies(fn)([c.white_hyphen_player, c.black_hyphen_player]);
-        return contravenes(fn)('x');
-      });
       t('test y.position?')(function() {
         var fn;
         fn = y.position_question_;
         each_hyphen_satisfies(fn)([src, tgt]);
         return each_hyphen_contravenes(fn)([1, 'x', null, [1, 2, 3]]);
-      });
-      t('test y.rook?')(function() {
-        var fn;
-        fn = y.rook_question_;
-        each_hyphen_satisfies(fn)([c.white_hyphen_rook, c.black_hyphen_rook]);
-        return each_hyphen_contravenes(fn)([c.white_hyphen_king, c.black_hyphen_queen]);
       });
       t('test y.square?')(function() {
         var fn;
