@@ -79,9 +79,41 @@ define ([
 
     get-new-castling-rts (rook-color, side, castling-rts)
 
+  modifyCastlingRights2 = (rts, src) ->
+    # Start testing mode.
+    v.vow-castling-right-set rts
+    v.vow-position src
+    # End testing mode.
+
+    [src-rank, src-file] = x.rank-&-file-from src
+    rook-color = if src-rank == 0 then c.black else c.white
+    side = which-side? src
+
+    new-castling-rts[rook-color][side][rts]
+
   pf = public-fns = _.defaults [slider-fns] {
     modifyCastlingRights
+    modifyCastlingRights2
   }
+
+  pf.getPotentialMoves2 = do (getPotentialMoves2 = pf.getPotentialMoves2) ->
+    (bd, src) ->
+      # Start testing mode.
+      v.vow-board bd
+      v.vow-position src
+      # End testing mode
+
+      getPotentialMoves2 (bd, src, undefined, undefined, c.rook)
+
+  pf.getPotentialKingAttacks2 =
+    do (getPotentialKingAttacks2 = pf.getPotentialKingAttacks2) ->
+      (bd, src) ->
+        # Start testing mode.
+        v.vow-board bd
+        v.vow-position src
+        # End testing mode
+
+        getPotentialKingAttacks2 (bd, src, undefined, c.rook)
 
   pf.move = pf.basicMove
 

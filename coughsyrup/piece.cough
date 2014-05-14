@@ -1,10 +1,12 @@
 define ([
+  'mydash'
   'constants'
   'constructors'
   'utilities'
   'extractors'
+  'chessman'
   'assertions'
-], (c, g, u, x, v) ->
+], (_, c, g, u, x, chessman-fns, v) ->
 
   basicMove = \chart2 \tgt ->
     # Start testing mode.
@@ -34,6 +36,9 @@ define ([
 
     c.unset-promotion-pos
 
+  setPromotionPosition2 = ->
+    c.unset-promotion-pos
+
   setPassantPosition = \chart2 ->
     # Start testing mode.
     v.vow-chart2 chart2
@@ -41,11 +46,18 @@ define ([
 
     c.unset-passant-pos
 
-  return {
+  setPassantPosition2 = ->
+    c.unset-passant-pos
+
+  public-fns = _.defaults [chessman-fns] {
     basicMove
     modifyCastlingRights
     setPassantPosition
     setPromotionPosition
+    setPassantPosition2
+    setPromotionPosition2
   }
+
+  return public-fns
 
 )

@@ -27,6 +27,15 @@ define ([
 
     dispatch-table[chessman-type][fn-name]
 
+  gen-temp-chart2 = (board, rts, passant) -> (pos) ->
+    g.generate-chart2
+      board  : bd
+      source : pos
+      castlingRights  : rts
+      passantPosition : passant
+
+  checkmate? = (chart2, color) ->
+
   contains = (potential-positions, tgt) ->
     _.any (u.same-position? tgt) potential-positions
 

@@ -51,9 +51,45 @@ define ([
       u.available? (board, src)
     )
 
+  getBasicPotentialMoves2 = (bd, src, rts, passant, type) ->
+    # Start testing mode.
+    v.vow-board bd
+    v.vow-position src
+    v.vow-chessman-type type
+    # End testing mode.
+
+    # TODO: Create a new fn, the formal parameters of
+    # which the following local variables.
+    moves = []
+
+    rank-&-file-from = x.rank-&-file-from
+
+    [rank, file] = rank-&-file-from src
+
+    offsets    = u.offsets-for type
+    inessent?  = u.inessent?
+    gen-pos!   = g.generate-position!
+    available? = u.available? (bd, src)
+
+    # TODO: Create a new fn, the body of which
+    # is the following loop.
+
+    for dir in offsets
+      [rank-diff, file-diff] = rank-&-file-from dir
+
+      new-rank = rank + rank-diff
+      new-file = file + file-diff
+
+      tgt = gen-pos! (new-rank, new-file)
+
+      moves.push tgt if inessent? tgt && available? tgt
+
+    moves
+
   public-fns = _.defaults [piece-fns] {
     get-basic-potential-moves
     getBasicPotentialMoves
+    getBasicPotentialMoves2
   }
 
   return public-fns

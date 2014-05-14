@@ -1,11 +1,12 @@
 define ([
   'mydash'
+  'constants'
   'constructors'
   'extractors'
   'utilities'
   'stepper'
   'assertions'
-], (_, g, x, u, stepper-fns, v) ->
+], (_, c, g, x, u, stepper-fns, v) ->
     
   pf = public-fns = _.defaults [stepper-fns] {}
 
@@ -24,8 +25,20 @@ define ([
       _.true
     )
 
+  get-potential-moves = (bd, src) ->
+    # Start testing mode.
+    v.vow-board bd
+    v.vow-position src
+    # End testing mode.
+
+    pf.getBasicPotentialMoves2 (bd, src, undefined, undefined, c.knight)
+
   pf.getPotentialMoves = pf.getBasicPotentialMoves
   pf.move              = pf.basicMove
+
+  pf.getPotentialKingAttacks2 = get-potential-moves
+  pf.getPotentialMoves2 = get-potential-moves
+  pf.move2             = pf.basicMove2
 
   return public-fns
 

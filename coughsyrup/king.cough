@@ -83,6 +83,12 @@ define ([
 
     basicMove chart2 rook-tgt
 
+  castle2 = (bd, src, tgt) ->
+    basicMove2 = pf.basicMove2
+    [rook-src, rook-tgt] = rook-castling-path tgt
+    bd-after-king-moves  = basicMove2 (bd, src) tgt
+    basicMove2 (bd-after-king-moves, rook-src) rook-tgt
+
   castling? = (src, tgt) ->
     _.abs (u.file-difference (src, tgt)) > 1
 
@@ -112,6 +118,15 @@ define ([
 
     pf.getBasicPotentialMoves (temporary-chart2, c.king)
 
+  getPotentialKingAttacks2 = (bd, src, rts) ->
+    # Start testing mode.
+    v.vow-board bd
+    v.vow-position src
+    v.vow-castling-right-set rts
+    # End testing mode.
+
+    getPotentialMoves2 (bd, src, rts)
+
   # TODO: Rewrite #color.at to take a 'chart2' type as an argument.
   getPotentialMoves = \chart2 ->
     # Start testing mode.
@@ -131,6 +146,18 @@ define ([
     basic-potential-moves.concat (
       get-potential-castling-moves (king-color, castling-rts))
 
+  getPotentialMoves2 = (bd, src, rts) ->
+    # Start testing mode.
+    v.vow-board bd
+    v.vow-position src
+    v.vow-castling-right-set rts
+    # End testing mode.
+
+    king-color  = x.color-at bd src
+    basic-moves = pf.getBasicPotentialMoves2 (bd, src, rts, undefined, c.king)
+
+    basic-moves.concat (get-potential-castling-moves (king-color, rts))
+
   modifyCastlingRights = \chart2 ->
     # Start testing mode.
     v.vow-chart2 chart2
@@ -145,6 +172,15 @@ define ([
 
     new-castling-rts[king-color][castling-rts]
 
+  modifyCastlingRights2 = (rts, src) ->
+    # Start testing mode.
+    v.vow-castling-right-set rts
+    v.vow-position src
+    # End testing mode.
+
+    king-color = if x.rank-of src == 0 then c.black else c.white
+    new-castling-rts[king-color][rts]
+
   move = \chart2 \tgt ->
     # Start testing mode.
     v.vow-chart2 chart2
@@ -157,6 +193,20 @@ define ([
       castle chart2 tgt
     else
       non-castling-move chart2 tgt
+
+  move2 = (bd, src) -> \tgt ->
+    # Start testing mode.
+    v.vow-board bd
+    v.vow-all-positions [src, tgt]
+    # End testing mode.
+
+    if castling? (src, tgt)
+      castle2 (bd, src, tgt)
+    else
+      non-castling-move (bd, src, tgt)
+
+  non-castling-move2 = (bd, src, tgt) ->
+    pf.basicMove (bd, src) tgt
 
   basicMove = non-castling-move = \chart2 \tgt ->
     pf.basicMove chart2 tgt
@@ -187,6 +237,10 @@ define ([
     getPotentialMoves
     modifyCastlingRights
     move
+    getPotentialKingAttacks2
+    getPotentialMoves2
+    modifyCastlingRights2
+    move2
   }
 
   return public-fns

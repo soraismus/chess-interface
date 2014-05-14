@@ -4,8 +4,9 @@ define ([
   'constructors'
   'utilities'
   'extractors'
+  'chessman'
   'assertions'
-], (_, c, g, u, x, v) ->
+], (_, c, g, u, x, chessman-fns, v) ->
 
   home-ranks = {}
   home-ranks[c.black] = 1
@@ -49,7 +50,7 @@ define ([
     gen-pos = g.generate-position!.bind (null, rank + dir)
     _.filter u.inessent? (_.map gen-pos [file - 1, file + 1])
 
-  get-potential-diagonal-attacks = (board, rank, file, color, dir, passant) ->
+  get-diag-attacks = (board, rank, file, color, dir, passant) ->
     # Start testing mode.
     v.vow-board board
     v.vow-all-position-components [rank, file]
@@ -66,7 +67,7 @@ define ([
     
     _.filter available? diag-attacks
 
-  get-potential-forward-moves = (board, rank, file, color, dir) ->
+  get-fwd-moves = (board, rank, file, color, dir) ->
     # Start testing mode.
     v.vow-board board
     v.vow-all-position-components [rank, file]
@@ -111,6 +112,20 @@ define ([
 
     get-diagonal-positions (rank, file, dir)
 
+  getPotentialKingAttacks2 = (bd, src) ->
+    # Start testing mode.
+    v.vow-board bd
+    v.vow-position src
+    # End testing mode.
+
+    color = x.color-at bd src
+
+    [rank, file]   = x.rank-&-file-from src
+    pawn-direction = direction-for color
+
+    get-diagonal-positions (rank, file, pawn-direction)
+    
+
   # TODO: Only filter forward moves with 'u.inessent?'.
   getPotentialMoves = \chart2 ->
     # Start testing mode.
@@ -125,11 +140,29 @@ define ([
     passant      = x.passant-from chart2
 
     potential-moves = _.meld [
-      get-potential-forward-moves (bd, rank, file, color, dir)
-      get-potential-diagonal-attacks (bd, rank, file, color, dir, passant)
+      get-fwd-moves (bd, rank, file, color, dir)
+      get-diag-attacks (bd, rank, file, color, dir, passant)
     ]
 
     _.filter u.inessent? potential-moves
+
+  getPotentialMoves2 = (bd, src, rts, passant) ->
+    # Start testing mode.
+    v.vow-board bd
+    v.vow-position src
+    v.vow-passant-position passant
+    # End testing mode.
+
+    color = x.color-at bd src
+    [rank, file] = x.rank-&-file-from src
+    dir = direction-for color
+
+    moves = Array.concat (
+      get-fwd-moves    (bd, rank, file, color, dir)
+      get-diag-attacks (bd, rank, file, color, dir, passant)
+    )
+
+    _.filter u.inessent? moves
 
   modifyCastlingRights = \chart2 ->
     # Start testing mode.
@@ -160,6 +193,25 @@ define ([
 
     u.replace (c.empty-square, result, behind (dir, passant))
 
+  delete-passed-pawn = (board, color, passant) ->
+    direction = direction-for color
+    u.replace (c.empty-square, board, behind (direction, passant))
+
+  move2 = (bd, src, rts, passant) -> \tgt ->
+    # Start testing mode.
+    v.vow-board bd
+    v.vow-all-positions [src, tgt]
+    v.vow-passant-position passant
+    # End testing mode.
+
+    bd-after-basic-move = pf.basicMove2 (bd, src) tgt
+
+    if u.passant-position-unset? passant
+      bd-after-basic-move
+    else
+      color = x.color-at bd src
+      delete-passed-pawn (bd-after-basic-move, color, passant)
+
   setPassantPosition = (chart2, tgt) ->
     # Start testing mode.
     v.vow-chart2 chart2
@@ -172,6 +224,18 @@ define ([
       bd    = x.board-from chart2
       color = x.color-at bd src
       dir   = direction-for color
+      behind (dir, tgt)
+    else
+      c.unset-passant-pos
+
+  setPassantPosition2 = (pawn-color, src, tgt) ->
+    # Start testing mode.
+    v.vow-color pawn-color
+    v.vow-all-positions [src, tgt]
+    # End testing mode.
+
+    if advancing-2-squares? (src, tgt)
+      dir = direction-for pawn-color
       behind (dir, tgt)
     else
       c.unset-passant-pos
@@ -189,13 +253,33 @@ define ([
 
     if at-promotion-rank? (color, rank) then tgt else c.unset-promotion-pos
 
-  return {
+  setPromotionPosition2 = (pawn-color, tgt) ->
+    # Start testing mode.
+    v.vow-color pawn-color
+    v.vow-position tgt
+    # End testing mode.
+
+    [tgt-rank] = x.rank-&-file-from tgt
+
+    if at-promotion-rank? (pawn-color, tgt-rank)
+      tgt
+    else
+      c.unset-promotion-pos
+
+  pf = public-fns = _.defaults [chessman-fns] {
     getPotentialKingAttacks
     getPotentialMoves
     modifyCastlingRights
     move
     setPassantPosition
     setPromotionPosition
+    getPotentialKingAttacks2
+    getPotentialMoves2
+    move2
+    setPassantPosition2
+    setPromotionPosition2
   }
+
+  return public-fns
 
 )
