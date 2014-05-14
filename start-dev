@@ -21,7 +21,7 @@ transpile() {
   tmux send-keys "$COUGH -o $ODIR -cw $CWDIR" C-m
 }
 
-BASE="$HOME/Documents/practice/javascript/fn-chess-2"
+BASE="$HOME/Documents/practice/javascript/fn-chess-4"
 
 cd $BASE
 
