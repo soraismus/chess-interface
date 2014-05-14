@@ -55,21 +55,21 @@ define ([
     results2 = [[5, 4]]
     results3 = [[2, 1], [5, 4], [1, 2]]
 
-    t 'test n.getPotentialKingAttacks2' (->
-      fn = n.getPotentialKingAttacks2
+    t 'test n.getPotentialKingAttacks' (->
+      fn = n.getPotentialKingAttacks
       to-equal results1 (fn (bd1, pos1))
       to-equal results3 (fn (bd3, pos1))
     )
 
-    t 'test n.getPotentialMoves2' (->
-      fn = n.getPotentialMoves2
+    t 'test n.getPotentialMoves' (->
+      fn = n.getPotentialMoves
       to-equal results1 (fn (bd1, pos1))
       to-equal results2 (fn (bd2, pos1))
       to-equal results3 (fn (bd3, pos1))
     )
 
-    t 'test n.modifyCastlingRights2' (->
-      fn = n.modifyCastlingRights2
+    t 'test n.modifyCastlingRights' (->
+      fn = n.modifyCastlingRights
 
       Kkq = 'Kkq'
       to-equal Kkq (fn Kkq)
@@ -78,20 +78,20 @@ define ([
 
     )
 
-    t 'test n.move2' (->
-      fn = n.move2
+    t 'test n.move' (->
+      fn = n.move
       bd4 = '-n--------P-p----P---p-----------p---p----p---------------------'
       to-equal bd4 (fn (bd3, pos1) (gen-pos (0, 1)))
     )
 
-    t 'test n.setPassantPosition2' (->
-      fn = n.setPassantPosition2
+    t 'test n.setPassantPosition' (->
+      fn = n.setPassantPosition
       to-equal unset-passant-pos (fn ())
       to-equal unset-passant-pos (fn ())
     )
 
-    t 'test n.setPromotionPosition2' (->
-      fn = n.setPromotionPosition2
+    t 'test n.setPromotionPosition' (->
+      fn = n.setPromotionPosition
       to-equal c.unset-promotion-pos (fn ())
     )
 

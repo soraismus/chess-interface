@@ -52,7 +52,7 @@ define ([
   kingside? = \src ->
     x.file-of src >= 4
 
-  modifyCastlingRights2 = (rts, src) ->
+  modifyCastlingRights = (rts, src) ->
     # Start testing mode.
     v.vow-castling-right-set rts
     v.vow-position src
@@ -68,27 +68,27 @@ define ([
     if kingside? src then 'kingside' else 'queenside'
 
   pf = public-fns = _.defaults [slider-fns] {
-    modifyCastlingRights2
+    modifyCastlingRights
   }
 
-  pf.getPotentialMoves2 = do (getPotentialMoves2 = pf.getPotentialMoves2) ->
+  pf.getPotentialMoves = do (getPotentialMoves = pf.getPotentialMoves) ->
     (bd, src) ->
       # Start testing mode.
       v.vow-board bd
       v.vow-position src
       # End testing mode
 
-      getPotentialMoves2 (bd, src, undefined, undefined, c.rook)
+      getPotentialMoves (bd, src, undefined, undefined, c.rook)
 
-  pf.getPotentialKingAttacks2 =
-    do (getPotentialKingAttacks2 = pf.getPotentialKingAttacks2) ->
+  pf.getPotentialKingAttacks =
+    do (getPotentialKingAttacks = pf.getPotentialKingAttacks) ->
       (bd, src) ->
         # Start testing mode.
         v.vow-board bd
         v.vow-position src
         # End testing mode
 
-        getPotentialKingAttacks2 (bd, src, undefined, c.rook)
+        getPotentialKingAttacks (bd, src, undefined, c.rook)
 
   return public-fns
 

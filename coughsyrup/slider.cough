@@ -34,14 +34,14 @@ define ([
 
     possible-moves
 
-  getPotentialKingAttacks2 = (bd, src, rts, type) ->
+  getPotentialKingAttacks = (bd, src, rts, type) ->
     # Start testing mode.
     v.vow-board bd
     v.vow-position src
     v.vow-chessman-type type
     # End testing mode.
 
-    getPotentialMoves2 (bd, src, rts, undefined, type)
+    getPotentialMoves (bd, src, rts, undefined, type)
 
   get-potential-moves = (board, src, chessman-type) ->
     potential-moves = []
@@ -55,7 +55,7 @@ define ([
 
     potential-moves
 
-  getPotentialMoves2 = (bd, src, rts, passant, type) ->
+  getPotentialMoves = (bd, src, rts, passant, type) ->
     # Start testing mode.
     v.vow-board bd
     v.vow-position src
@@ -75,11 +75,11 @@ define ([
     moves
 
   public-fns = _.defaults [piece-fns] {
-    getPotentialKingAttacks2
-    getPotentialMoves2
+    getPotentialKingAttacks
+    getPotentialMoves
   }
 
-  public-fns.move2 = public-fns.basicMove2
+  public-fns.move = public-fns.basicMove
 
   return public-fns
 

@@ -99,7 +99,7 @@ define ([
 
     return fwd-moves
 
-  getPotentialKingAttacks2 = (bd, src) ->
+  getPotentialKingAttacks = (bd, src) ->
     # Start testing mode.
     v.vow-board bd
     v.vow-position src
@@ -112,7 +112,7 @@ define ([
 
     get-diagonal-positions (rank, file, pawn-direction)
 
-  getPotentialMoves2 = (bd, src, rts, passant) ->
+  getPotentialMoves = (bd, src, rts, passant) ->
     # Start testing mode.
     v.vow-board bd
     v.vow-position src
@@ -134,14 +134,14 @@ define ([
     direction = direction-for color
     u.replace (c.empty-square, board, behind (direction, passant))
 
-  move2 = (bd, src, rts, passant) -> \tgt ->
+  move = (bd, src, rts, passant) -> \tgt ->
     # Start testing mode.
     v.vow-board bd
     v.vow-all-positions [src, tgt]
     v.vow-passant-position passant
     # End testing mode.
 
-    bd-after-basic-move = pf.basicMove2 (bd, src) tgt
+    bd-after-basic-move = pf.basicMove (bd, src) tgt
 
     if u.passant-position-unset? passant
       bd-after-basic-move
@@ -149,7 +149,7 @@ define ([
       color = x.color-at bd src
       delete-passed-pawn (bd-after-basic-move, color, passant)
 
-  setPassantPosition2 = (pawn-color, src, tgt) ->
+  setPassantPosition = (pawn-color, src, tgt) ->
     # Start testing mode.
     v.vow-color pawn-color
     v.vow-all-positions [src, tgt]
@@ -161,7 +161,7 @@ define ([
     else
       c.unset-passant-pos
 
-  setPromotionPosition2 = (pawn-color, tgt) ->
+  setPromotionPosition = (pawn-color, tgt) ->
     # Start testing mode.
     v.vow-color pawn-color
     v.vow-position tgt
@@ -175,11 +175,11 @@ define ([
       c.unset-promotion-pos
 
   pf = public-fns = _.defaults [chessman-fns] {
-    getPotentialKingAttacks2
-    getPotentialMoves2
-    move2
-    setPassantPosition2
-    setPromotionPosition2
+    getPotentialKingAttacks
+    getPotentialMoves
+    move
+    setPassantPosition
+    setPromotionPosition
   }
 
   return public-fns

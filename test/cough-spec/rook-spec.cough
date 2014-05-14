@@ -45,8 +45,8 @@ define ([
 
     initial-board = sc.initial-board
 
-    t 'test r.getPotentialMoves2' (->
-      fn = r.getPotentialMoves2
+    t 'test r.getPotentialMoves' (->
+      fn = r.getPotentialMoves
 
       local-pos = g.generate-position (0, 0)
 
@@ -65,8 +65,8 @@ define ([
 
     )
 
-    t 'test r.getPotentialKingAttacks2' (->
-      fn = r.getPotentialKingAttacks2
+    t 'test r.getPotentialKingAttacks' (->
+      fn = r.getPotentialKingAttacks
 
       bd1 = 'rN--------------------------------------------------------------'
 
@@ -79,27 +79,27 @@ define ([
 
     )
 
-    t 'test r.modifyCastlingRights2' (->
-      fn = r.modifyCastlingRights2
+    t 'test r.modifyCastlingRights' (->
+      fn = r.modifyCastlingRights
       to-equal 'KQk' (fn ('KQkq', gen-pos (0, 0)))
       to-equal 'q' (fn ('kq', gen-pos (0, 7)))
       to-equal '-' (fn ('-', gen-pos (7, 0)))
       to-equal 'q' (fn ('Kq', gen-pos (7, 7)))
     )
 
-    t 'test r.move2' (->
-      fn = r.move2
+    t 'test r.move' (->
+      fn = r.move
       res = 'rnbqkbnrppppp-pp--------------------------------PPPPPPPPRNBQKpNR'
       to-equal res (fn (initial-board, gen-pos (1, 5)) pos2)
     )
 
-    t 'test r.setPassantPosition2' (->
-      fn = r.setPassantPosition2
+    t 'test r.setPassantPosition' (->
+      fn = r.setPassantPosition
       to-equal c.unset-passant-pos (fn ())
     )
 
-    t 'test r.setPromotionPosition2' (->
-      fn = r.setPromotionPosition2
+    t 'test r.setPromotionPosition' (->
+      fn = r.setPromotionPosition
       to-equal c.unset-promotion-pos (fn ())
     )
 

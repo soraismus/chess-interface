@@ -44,8 +44,8 @@ define ([
 
     pos3 = g.generate-position (0, 4)
 
-    t 'test k.getPotentialKingAttacks2' (->
-      fn = k.getPotentialKingAttacks2
+    t 'test k.getPotentialKingAttacks' (->
+      fn = k.getPotentialKingAttacks
       res = [
         gen-pos (1, 5)
         gen-pos (1, 3)
@@ -54,8 +54,8 @@ define ([
       to-equal res (fn (bd4, gen-pos (0, 4), c.no-castling-rts))
     )
 
-    t 'test k.getPotentialMoves2' (->
-      fn = k.getPotentialMoves2
+    t 'test k.getPotentialMoves' (->
+      fn = k.getPotentialMoves
 
       bd3 = '----k-----------------------------------------------------------'
       
@@ -70,14 +70,14 @@ define ([
 
     )
 
-    t 'test k.modifyCastlingRights2' (->
-      fn = k.modifyCastlingRights2
+    t 'test k.modifyCastlingRights' (->
+      fn = k.modifyCastlingRights
       to-equal 'KQ' (fn (c.full-castling-rts, pos3))
       to-equal c.no-castling-rts (fn ('KQ', g.generate-position (7, 4)))
     )
 
-    t 'test k.move2' (->
-      fn = k.move2
+    t 'test k.move' (->
+      fn = k.move
       bd1 = 'r---k-----------------------------------------------------------'
       res1 = '--kr------------------------------------------------------------'
       to-equal res1 (fn (bd1, pos3) (gen-pos (0, 2)))
@@ -91,13 +91,13 @@ define ([
       to-equal res5 (fn (bd5, gen-pos (7, 4)) (gen-pos (7, 6)))
     )
 
-    t 'test k.setPassantPosition2' (->
-      fn = k.setPassantPosition2
+    t 'test k.setPassantPosition' (->
+      fn = k.setPassantPosition
       to-equal c.unset-passant-pos (fn ())
     )
 
-    t 'test k.setPromotionPosition2' (->
-      fn = k.setPromotionPosition2
+    t 'test k.setPromotionPosition' (->
+      fn = k.setPromotionPosition
       to-equal c.unset-promotion-pos (fn ())
     )
 

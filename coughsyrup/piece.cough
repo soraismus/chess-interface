@@ -8,15 +8,15 @@ define ([
   'assertions'
 ], (_, c, g, u, x, chessman-fns, v) ->
 
-  setPassantPosition2 = ->
+  setPassantPosition = ->
     c.unset-passant-pos
 
-  setPromotionPosition2 = ->
+  setPromotionPosition = ->
     c.unset-promotion-pos
 
   public-fns = _.defaults [chessman-fns] {
-    setPassantPosition2
-    setPromotionPosition2
+    setPassantPosition
+    setPromotionPosition
   }
 
   return public-fns

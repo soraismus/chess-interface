@@ -7,28 +7,28 @@
       var gen_hyphen_pos, initial_hyphen_board;
       gen_hyphen_pos = g.generate_hyphen_position;
       initial_hyphen_board = sc.initial_hyphen_board;
-      t('test p.basicMove2')(function() {
+      t('test p.basicMove')(function() {
         var fn, res, src, tgt;
-        fn = p.basicMove2;
+        fn = p.basicMove;
         src = gen_hyphen_pos(1, 5);
         tgt = gen_hyphen_pos(7, 5);
         res = 'rnbqkbnrppppp-pp--------------------------------PPPPPPPPRNBQKpNR';
         return to_hyphen_equal(res)(fn(initial_hyphen_board, src)(tgt));
       });
-      t('test p.modifyCastlingRights2')(function() {
+      t('test p.modifyCastlingRights')(function() {
         var fn;
-        fn = p.modifyCastlingRights2;
+        fn = p.modifyCastlingRights;
         to_hyphen_equal(c.full_hyphen_castling_hyphen_rts)(fn(c.full_hyphen_castling_hyphen_rts));
         return to_hyphen_equal(c.no_hyphen_castling_hyphen_rts)(fn(c.no_hyphen_castling_hyphen_rts));
       });
-      t('test p.setPassantPosition2')(function() {
+      t('test p.setPassantPosition')(function() {
         var fn;
-        fn = p.setPassantPosition2;
+        fn = p.setPassantPosition;
         return to_hyphen_equal(c.unset_hyphen_passant_hyphen_pos)(fn());
       });
-      return t('test p.setPromotionPosition2')(function() {
+      return t('test p.setPromotionPosition')(function() {
         var fn;
-        fn = p.setPromotionPosition2;
+        fn = p.setPromotionPosition;
         return to_hyphen_equal(c.unset_hyphen_promotion_hyphen_pos)(fn());
       });
     });

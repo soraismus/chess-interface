@@ -8,9 +8,9 @@
       gen_hyphen_pos = g.generate_hyphen_position;
       pos2 = gen_hyphen_pos(7, 5);
       initial_hyphen_board = sc.initial_hyphen_board;
-      t('test r.getPotentialMoves2')(function() {
+      t('test r.getPotentialMoves')(function() {
         var bd1, bd2, bd3, fn, local_hyphen_pos, offsets1, offsets2, offsets3;
-        fn = r.getPotentialMoves2;
+        fn = r.getPotentialMoves;
         local_hyphen_pos = g.generate_hyphen_position(0, 0);
         bd1 = 'rn--------------------------------------------------------------';
         offsets1 = [[1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0]];
@@ -22,35 +22,35 @@
         offsets3 = [[0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7]];
         return to_hyphen_equal(offsets3)(fn(bd3, local_hyphen_pos));
       });
-      t('test r.getPotentialKingAttacks2')(function() {
+      t('test r.getPotentialKingAttacks')(function() {
         var bd1, fn, offsets1;
-        fn = r.getPotentialKingAttacks2;
+        fn = r.getPotentialKingAttacks;
         bd1 = 'rN--------------------------------------------------------------';
         offsets1 = [[1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0], [0, 1]];
         return to_hyphen_equal(offsets1)(fn(bd1, gen_hyphen_pos(0, 0)));
       });
-      t('test r.modifyCastlingRights2')(function() {
+      t('test r.modifyCastlingRights')(function() {
         var fn;
-        fn = r.modifyCastlingRights2;
+        fn = r.modifyCastlingRights;
         to_hyphen_equal('KQk')(fn('KQkq', gen_hyphen_pos(0, 0)));
         to_hyphen_equal('q')(fn('kq', gen_hyphen_pos(0, 7)));
         to_hyphen_equal('-')(fn('-', gen_hyphen_pos(7, 0)));
         return to_hyphen_equal('q')(fn('Kq', gen_hyphen_pos(7, 7)));
       });
-      t('test r.move2')(function() {
+      t('test r.move')(function() {
         var fn, res;
-        fn = r.move2;
+        fn = r.move;
         res = 'rnbqkbnrppppp-pp--------------------------------PPPPPPPPRNBQKpNR';
         return to_hyphen_equal(res)(fn(initial_hyphen_board, gen_hyphen_pos(1, 5))(pos2));
       });
-      t('test r.setPassantPosition2')(function() {
+      t('test r.setPassantPosition')(function() {
         var fn;
-        fn = r.setPassantPosition2;
+        fn = r.setPassantPosition;
         return to_hyphen_equal(c.unset_hyphen_passant_hyphen_pos)(fn());
       });
-      return t('test r.setPromotionPosition2')(function() {
+      return t('test r.setPromotionPosition')(function() {
         var fn;
-        fn = r.setPromotionPosition2;
+        fn = r.setPromotionPosition;
         return to_hyphen_equal(c.unset_hyphen_promotion_hyphen_pos)(fn());
       });
     });

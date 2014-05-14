@@ -7,9 +7,9 @@
       var gen_hyphen_pos, initial_hyphen_board;
       gen_hyphen_pos = g.generate_hyphen_position;
       initial_hyphen_board = sc.initial_hyphen_board;
-      t('test p.getPotentialKingAttacks2')(function() {
+      t('test p.getPotentialKingAttacks')(function() {
         var bd1, bd2, fn, local_hyphen_pos, res1, res2;
-        fn = p.getPotentialKingAttacks2;
+        fn = p.getPotentialKingAttacks;
         local_hyphen_pos = gen_hyphen_pos(1, 1);
         bd1 = '---------p------------------------------------------------------';
         res1 = [gen_hyphen_pos(2, 0), gen_hyphen_pos(2, 2)];
@@ -18,9 +18,9 @@
         res2 = [gen_hyphen_pos(0, 0), gen_hyphen_pos(0, 2)];
         return to_hyphen_equal(res2)(fn(bd2, local_hyphen_pos));
       });
-      descr('p.getPotentialMoves2')(function() {
+      descr('p.getPotentialMoves')(function() {
         var fn;
-        fn = p.getPotentialMoves2;
+        fn = p.getPotentialMoves;
         t('when a pawn is on its home rank')(function() {
           var local_hyphen_bd, local_hyphen_pos, potential_hyphen_mvs1;
           local_hyphen_bd = initial_hyphen_board;
@@ -43,15 +43,15 @@
           return to_hyphen_equal(potential_hyphen_mvs3)(fn(bd3, local_hyphen_pos, void 0, gen_hyphen_pos(5, 3)));
         });
       });
-      t('test p.modifyCastlingRights2')(function() {
+      t('test p.modifyCastlingRights')(function() {
         var fn;
-        fn = p.modifyCastlingRights2;
+        fn = p.modifyCastlingRights;
         to_hyphen_equal(c.full_hyphen_castling_hyphen_rts)(fn(c.full_hyphen_castling_hyphen_rts));
         return to_hyphen_equal(c.no_hyphen_castling_hyphen_rts)(fn(c.no_hyphen_castling_hyphen_rts));
       });
-      t('test p.move2')(function() {
+      t('test p.move')(function() {
         var bd2, fn, res2, result, src1, src2, tgt1, tgt2;
-        fn = p.move2;
+        fn = p.move;
         result = 'rnbqkbnrppppp-pp--------------------------------PPPPPPPPRNBQKpNR';
         src1 = gen_hyphen_pos(1, 5);
         tgt1 = gen_hyphen_pos(7, 5);
@@ -62,18 +62,18 @@
         res2 = 'rnbqkbnr-ppppppp-------------------------p------P-PPPPPPRNBQKBNR';
         return to_hyphen_equal(res2)(fn(bd2, src2, void 0, tgt2)(tgt2));
       });
-      t('test p.setPassantPosition2')(function() {
+      t('test p.setPassantPosition')(function() {
         var expected_hyphen_passant, fn, src, tgt, tgt2;
-        fn = p.setPassantPosition2;
+        fn = p.setPassantPosition;
         src = gen_hyphen_pos(1, 4);
         tgt = gen_hyphen_pos(3, 4);
         tgt2 = expected_hyphen_passant = gen_hyphen_pos(2, 4);
         to_hyphen_equal(expected_hyphen_passant)(fn(c.black, src, tgt));
         return to_hyphen_equal(c.unset_hyphen_passant_hyphen_pos)(fn(c.black, src, tgt2));
       });
-      return descr('p.setPromotionPosition2')(function() {
+      return descr('p.setPromotionPosition')(function() {
         var fn;
-        fn = p.setPromotionPosition2;
+        fn = p.setPromotionPosition;
         t('when a pawn reaches the home rank of its opponents')(function() {
           var tgt;
           tgt = gen_hyphen_pos(7, 0);

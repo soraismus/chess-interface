@@ -75,19 +75,11 @@ define ([
     KQk  : t4,  Qk : t4,   Kk  : t4,  k   : t4
     KQ   : t0,  Q  : t0,   K   : t0,  '-' : t0 
 
-  castle = \chart2 \tgt ->
+  castle = (bd, src, tgt) ->
+    basicMove = pf.basicMove
     [rook-src, rook-tgt] = rook-castling-path tgt
-    bd-after-king-moves  = basicMove chart2 tgt
-
-    chart2 = gen-chart2 (bd-after-king-moves, rook-src)
-
-    basicMove chart2 rook-tgt
-
-  castle2 = (bd, src, tgt) ->
-    basicMove2 = pf.basicMove2
-    [rook-src, rook-tgt] = rook-castling-path tgt
-    bd-after-king-moves  = basicMove2 (bd, src) tgt
-    basicMove2 (bd-after-king-moves, rook-src) rook-tgt
+    bd-after-king-moves  = basicMove (bd, src) tgt
+    basicMove (bd-after-king-moves, rook-src) rook-tgt
 
   castling? = (src, tgt) ->
     _.abs (u.file-difference (src, tgt)) > 1
@@ -97,28 +89,21 @@ define ([
     matcher = u.castling-matcher (black?, kingward?)
     _.match matcher 'noFlags' castling-rts
 
-  gen-chart2 = (board, src) ->
-    g.generate-chart2
-      board  : board
-      source : src
-      castlingRights  : c.no-catling-rts
-      passantPosition : c.unset-passant-pos
-
   # TODO: Check for non-transitable castling paths.
   # TODO: Check that no pos in the castling path is attackable.
   get-potential-castling-moves = (color, castling-rts) ->
     castling-tgts[color][castling-rts]
 
-  getPotentialKingAttacks2 = (bd, src, rts) ->
+  getPotentialKingAttacks = (bd, src, rts) ->
     # Start testing mode.
     v.vow-board bd
     v.vow-position src
     v.vow-castling-right-set rts
     # End testing mode.
 
-    getPotentialMoves2 (bd, src, rts)
+    getPotentialMoves (bd, src, rts)
 
-  getPotentialMoves2 = (bd, src, rts) ->
+  getPotentialMoves = (bd, src, rts) ->
     # Start testing mode.
     v.vow-board bd
     v.vow-position src
@@ -126,11 +111,11 @@ define ([
     # End testing mode.
 
     king-color  = x.color-at bd src
-    basic-moves = pf.getBasicPotentialMoves2 (bd, src, rts, undefined, c.king)
+    basic-moves = pf.getBasicPotentialMoves (bd, src, rts, undefined, c.king)
 
     basic-moves.concat (get-potential-castling-moves (king-color, rts))
 
-  modifyCastlingRights2 = (rts, src) ->
+  modifyCastlingRights = (rts, src) ->
     # Start testing mode.
     v.vow-castling-right-set rts
     v.vow-position src
@@ -139,22 +124,19 @@ define ([
     king-color = if x.rank-of src == 0 then c.black else c.white
     new-castling-rts[king-color][rts]
 
-  move2 = (bd, src) -> \tgt ->
+  move = (bd, src) -> \tgt ->
     # Start testing mode.
     v.vow-board bd
     v.vow-all-positions [src, tgt]
     # End testing mode.
 
     if castling? (src, tgt)
-      castle2 (bd, src, tgt)
+      castle (bd, src, tgt)
     else
       non-castling-move (bd, src, tgt)
 
-  non-castling-move2 = (bd, src, tgt) ->
+  non-castling-move = (bd, src, tgt) ->
     pf.basicMove (bd, src) tgt
-
-  basicMove = non-castling-move = \chart2 \tgt ->
-    pf.basicMove chart2 tgt
 
   rook-castling-path = \king-tgt ->
     key = JSON.stringify king-tgt
@@ -165,10 +147,10 @@ define ([
   # -----------------------------------------------------------------
 
   pf = public-fns = _.defaults [stepper-fns] {
-    getPotentialKingAttacks2
-    getPotentialMoves2
-    modifyCastlingRights2
-    move2
+    getPotentialKingAttacks
+    getPotentialMoves
+    modifyCastlingRights
+    move
   }
 
   return public-fns

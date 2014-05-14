@@ -8,9 +8,9 @@
       gen_hyphen_pos = g.generate_hyphen_position;
       pos2 = gen_hyphen_pos(7, 5);
       initial_hyphen_board = sc.initial_hyphen_board;
-      t('test sl.getPotentialMoves2')(function() {
+      t('test sl.getPotentialMoves')(function() {
         var bd1, bd2, bd3, bd4, bd5, fn, local_hyphen_pos, offsets1, offsets2, offsets3, offsets4, offsets5;
-        fn = sl.getPotentialMoves2;
+        fn = sl.getPotentialMoves;
         local_hyphen_pos = g.generate_hyphen_position(0, 0);
         bd1 = 'rn--------------------------------------------------------------';
         offsets1 = [[1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0]];
@@ -28,27 +28,27 @@
         offsets5 = [[6, 6], [5, 5], [4, 4]];
         return to_hyphen_equal(offsets5)(fn(bd5, gen_hyphen_pos(7, 7), void 0, void 0, c.bishop));
       });
-      t('test sl.getPotentialKingAttacks2')(function() {});
-      t('test sl.modifyCastlingRights2')(function() {
+      t('test sl.getPotentialKingAttacks')(function() {});
+      t('test sl.modifyCastlingRights')(function() {
         var fn;
-        fn = sl.modifyCastlingRights2;
+        fn = sl.modifyCastlingRights;
         to_hyphen_equal(c.full_hyphen_castling_hyphen_rts)(fn(c.full_hyphen_castling_hyphen_rts));
         return to_hyphen_equal(c.no_hyphen_castling_hyphen_rts)(fn(c.no_hyphen_castling_hyphen_rts));
       });
-      t('test sl.move2')(function() {
+      t('test sl.move')(function() {
         var fn, res;
-        fn = sl.move2;
+        fn = sl.move;
         res = 'rnbqkbnrppppp-pp--------------------------------PPPPPPPPRNBQKpNR';
         return to_hyphen_equal(res)(fn(initial_hyphen_board, gen_hyphen_pos(1, 5))(pos2));
       });
-      t('test sl.setPassantPosition2')(function() {
+      t('test sl.setPassantPosition')(function() {
         var fn;
-        fn = sl.setPassantPosition2;
+        fn = sl.setPassantPosition;
         return to_hyphen_equal(c.unset_hyphen_passant_hyphen_pos)(fn());
       });
-      return t('test sl.setPromotionPosition2')(function() {
+      return t('test sl.setPromotionPosition')(function() {
         var fn;
-        fn = sl.setPromotionPosition2;
+        fn = sl.setPromotionPosition;
         return to_hyphen_equal(c.unset_hyphen_promotion_hyphen_pos)(fn());
       });
     });

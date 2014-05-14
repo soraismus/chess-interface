@@ -8,15 +8,15 @@
       gen_hyphen_pos = g.generate_hyphen_position;
       bd4 = '----kb-----Np---------------------------------------------------';
       pos3 = g.generate_hyphen_position(0, 4);
-      t('test k.getPotentialKingAttacks2')(function() {
+      t('test k.getPotentialKingAttacks')(function() {
         var fn, res;
-        fn = k.getPotentialKingAttacks2;
+        fn = k.getPotentialKingAttacks;
         res = [gen_hyphen_pos(1, 5), gen_hyphen_pos(1, 3), gen_hyphen_pos(0, 3)];
         return to_hyphen_equal(res)(fn(bd4, gen_hyphen_pos(0, 4), c.no_hyphen_castling_hyphen_rts));
       });
-      t('test k.getPotentialMoves2')(function() {
+      t('test k.getPotentialMoves')(function() {
         var bd3, fn, results3, results4, results5;
-        fn = k.getPotentialMoves2;
+        fn = k.getPotentialMoves;
         bd3 = '----k-----------------------------------------------------------';
         results3 = [[1, 5], [1, 4], [1, 3], [0, 5], [0, 3]];
         to_hyphen_equal(results3)(fn(bd3, pos3, c.no_hyphen_castling_hyphen_rts));
@@ -25,15 +25,15 @@
         results5 = [[1, 5], [1, 4], [1, 3], [0, 5], [0, 3], [0, 2], [0, 6]];
         return to_hyphen_equal(results5)(fn(bd3, pos3, c.full_hyphen_castling_hyphen_rts));
       });
-      t('test k.modifyCastlingRights2')(function() {
+      t('test k.modifyCastlingRights')(function() {
         var fn;
-        fn = k.modifyCastlingRights2;
+        fn = k.modifyCastlingRights;
         to_hyphen_equal('KQ')(fn(c.full_hyphen_castling_hyphen_rts, pos3));
         return to_hyphen_equal(c.no_hyphen_castling_hyphen_rts)(fn('KQ', g.generate_hyphen_position(7, 4)));
       });
-      t('test k.move2')(function() {
+      t('test k.move')(function() {
         var bd1, bd2, bd5, fn, res1, res2, res5;
-        fn = k.move2;
+        fn = k.move;
         bd1 = 'r---k-----------------------------------------------------------';
         res1 = '--kr------------------------------------------------------------';
         to_hyphen_equal(res1)(fn(bd1, pos3)(gen_hyphen_pos(0, 2)));
@@ -44,14 +44,14 @@
         res5 = '-------------------------------------------------------------RK-';
         return to_hyphen_equal(res5)(fn(bd5, gen_hyphen_pos(7, 4))(gen_hyphen_pos(7, 6)));
       });
-      t('test k.setPassantPosition2')(function() {
+      t('test k.setPassantPosition')(function() {
         var fn;
-        fn = k.setPassantPosition2;
+        fn = k.setPassantPosition;
         return to_hyphen_equal(c.unset_hyphen_passant_hyphen_pos)(fn());
       });
-      return t('test k.setPromotionPosition2')(function() {
+      return t('test k.setPromotionPosition')(function() {
         var fn;
-        fn = k.setPromotionPosition2;
+        fn = k.setPromotionPosition;
         return to_hyphen_equal(c.unset_hyphen_promotion_hyphen_pos)(fn());
       });
     });

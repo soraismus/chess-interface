@@ -6,11 +6,11 @@
     get_hyphen_potential_hyphen_moves = function(bd, src) {
       v.vow_hyphen_board(bd);
       v.vow_hyphen_position(src);
-      return pf.getBasicPotentialMoves2(bd, src, void 0, void 0, c.knight);
+      return pf.getBasicPotentialMoves(bd, src, void 0, void 0, c.knight);
     };
-    pf.getPotentialKingAttacks2 = get_hyphen_potential_hyphen_moves;
-    pf.getPotentialMoves2 = get_hyphen_potential_hyphen_moves;
-    pf.move2 = pf.basicMove2;
+    pf.getPotentialKingAttacks = get_hyphen_potential_hyphen_moves;
+    pf.getPotentialMoves = get_hyphen_potential_hyphen_moves;
+    pf.move = pf.basicMove;
     return public_hyphen_fns;
   });
 

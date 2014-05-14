@@ -15,41 +15,41 @@
       results1 = [[4, 5], [4, 1], [2, 5], [2, 1], [5, 4], [5, 2], [1, 4], [1, 2]];
       results2 = [[5, 4]];
       results3 = [[2, 1], [5, 4], [1, 2]];
-      t('test n.getPotentialKingAttacks2')(function() {
+      t('test n.getPotentialKingAttacks')(function() {
         var fn;
-        fn = n.getPotentialKingAttacks2;
+        fn = n.getPotentialKingAttacks;
         to_hyphen_equal(results1)(fn(bd1, pos1));
         return to_hyphen_equal(results3)(fn(bd3, pos1));
       });
-      t('test n.getPotentialMoves2')(function() {
+      t('test n.getPotentialMoves')(function() {
         var fn;
-        fn = n.getPotentialMoves2;
+        fn = n.getPotentialMoves;
         to_hyphen_equal(results1)(fn(bd1, pos1));
         to_hyphen_equal(results2)(fn(bd2, pos1));
         return to_hyphen_equal(results3)(fn(bd3, pos1));
       });
-      t('test n.modifyCastlingRights2')(function() {
+      t('test n.modifyCastlingRights')(function() {
         var Kkq, fn;
-        fn = n.modifyCastlingRights2;
+        fn = n.modifyCastlingRights;
         Kkq = 'Kkq';
         to_hyphen_equal(Kkq)(fn(Kkq));
         return to_hyphen_equal(no_hyphen_castling_hyphen_rts)(fn(no_hyphen_castling_hyphen_rts));
       });
-      t('test n.move2')(function() {
+      t('test n.move')(function() {
         var bd4, fn;
-        fn = n.move2;
+        fn = n.move;
         bd4 = '-n--------P-p----P---p-----------p---p----p---------------------';
         return to_hyphen_equal(bd4)(fn(bd3, pos1)(gen_hyphen_pos(0, 1)));
       });
-      t('test n.setPassantPosition2')(function() {
+      t('test n.setPassantPosition')(function() {
         var fn;
-        fn = n.setPassantPosition2;
+        fn = n.setPassantPosition;
         to_hyphen_equal(unset_hyphen_passant_hyphen_pos)(fn());
         return to_hyphen_equal(unset_hyphen_passant_hyphen_pos)(fn());
       });
-      return t('test n.setPromotionPosition2')(function() {
+      return t('test n.setPromotionPosition')(function() {
         var fn;
-        fn = n.setPromotionPosition2;
+        fn = n.setPromotionPosition;
         return to_hyphen_equal(c.unset_hyphen_promotion_hyphen_pos)(fn());
       });
     });
