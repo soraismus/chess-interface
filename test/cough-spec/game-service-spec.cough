@@ -39,7 +39,9 @@ define ([
   descr 'test game-service.cough' (->
 
     gen-pos    = g.generate-position
-    gen-chart2 = g.generate-chart2
+
+    no-rts  = c.no-castling-rts
+    no-pass = c.unset-passant-pos
 
     bd1 = sc.initial-board
     bd2 = '---q-------------------------------------------------------K----'
@@ -77,32 +79,15 @@ define ([
 
     Kkq = 'Kkq'
 
-    gen-chart = (board, pos) ->
-      gen-chart2
-        board  : board
-        source : pos
-        castlingRights  : c.no-castling-rts
-        passantPosition : c.unset-passant-pos
-      
-    chart1 = gen-chart (bd1, pos1-4)
-
-    chart4 = gen-chart (bd2, pos0-3)
-
-    chart5 = gen-chart2
-      board  : bd1
-      source : pos0-3
-      castlingRights  : Kkq
-      passantPosition : c.unset-passant-pos
-
     t 'test gs.getPotentialKingAttacks' (->
 
       fn = gs.getPotentialKingAttacks
 
       res1 = [gen-pos (2, 3), gen-pos (2, 5)]
-      to-equal res1 (fn bd1 pos1-4)
+      to-equal res1 (fn (bd1, pos1-4, no-rts))
 
-      res2 = [gen-pos (6, 3), gen-pos (5, 2), gen-pos (5, 0)]
-      to-equal res2 (fn bd1 pos7-1)
+      res2 = [gen-pos (5, 2), gen-pos (5, 0)]
+      to-equal res2 (fn (bd1, pos7-1, no-rts))
 
     )
 
@@ -142,18 +127,19 @@ define ([
         gen-pos (0, 0)
       ]
 
-      to-equal res1 (fn (c.queen, chart4))
+      to-equal res1 (fn (
+        bd2, pos0-3, no-rts, no-pass, c.queen))
 
     )
 
     t 'test gs.in-check?' (->
       fn = gs.in-check?
-      to-be-false (fn (bd1, c.black))
-      to-be-false (fn (bd1, c.white))
-      to-be-false (fn (bd13, c.black))
-      to-be-true  (fn (bd13, c.white))
-      to-be-true  (fn (bd14, c.black))
-      to-be-false (fn (bd14, c.white))
+      to-be-false (fn (bd1,  no-rts, c.black))
+      to-be-false (fn (bd1,  no-rts, c.white))
+      to-be-false (fn (bd13, no-rts, c.black))
+      to-be-true  (fn (bd13, no-rts, c.white))
+      to-be-true  (fn (bd14, no-rts, c.black))
+      to-be-false (fn (bd14, no-rts, c.white))
     )
 
     t 'test gs.king-position-for' (->
@@ -167,81 +153,45 @@ define ([
 
     t 'test gs.modifyCastlingRights' (->
       fn = gs.modifyCastlingRights
-
-      to-equal Kkq (fn chart5)
-
-      chart6 = gen-chart2
-        board  : bd3
-        source : gen-pos (0, 4)
-        castlingRights  : Kkq
-        passantPosition : c.unset-passant-pos
-
-      chart7 = gen-chart2
-        board  : bd3
-        source : gen-pos (7, 4)
-        castlingRights  : Kkq
-        passantPosition : c.unset-passant-pos
-
-      to-equal 'kq' (fn chart7)
-      
+      to-equal Kkq (fn (bd1, pos0-3, Kkq))
+      to-equal 'kq' (fn (bd3, gen-pos (7, 4), Kkq))
     )
 
     t 'test gs.move' (->
       fn = gs.move
-
-      chart11 = gen-chart (bd5, pos0-4)
-
-      to-equal bd6 (fn chart11 (gen-pos (0, 2)))
-      to-equal bd7 (fn chart11 (gen-pos (0, 6)))
-
-      chart12 = gen-chart (bd5, pos7-4)
-
-      to-equal bd8 (fn chart12 (gen-pos (7, 2)))
-      to-equal bd9 (fn chart12 pos7-6)
-
-      chart13 = g.generate-chart2
-        board  : bd10
-        source : gen-pos (4, 0)
-        castlingRights  : c.no-castling-rts
-        passantPosition : pos5-1
-
-      to-equal bd11 (fn chart13 pos5-1)
-
-      chart14 = g.generate-chart2
-        board  : bd10
-        source : gen-pos (3, 7)
-        castlingRights  : c.no-castling-rts
-        passantPosition : pos2-6
-
-      to-equal bd12 (fn chart14 pos2-6)
+      to-equal bd6 (fn (bd5, pos0-4, no-pass) (gen-pos 0, 2))
+      to-equal bd7 (fn (bd5, pos0-4, no-pass) (gen-pos 0, 6))
+      to-equal bd8 (fn (bd5, pos7-4, no-pass) (gen-pos 7, 2))
+      to-equal bd9 (fn (bd5, pos7-4, no-pass) pos7-6)
+      to-equal bd11 (fn (bd10, (gen-pos 4, 0), pos5-1) pos5-1)
+      to-equal bd12 (fn (bd10, (gen-pos 3, 7), pos2-6) pos2-6)
     )
 
     t 'test gs.move-legal?' (->
       fn = gs.move-legal?
 
-      chart2 = gen-chart (bd1, pos7-1)
-      chart3 = gen-chart (bd1, pos0-3)
+      move-legal? = \src \tgt -> fn (bd1, src, no-rts, no-pass) tgt
 
-      to-be-true  (fn (chart1, pos3-4))
-      to-be-false (fn (chart1, pos2-3))
-      to-be-true  (fn (chart2, pos5-2))
-      to-be-false (fn (chart3, pos7-3))
-      to-be-true  (fn (chart4, pos7-3))
+      to-be-true  (move-legal? pos1-4 pos3-4)
+      to-be-false (move-legal? pos1-4 pos2-3)
+      to-be-true  (move-legal? pos7-1 pos5-2)
+      to-be-false (move-legal? pos0-3 pos7-3)
+
+      to-be-true  (fn (bd2, pos0-3, no-rts, no-pass) pos7-3)
     )
 
     t 'test gs.setPassantPosition' (->
       fn = gs.setPassantPosition
 
-      to-unset = to-equal c.unset-passant-pos
+      to-unset = to-equal no-pass
 
-      to-unset (fn (chart1, pos2-4))
-      to-unset (fn (chart4, pos0-3))
-      to-unset (fn (chart5, pos0-3))
+      to-unset (fn (bd1, pos1-4, pos2-4))
 
-      to-equal pos2-4 (fn (chart1, pos3-4))
+      # Note: Here the source and target are identical.
+      to-unset (fn (bd2, pos0-3, pos0-3))
 
-      chart8 = gen-chart (bd1, gen-pos (6, 7))
-      to-equal (gen-pos (5, 7)) (fn (chart8, gen-pos (4, 7)))
+      to-equal pos2-4 (fn (bd1, pos1-4, pos3-4))
+      to-equal (gen-pos 5, 7) (fn (bd1, (gen-pos 6, 7), (gen-pos 4, 7)))
 
     )
 
@@ -250,25 +200,23 @@ define ([
 
       to-unset = to-equal c.unset-promotion-pos
 
-      to-unset (fn (chart1, pos2-4))
-      to-unset (fn (chart4, pos0-3))
-      to-unset (fn (chart5, pos0-3))
+      to-unset (fn (bd1, pos1-4, pos2-4))
 
-      chart9 = gen-chart (bd4, gen-pos (1, 0))
-      to-equal pos0-0 (fn (chart9, pos0-0))
+      # Note: Here the source and target are identical.
+      to-unset (fn (bd2, pos0-3, pos0-3))
 
-      chart10 = gen-chart (bd4, gen-pos (6, 0))
-      to-equal pos7-1 (fn (chart10, pos7-1))
+      to-equal pos0-0 (fn bd4, (gen-pos 1, 0), pos0-0)
+      to-equal pos7-1 (fn bd4, (gen-pos 6, 0), pos7-1)
 
     )
 
     t 'test gs.vulnerable-positions-for' (->
       fn = gs.vulnerable-positions-for
 
-      to-equal [gen-pos (7, 1)] (fn (bd4, c.white))
+      to-equal [gen-pos (7, 1)] (fn (bd4, no-rts, c.white))
 
       res2 = [gen-pos (0, 1), gen-pos (6, 3), gen-pos (5, 2), gen-pos (5, 0)]
-      to-equal res2 (fn (bd4, c.black))
+      to-equal res2 (fn (bd4, no-rts, c.black))
 
       pos-w/-rank-7 = \file -> gen-pos (7, file)
       pos-w/-file-2 = \rank -> gen-pos (rank, 2)
@@ -296,7 +244,7 @@ define ([
         gen-pos (0, 2)
       ]
 
-      to-equal res3 (fn (bd13, c.white))
+      to-equal res3 (fn (bd13, no-rts, c.white))
 
     )
 

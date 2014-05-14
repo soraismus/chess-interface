@@ -27,43 +27,42 @@ define ([
 
     dispatch-table[chessman-type][fn-name]
 
-  gen-temp-chart2 = (board, rts, passant) -> (pos) ->
-    g.generate-chart2
-      board  : bd
-      source : pos
-      castlingRights  : rts
-      passantPosition : passant
-
-  checkmate? = (chart2, color) ->
+  checkmate? = ->
 
   contains = (potential-positions, tgt) ->
     _.any (u.same-position? tgt) potential-positions
 
-  getPotentialKingAttacks = \board \src ->
+  getPotentialKingAttacks = (bd, src, rts) ->
     # Start testing mode.
-    v.vow-board board
+    v.vow-board bd
     v.vow-position src
+    v.vow-castling-right-set rts
     # End testing mode.
 
-    chessman-type = x.chessman-type-at board src
-    call 'getPotentialKingAttacks' chessman-type board src
+    type = x.chessman-type-at bd src
+    call 'getPotentialKingAttacks' type (bd, src, rts, type)
 
-  getPotentialMoves = (chessman-type, chart2) ->
+  getPotentialMoves = (bd, src, rts, passant) ->
     # Start testing mode.
-    v.vow-chessman-type chessman-type
-    v.vow-chart2 chart2
+    v.vow-board bd
+    v.vow-position src
+    v.vow-castling-right-set rts
+    v.vow-passant-position passant
     # End testing mode.
 
-    call 'getPotentialMoves' chessman-type (chart2, chessman-type)
+    type = x.chessman-type-at bd src
+    call 'getPotentialMoves' type (bd, src, rts, passant, type)
 
-  in-check? = (board, color) ->
+  # TODO: Reconsider necessity of castling-rights
+  in-check? = (board, rts, color) ->
     # Start testing mode.
     v.vow-board board
+    v.vow-castling-right-set rts
     v.vow-color color
     # End testing mode.
 
     king-pos = king-position-for (board, color)
-    vuln-positions = vulnerable-positions-for (board, color)
+    vuln-positions = vulnerable-positions-for (board, rts, color)
     contains (vuln-positions, king-pos)
 
   king-position-for = (board, color) ->
@@ -75,68 +74,80 @@ define ([
     king = if u.black? color then c.black-king else c.white-king
     u.to-2d (_.indexOf board king)
 
-  modifyCastlingRights = \chart2 ->
+  modifyCastlingRights = (bd, src, rts) ->
     # Start testing mode.
-    v.vow-chart2 chart2
+    v.vow-board bd
+    v.vow-position src
+    v.vow-castling-right-set rts
     # End testing mode.
 
-    chessman-type = x.chessman-type-from chart2
-    call 'modifyCastlingRights' chessman-type chart2
+    type = x.chessman-type-at bd src
+    call 'modifyCastlingRights' type (rts, src)
 
-  move = \chart2 \tgt ->
+  move = (bd, src, passant) -> \tgt ->
     # Start testing mode.
-    v.vow-chart2 chart2
-    v.vow-position tgt
+    v.vow-board bd
+    v.vow-all-positions [src, tgt]
+    v.vow-passant-position passant
     # End testing mode.
 
-    chessman-type = x.chessman-type-from chart2
-    call 'move' chessman-type chart2 tgt
+    type = x.chessman-type-at bd src
+    call 'move' type (bd, src, passant) tgt
 
-  move-legal? = (chart2, tgt) ->
+  move-legal? = (bd, src, rts, passant) -> \tgt ->
     # Start testing mode.
-    v.vow-chart2 chart2
-    v.vow-position tgt
+    v.vow-board bd
+    v.vow-all-positions [src, tgt]
+    v.vow-castling-right-set rts
+    v.vow-passant-position passant
     # End testing mode.
 
-    chessman-type  = x.chessman-type-from chart2
-    potential-tgts = getPotentialMoves (chessman-type, chart2)
+    type  = x.chessman-type-at bd src
+    potential-tgts = getPotentialMoves (bd, src, rts, passant)
     
     contains (potential-tgts, tgt)
 
-  query-game-service = \chart2 \tgt ->
+  query-game-service = ->
+
+  setPassantPosition = (bd, src, tgt) ->
     # Start testing mode.
-    v.vow-chart2 chart2
-    v.vow-position tgt
+    v.vow-board bd
+    v.vow-all-positions [src, tgt]
     # End testing mode.
 
-  setPassantPosition = (chart2, tgt) ->
+    chessman = x.square-at bd src
+    type     = x.chessman-type-of chessman
+    color    = x.color-of chessman
+
+    call 'setPassantPosition' type (color, src, tgt)
+
+  setPromotionPosition = (bd, src, tgt) ->
     # Start testing mode.
-    v.vow-chart2 chart2
-    v.vow-position tgt
+    v.vow-board bd
+    v.vow-all-positions [src, tgt]
     # End testing mode.
 
-    chessman-type = x.chessman-type-from chart2
-    call 'setPassantPosition' chessman-type (chart2, tgt)
+    chessman = x.square-at bd src
+    type     = x.chessman-type-of chessman
+    color    = x.color-of chessman
 
-  setPromotionPosition = (chart2, tgt) ->
-    # Start testing mode.
-    v.vow-chart2 chart2
-    v.vow-position tgt
-    # End testing mode.
+    call 'setPromotionPosition' type (color, tgt)
 
-    chessman-type = x.chessman-type-from chart2
-    call 'setPromotionPosition' chessman-type (chart2, tgt)
-
-  vulnerable-positions-for = (board, color) ->
+  # TODO: Reconsider necessity of castling-rights
+  vulnerable-positions-for = (board, rts, color) ->
     # Start testing mode.
     v.vow-board board
+    v.vow-castling-right-set rts
     v.vow-color color
     # End testing mode.
 
     foe-color     = u.opposing-color (color)
     foe-positions = x.chessman-positions-from (board, foe-color)
 
-    _.meld (_.map (getPotentialKingAttacks board) foe-positions)
+    get-potential-king-attacks = \pos ->
+      getPotentialKingAttacks (board, pos, rts)
+
+    _.meld (_.map get-potential-king-attacks foe-positions)
 
   # Start testing mode.
 
