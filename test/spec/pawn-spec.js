@@ -50,17 +50,17 @@
         return to_hyphen_equal(c.no_hyphen_castling_hyphen_rts)(fn(c.no_hyphen_castling_hyphen_rts));
       });
       t('test p.move')(function() {
-        var bd2, fn, res2, result, src1, src2, tgt1, tgt2;
+        var bd2, fn, res, res2, src1, src2, tgt1, tgt2;
         fn = p.move;
-        result = 'rnbqkbnrppppp-pp--------------------------------PPPPPPPPRNBQKpNR';
+        res = 'rnbqkbnrppppp-pp--------------------------------PPPPPPPPRNBQKpNR';
         src1 = gen_hyphen_pos(1, 5);
         tgt1 = gen_hyphen_pos(7, 5);
-        to_hyphen_equal(result)(fn(initial_hyphen_board, src1, void 0, c.unset_hyphen_passant_hyphen_pos)(tgt1));
+        to_hyphen_equal(res)(fn(initial_hyphen_board, src1, c.unset_hyphen_passant_hyphen_pos)(tgt1));
         bd2 = 'rnbqkbnr-ppppppp----------------pP--------------P-PPPPPPRNBQKBNR';
         src2 = gen_hyphen_pos(4, 0);
         tgt2 = gen_hyphen_pos(5, 1);
         res2 = 'rnbqkbnr-ppppppp-------------------------p------P-PPPPPPRNBQKBNR';
-        return to_hyphen_equal(res2)(fn(bd2, src2, void 0, tgt2)(tgt2));
+        return to_hyphen_equal(res2)(fn(bd2, src2, tgt2)(tgt2));
       });
       t('test p.setPassantPosition')(function() {
         var expected_hyphen_passant, fn, src, tgt, tgt2;

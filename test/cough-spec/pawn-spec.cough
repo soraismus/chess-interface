@@ -103,18 +103,16 @@ define ([
 
     t 'test p.move' (->
       fn = p.move
-      result =
-        'rnbqkbnrppppp-pp--------------------------------PPPPPPPPRNBQKpNR'
+      res = 'rnbqkbnrppppp-pp--------------------------------PPPPPPPPRNBQKpNR'
       src1 = gen-pos (1, 5)
       tgt1 = gen-pos (7, 5)
-      to-equal result (fn (
-        initial-board, src1, undefined, c.unset-passant-pos) tgt1)
+      to-equal res (fn (initial-board, src1, c.unset-passant-pos) tgt1)
 
       bd2 = 'rnbqkbnr-ppppppp----------------pP--------------P-PPPPPPRNBQKBNR'
       src2 = gen-pos (4, 0)
       tgt2 = gen-pos (5, 1)
       res2 = 'rnbqkbnr-ppppppp-------------------------p------P-PPPPPPRNBQKBNR'
-      to-equal res2 (fn (bd2, src2, undefined, tgt2) tgt2)
+      to-equal res2 (fn (bd2, src2, tgt2) tgt2)
     )
 
     t 'test p.setPassantPosition' (->
