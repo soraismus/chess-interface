@@ -8,49 +8,6 @@ define ([
   'assertions'
 ], (_, x, u, g, y, piece-fns, v) ->
 
-  position? = y.position?
-
-  get-basic-potential-moves = (rank, file, offsets, available?) ->
-    # Start testing mode.
-    v.vow-all-position-components [rank, file]
-    
-    # TODO: Add a more specific assertion for offsets.
-    _.vowAllAry offsets
-
-    _.vowFn available?
-    # End testing mode.
-
-    potential-moves = []
-
-    for dir in offsets
-      [rank-diff, file-diff] = x.rank-&-file-from dir
-      [new-rank, new-file]   = [rank + rank-diff, file + file-diff]
-
-      tgt = g.generate-position! (new-rank, new-file)
-
-      potential-moves.push tgt if position? tgt && available? tgt
-
-    potential-moves
-
-  getBasicPotentialMoves = (chart2, chessman-type) ->
-    # Start testing mode.
-    v.vow-chart2 chart2
-    v.vow-chessman-type chessman-type
-    # End testing mode.
-
-    board        = x.board-from chart2
-    src          = x.position-from chart2
-    [rank, file] = x.rank-&-file-from src
-    offsets      = u.offsets-for chessman-type
-    available?   = u.available? (board, src)
-
-    get-basic-potential-moves (
-      x.rank-of src
-      x.file-of src
-      u.offsets-for chessman-type
-      u.available? (board, src)
-    )
-
   getBasicPotentialMoves2 = (bd, src, rts, passant, type) ->
     # Start testing mode.
     v.vow-board bd
@@ -58,21 +15,13 @@ define ([
     v.vow-chessman-type type
     # End testing mode.
 
-    # TODO: Create a new fn, the formal parameters of
-    # which the following local variables.
-    moves = []
-
+    moves            = []
     rank-&-file-from = x.rank-&-file-from
-
-    [rank, file] = rank-&-file-from src
-
-    offsets    = u.offsets-for type
-    inessent?  = u.inessent?
-    gen-pos!   = g.generate-position!
-    available? = u.available? (bd, src)
-
-    # TODO: Create a new fn, the body of which
-    # is the following loop.
+    [rank, file]     = rank-&-file-from src
+    offsets          = u.offsets-for type
+    inessent?        = u.inessent?
+    gen-pos!         = g.generate-position!
+    available?       = u.available? (bd, src)
 
     for dir in offsets
       [rank-diff, file-diff] = rank-&-file-from dir
@@ -87,8 +36,6 @@ define ([
     moves
 
   public-fns = _.defaults [piece-fns] {
-    get-basic-potential-moves
-    getBasicPotentialMoves
     getBasicPotentialMoves2
   }
 

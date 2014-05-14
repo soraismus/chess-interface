@@ -10,21 +10,6 @@ define ([
     
   pf = public-fns = _.defaults [stepper-fns] {}
 
-  pf.getPotentialKingAttacks = \board \src ->
-    # Start testing mode.
-    v.vow-board board
-    v.vow-position src
-    # End testing mode.
-
-    chessman-type = x.chessman-type-at board src
-
-    pf.get-basic-potential-moves (
-      x.rank-of src
-      x.file-of src
-      u.offsets-for chessman-type
-      _.true
-    )
-
   get-potential-moves = (bd, src) ->
     # Start testing mode.
     v.vow-board bd
@@ -32,9 +17,6 @@ define ([
     # End testing mode.
 
     pf.getBasicPotentialMoves2 (bd, src, undefined, undefined, c.knight)
-
-  pf.getPotentialMoves = pf.getBasicPotentialMoves
-  pf.move              = pf.basicMove
 
   pf.getPotentialKingAttacks2 = get-potential-moves
   pf.getPotentialMoves2 = get-potential-moves

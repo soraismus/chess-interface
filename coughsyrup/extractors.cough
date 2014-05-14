@@ -34,32 +34,6 @@ define (['mydash', 'constants', 'types', 'assertions'], (_, c, y, v) ->
   # Extractors
   # -----------
 
-  board-from = \val ->
-    # Start testing mode.
-    _.vowStruct [y.setting?, y.map?, y.chart?, y.chart2?] val
-    # End testing mode.
-
-    evaluators = [
-      ([board, pos])      -> board
-      ([board, path])     -> board
-      ([{ board }, path]) -> board
-      ({ board })         -> board
-    ]
-
-    _.switch [y.setting?, y.map?, y.chart?, y.chart2?] evaluators val
-
-  castling-rights-from = \val ->
-    # Start testing mode.
-    _.vowStruct [y.chart?, y.chart2?] val
-    # End testing mode.
-
-    evaluators = [
-      ([{ castlingRights }]) -> castlingRights
-      ({ castlingRights })   -> castlingRights
-    ]
-
-    _.switch [y.chart?, y.chart2?] evaluators val
-
   chessman-positions-from = (board, color) ->
     # Start testing mode.
     v.vow-board board
@@ -98,12 +72,6 @@ define (['mydash', 'constants', 'types', 'assertions'], (_, c, y, v) ->
 
     type-of[abbrev]
 
-  chessman-type-from = \chart2 ->
-    # Start testing mode.
-    v.vow-chart2 chart2
-    # End testing mode.
-    chessman-type-at (board-from chart2) (position-from chart2)
-
   color-at = \board \pos ->
     # Start testing mode.
     v.vow-board board
@@ -136,61 +104,12 @@ define (['mydash', 'constants', 'types', 'assertions'], (_, c, y, v) ->
 
     _.switch [y.position?, y.setting?] evaluators val
 
-  # Not possible for the type 'chart2'.
-  map-from = \chart ->
-    # Start testing mode.
-    v.vow-chart chart
-    # End testing mode.
-    [{ board }, path] = chart
-    [board, path]
-
-  # Not possible for the type 'chart2'.
-  path-from = \val ->
-    # Start testing mode.
-    _.vowStruct [y.map?, y.chart?] val
-    # End testing mode.
-    val[1]
-
-  passant-from = \val ->
-    # Start testing mode.
-    _.vowStruct [y.chart?, y.chart2?] val
-    # End testing mode.
-
-    evaluators = [
-      ([{ passantPosition }]) -> passantPosition
-      ({ passantPosition })   -> passantPosition
-    ]
-
-    _.switch [y.chart?, y.chart2?] evaluators val
-
-  position-from = \val ->
-    # Start testing mode.
-    _.vowStruct [y.setting?, y.map?, y.chart2?] val
-    # End testing mode.
-
-    evaluators = [
-      ([board, pos])        -> pos
-      ([board, [tgt, src]]) -> src
-      ({ source })          -> source
-    ]
-
-    _.switch [y.setting?, y.map?, y.chart2?] evaluators val
-
   rank-&-file-from = \val ->
     # Start testing mode.
-    _.vowStruct [y.position?, y.integral-pair?, y.setting?, y.chart2?] val
+    v.vow-integral-pair val
     # End testing mode.
 
-    types = [y.position?, y.integral-pair?, y.setting?, y.chart2?]
-
-    evaluators = [
-      _.identity
-      _.identity
-      _.second
-      ({ source }) -> source
-    ]
-
-    _.switch types evaluators val
+    val
 
   rank-of = \val ->
     # Start testing mode.
@@ -211,83 +130,18 @@ define (['mydash', 'constants', 'types', 'assertions'], (_, c, y, v) ->
     # End testing mode.
     _.charAt (to-1d pos) board
 
-  src-from = \val ->
-    # Start testing mode.
-    _.vowStruct [y.path?, y.map?, y.chart?, y.chart2?] val
-    # End testing mode.
-
-    evaluators = [
-      ([tgt, src])              -> src
-      ([board, [tgt, src]])     -> src
-      ([{ board }, [tgt, src]]) -> src
-      ({ source })              -> source
-    ]
-
-    _.switch [y.path?, y.map?, y.chart?, y.chart?] evaluators val
-
-  src-setting-from = \val ->
-    # Start testing mode.
-    _.vowStruct [y.map?, y.chart?, y.chart2?] val
-    # End testing mode.
-
-    evaluators = [
-      ([board, [tgt, src]])     -> [board, src]
-      ([{ board }, [tgt, src]]) -> [board, src]
-      ({ board, source})        -> g.generate-setting (board, source)
-    ]
-
-    _.switch [y.map?, y.chart?, y.chart?] evaluators val
-
-  # Not possible for the type 'chart2'.
-  tgt-from = \val ->
-    # Start testing mode.
-    _.vowStruct [y.path?, y.map?, y.chart?] val
-    # End testing mode.
-
-    evaluators = [
-      ([tgt, src])              -> tgt
-      ([board, [tgt, src]])     -> tgt
-      ([{ board }, [tgt, src]]) -> tgt
-    ]
-
-    _.switch [y.path?, y.map?, y.chart?] evaluators val
-
-  # Not possible for the type 'chart2'.
-  tgt-setting-from = \val ->
-    # Start testing mode.
-    _.vowStruct [y.map?, y.chart?] val
-    # End testing mode.
-
-    evaluators = [
-      ([board, [tgt, src]])     -> [board, tgt]
-      ([{ board }, [tgt, src]]) -> [board, tgt]
-    ]
-
-    _.switch [y.map?, y.chart?] evaluators val
-
   return {
-    board-from
-    castling-rights-from
     chessman-positions-from
     chessman-type-at
     chessman-type-of
-    chessman-type-from
     corresponding-black-chessman
     color-at
     color-of
     colors-at
     file-of
-    map-from
-    path-from
-    passant-from
-    position-from
     rank-&-file-from
     rank-of
     square-at
-    src-from
-    src-setting-from
-    tgt-from
-    tgt-setting-from
     to-1d
     to-2d
   }

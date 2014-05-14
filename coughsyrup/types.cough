@@ -40,8 +40,6 @@ define (['mydash', 'constants'], (_, c) ->
 
   castling-right-set? = \val -> satisfies-regex? /(^-$)|(^K?Q?k?q?$)/ val
 
-  chart? = \val -> pair? val && context? val[0] && path? val[1]
-
   chart2? = \val ->
     _.isHash val && do (has = has val) ->
         has 'board' &&
@@ -62,13 +60,7 @@ define (['mydash', 'constants'], (_, c) ->
         castling-right-set? val['castlingRights'] &&
         passant-position? val['passantPosition']
 
-  index? = \val -> _.isInteger val && _.iBtw 0 63 val
-
   integral-pair? = \val -> pair? val && _.both _.isInteger val
-
-  king? = \val -> satisfies-regex? /^k$/i val
-
-  map? = \val -> pair? val && board? val[0] && path? val[1]
 
   pair? = \val -> _.isArray val && _.length val == 2
 
@@ -77,20 +69,11 @@ define (['mydash', 'constants'], (_, c) ->
 
   path? = \val -> pair? val && _.both position? val
 
-  pawn? = \val -> satisfies-regex? /^p$/i val
-
   pawn-direction? = \val -> val == 1 || val == -1
-
-  player? = \val -> _.contains c.players val
 
   position? = \val -> integral-pair? val && inessent? val
 
   position-component? = \val -> bounded? val && _.isInteger val
-
-  rook? = \val -> satisfies-regex? /^r$/i val
-
-  setting? = \val ->
-    _.isArray val && board? val[0] && position? val[1]
 
   square? = \val -> chessman? val || empty? val
 
@@ -102,7 +85,6 @@ define (['mydash', 'constants'], (_, c) ->
     bounded?
     castling-right?
     castling-right-set?
-    chart?
     chart2?
     chessman?
     chessman-type?
@@ -110,21 +92,13 @@ define (['mydash', 'constants'], (_, c) ->
     color-pair?
     context?
     empty?
-    index?
     inessent?
     integral-pair?
-    king?
-    map?
-    pair?
     passant-position?
     path?
-    pawn?
     pawn-direction?
-    player?
     position?
     position-component?
-    rook?
-    setting?
     square?
     unset-passant-position?
   }

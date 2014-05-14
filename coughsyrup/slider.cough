@@ -34,14 +34,6 @@ define ([
 
     possible-moves
 
-  getPotentialKingAttacks = \board \src ->
-    # Start testing mode.
-    v.vow-board board
-    v.vow-position src
-    # End testing mode.
-
-    get-potential-moves (board, src, x.chessman-type-at board src)
-
   getPotentialKingAttacks2 = (bd, src, rts, type) ->
     # Start testing mode.
     v.vow-board bd
@@ -63,17 +55,6 @@ define ([
 
     potential-moves
 
-  getPotentialMoves = (chart2, chessman-type) ->
-    # Start testing mode.
-    v.vow-chart2 chart2
-    v.vow-chessman-type chessman-type
-    # End testing mode.
-
-    board = x.board-from chart2
-    src   = x.position-from chart2
-
-    get-potential-moves (board, src, chessman-type)
-
   getPotentialMoves2 = (bd, src, rts, passant, type) ->
     # Start testing mode.
     v.vow-board bd
@@ -94,13 +75,9 @@ define ([
     moves
 
   public-fns = _.defaults [piece-fns] {
-    getPotentialKingAttacks
-    getPotentialMoves
     getPotentialKingAttacks2
     getPotentialMoves2
   }
-
-  public-fns.move = public-fns.basicMove
 
   public-fns.move2 = public-fns.basicMove2
 

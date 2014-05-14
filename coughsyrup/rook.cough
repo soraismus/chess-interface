@@ -49,35 +49,8 @@ define ([
       KQq  : KQ,  Qq  : Q,  Kq  : K,  q   : NO
       KQ   : KQ,  Q   : Q,  K   : K,  '-' : NO 
 
-  get-new-castling-rts = (color, side, orig-rts) ->
-    new-rts = new-castling-rts[color][side][orig-rts]
-    if _.vacant new-rts then NO else new-rts
-
   kingside? = \src ->
     x.file-of src >= 4
-
-  which-side? = \src ->
-    if kingside? src then 'kingside' else 'queenside'
-
-  reset-modifyCastlingRights = \castling-rts ->
-    no-castling-rts = c.no-castling-rts
-    if castling-rts == no-castling-rts
-      pf.modifyCastlingRights = \chart2 -> no-castling-rts
-
-  modifyCastlingRights = \chart2 ->
-    # Start testing mode.
-    v.vow-chart2 chart2
-    # End testing mode.
-
-    board         = x.board-from chart2
-    src           = x.position-from chart2
-    rook-color    = x.color-at board src
-    castling-rts  = x.castling-rights-from chart2
-    side          = which-side? src
-
-    reset-modifyCastlingRights castling-rts
-
-    get-new-castling-rts (rook-color, side, castling-rts)
 
   modifyCastlingRights2 = (rts, src) ->
     # Start testing mode.
@@ -91,8 +64,10 @@ define ([
 
     new-castling-rts[rook-color][side][rts]
 
+  which-side? = \src ->
+    if kingside? src then 'kingside' else 'queenside'
+
   pf = public-fns = _.defaults [slider-fns] {
-    modifyCastlingRights
     modifyCastlingRights2
   }
 
@@ -114,8 +89,6 @@ define ([
         # End testing mode
 
         getPotentialKingAttacks2 (bd, src, undefined, c.rook)
-
-  pf.move = pf.basicMove
 
   return public-fns
 

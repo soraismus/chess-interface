@@ -126,12 +126,6 @@ define ([
 
   to-2d = x.to-2d
 
-  unallied? = \colors ->
-    # Start testing mode.
-    v.vow-color-pair colors
-    # End testing mode.
-    colors[0] != colors[1] && _.notBoth color-absent? colors
-
   return {
     available?
     black?
@@ -147,7 +141,6 @@ define ([
     replace
     same-position?
     to-2d
-    unallied?
   }
 
 )

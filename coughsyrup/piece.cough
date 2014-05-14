@@ -8,52 +8,13 @@ define ([
   'assertions'
 ], (_, c, g, u, x, chessman-fns, v) ->
 
-  basicMove = \chart2 \tgt ->
-    # Start testing mode.
-    v.vow-chart2 chart2
-    v.vow-position tgt
-    # End testing mode.
-
-    board = x.board-from chart2
-    src = x.position-from chart2
-    src-chessman = x.square-at board src
-
-    bd-w/-duplicate-piece = u.replace (src-chessman, board, tgt)
-
-    u.replace (c.empty-square, bd-w/-duplicate-piece, src)
-
-  modifyCastlingRights = \chart2 ->
-    # Start testing mode.
-    v.vow-chart2 chart2
-    # End testing mode.
-
-    x.castling-rights-from chart2
-
-  setPromotionPosition = \chart2 ->
-    # Start testing mode.
-    v.vow-chart2 chart2
-    # End testing mode.
-
-    c.unset-promotion-pos
+  setPassantPosition2 = ->
+    c.unset-passant-pos
 
   setPromotionPosition2 = ->
     c.unset-promotion-pos
 
-  setPassantPosition = \chart2 ->
-    # Start testing mode.
-    v.vow-chart2 chart2
-    # End testing mode.
-
-    c.unset-passant-pos
-
-  setPassantPosition2 = ->
-    c.unset-passant-pos
-
   public-fns = _.defaults [chessman-fns] {
-    basicMove
-    modifyCastlingRights
-    setPassantPosition
-    setPromotionPosition
     setPassantPosition2
     setPromotionPosition2
   }

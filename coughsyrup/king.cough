@@ -109,15 +109,6 @@ define ([
   get-potential-castling-moves = (color, castling-rts) ->
     castling-tgts[color][castling-rts]
 
-  getPotentialKingAttacks = \board \src ->
-    temporary-chart2 = g.generate-chart2
-      board  : board
-      source : src
-      castlingRights  : c.no-castling-rts
-      passantPosition : c.unset-passant-pos
-
-    pf.getBasicPotentialMoves (temporary-chart2, c.king)
-
   getPotentialKingAttacks2 = (bd, src, rts) ->
     # Start testing mode.
     v.vow-board bd
@@ -126,25 +117,6 @@ define ([
     # End testing mode.
 
     getPotentialMoves2 (bd, src, rts)
-
-  # TODO: Rewrite #color.at to take a 'chart2' type as an argument.
-  getPotentialMoves = \chart2 ->
-    # Start testing mode.
-    v.vow-chart2 chart2
-    # End testing mode.
-
-    board        = x.board-from chart2
-    source       = x.position-from chart2
-    king-color   = x.color-at board source
-    castling-rts = x.castling-rights-from chart2
-
-    basic-potential-moves =
-      pf.getBasicPotentialMoves (chart2, c.king)
-
-    reset-getPotentialMoves castling-rts
-
-    basic-potential-moves.concat (
-      get-potential-castling-moves (king-color, castling-rts))
 
   getPotentialMoves2 = (bd, src, rts) ->
     # Start testing mode.
@@ -158,20 +130,6 @@ define ([
 
     basic-moves.concat (get-potential-castling-moves (king-color, rts))
 
-  modifyCastlingRights = \chart2 ->
-    # Start testing mode.
-    v.vow-chart2 chart2
-    # End testing mode.
-
-    board        = x.board-from chart2
-    src          = x.position-from chart2
-    king-color   = x.color-at board src
-    castling-rts = x.castling-rights-from chart2
-
-    reset-modifyCastlingRights castling-rts
-
-    new-castling-rts[king-color][castling-rts]
-
   modifyCastlingRights2 = (rts, src) ->
     # Start testing mode.
     v.vow-castling-right-set rts
@@ -180,19 +138,6 @@ define ([
 
     king-color = if x.rank-of src == 0 then c.black else c.white
     new-castling-rts[king-color][rts]
-
-  move = \chart2 \tgt ->
-    # Start testing mode.
-    v.vow-chart2 chart2
-    v.vow-position tgt
-    # End testing mode.
-
-    src = x.position-from chart2
-    
-    if castling? (src, tgt)
-      castle chart2 tgt
-    else
-      non-castling-move chart2 tgt
 
   move2 = (bd, src) -> \tgt ->
     # Start testing mode.
@@ -211,19 +156,6 @@ define ([
   basicMove = non-castling-move = \chart2 \tgt ->
     pf.basicMove chart2 tgt
 
-  reset-getPotentialMoves = \castling-rts ->
-    if castling-rts == c.no-castling-rts
-      pf.getPotentialMoves = \chart2 ->
-        # Start testing mode.
-        v.vow-chart2 chart2
-        # End testing mode.
-
-        pf.getBasicPotentialMoves (chart2, c.king)
-
-  reset-modifyCastlingRights = \castling-rts ->
-    if castling-rts == c.no-castling-rts
-      pf.modifyCastlingRights = x.castling-rights-from
-
   rook-castling-path = \king-tgt ->
     key = JSON.stringify king-tgt
     src = rook-castling-srcs[key]
@@ -233,10 +165,6 @@ define ([
   # -----------------------------------------------------------------
 
   pf = public-fns = _.defaults [stepper-fns] {
-    getPotentialKingAttacks
-    getPotentialMoves
-    modifyCastlingRights
-    move
     getPotentialKingAttacks2
     getPotentialMoves2
     modifyCastlingRights2

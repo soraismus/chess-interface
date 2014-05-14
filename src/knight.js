@@ -3,22 +3,11 @@
   define(['mydash', 'constants', 'constructors', 'extractors', 'utilities', 'stepper', 'assertions'], function(_, c, g, x, u, stepper_hyphen_fns, v) {
     var get_hyphen_potential_hyphen_moves, pf, public_hyphen_fns;
     pf = public_hyphen_fns = _.defaults([stepper_hyphen_fns])({});
-    pf.getPotentialKingAttacks = function(board) {
-      return function(src) {
-        var chessman_hyphen_type;
-        v.vow_hyphen_board(board);
-        v.vow_hyphen_position(src);
-        chessman_hyphen_type = x.chessman_hyphen_type_hyphen_at(board)(src);
-        return pf.get_hyphen_basic_hyphen_potential_hyphen_moves(x.rank_hyphen_of(src), x.file_hyphen_of(src), u.offsets_hyphen_for(chessman_hyphen_type), _["true"]);
-      };
-    };
     get_hyphen_potential_hyphen_moves = function(bd, src) {
       v.vow_hyphen_board(bd);
       v.vow_hyphen_position(src);
       return pf.getBasicPotentialMoves2(bd, src, void 0, void 0, c.knight);
     };
-    pf.getPotentialMoves = pf.getBasicPotentialMoves;
-    pf.move = pf.basicMove;
     pf.getPotentialKingAttacks2 = get_hyphen_potential_hyphen_moves;
     pf.getPotentialMoves2 = get_hyphen_potential_hyphen_moves;
     pf.move2 = pf.basicMove2;
