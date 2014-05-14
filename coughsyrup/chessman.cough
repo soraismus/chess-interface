@@ -1,0 +1,30 @@
+define ([
+  'constants'
+  'extractors'
+  'utilities'
+  'assertions'
+], (c, x, u, v) ->
+
+  basicMove2 = (bd, src) -> \tgt ->
+    # Start testing mode.
+    v.vow-board bd
+    v.vow-all-positions [src, tgt]
+    # End testing mode.
+
+    src-chessman = x.square-at bd src
+    bd-w/-duplicate-piece = u.replace (src-chessman, bd, tgt)
+    u.replace (c.empty-square, bd-w/-duplicate-piece, src)
+
+  modifyCastlingRights2 = \rts ->
+    # Start testing mode.
+    v.vow-castling-right-set rts
+    # End testing mode.
+
+    rts
+
+  return {
+    basicMove2
+    modifyCastlingRights2
+  }
+
+)
