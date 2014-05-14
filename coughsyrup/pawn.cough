@@ -134,7 +134,7 @@ define ([
     direction = direction-for color
     u.replace (c.empty-square, board, behind (direction, passant))
 
-  move = (bd, src, rts, passant) -> \tgt ->
+  move = (bd, src, passant) -> \tgt ->
     # Start testing mode.
     v.vow-board bd
     v.vow-all-positions [src, tgt]

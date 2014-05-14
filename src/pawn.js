@@ -102,7 +102,7 @@
       direction = direction_hyphen_for(color);
       return u.replace(c.empty_hyphen_square, board, behind(direction, passant));
     };
-    move = function(bd, src, rts, passant) {
+    move = function(bd, src, passant) {
       return function(tgt) {
         var bd_hyphen_after_hyphen_basic_hyphen_move, color;
         v.vow_hyphen_board(bd);
