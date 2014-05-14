@@ -4,16 +4,11 @@
     var contravenes, descr, each_hyphen_contravenes, each_hyphen_satisfies, each_hyphen_throws, satisfies, t, test_hyphen_predicate, test_hyphen_spec, throws, to_hyphen_be, to_hyphen_be_hyphen_false, to_hyphen_be_hyphen_fn, to_hyphen_be_hyphen_true, to_hyphen_equal, to_hyphen_throw, xdescr, xt;
     descr = j.descr, xdescr = j.xdescr, t = j.t, xt = j.xt, test_hyphen_spec = j.test_hyphen_spec, to_hyphen_throw = j.to_hyphen_throw, to_hyphen_be = j.to_hyphen_be, to_hyphen_equal = j.to_hyphen_equal, to_hyphen_be_hyphen_true = j.to_hyphen_be_hyphen_true, to_hyphen_be_hyphen_false = j.to_hyphen_be_hyphen_false, satisfies = j.satisfies, contravenes = j.contravenes, throws = j.throws, each_hyphen_satisfies = j.each_hyphen_satisfies, each_hyphen_contravenes = j.each_hyphen_contravenes, each_hyphen_throws = j.each_hyphen_throws, to_hyphen_be_hyphen_fn = j.to_hyphen_be_hyphen_fn, test_hyphen_predicate = j.test_hyphen_predicate;
     return descr('types.cough')(function() {
-      var bd, chart, ctx, map, passant, path, pos, rts, setting, src, tgt;
+      var bd, passant, pos, rts, src, tgt;
       bd = sc.boards[0];
-      chart = sc.charts[0];
-      ctx = sc.contexts[0];
-      map = sc.maps[0];
       passant = sc.passant_hyphen_positions[0];
-      path = sc.paths[0];
       pos = sc.positions[0];
       rts = sc.castling_hyphen_rights[0];
-      setting = sc.settings[0];
       src = sc.positions[0];
       tgt = sc.positions[1];
       t('test y.black?')(function() {
@@ -60,12 +55,6 @@
         each_hyphen_satisfies(fn)([c.full_hyphen_castling_hyphen_rts, 'Kkq', c.no_hyphen_castling_hyphen_rts]);
         return contravenes(fn)('x');
       });
-      t('test y.chart?')(function() {
-        var fn;
-        fn = y.chart_question_;
-        satisfies(fn)(chart);
-        return contravenes(fn)(map);
-      });
       t('test y.chessman?')(function() {
         var fn;
         fn = y.chessman_question_;
@@ -90,53 +79,17 @@
         satisfies(fn)([c.white, c.black]);
         return contravenes(fn)([c.white, c.black, c.absent_hyphen_color_hyphen_pair]);
       });
-      t('test y.context?')(function() {
-        var fn;
-        fn = y.context_question_;
-        satisfies(fn)(ctx);
-        return contravenes(fn)(map);
-      });
-      t('test y.index?')(function() {
-        var fn;
-        fn = y.index_question_;
-        each_hyphen_satisfies(fn)(c.board_hyphen_indices);
-        return each_hyphen_contravenes(fn)([100, 'x']);
-      });
-      t('test y.integral-pair?')(function() {
-        var fn;
-        fn = y.integral_hyphen_pair_question_;
-        satisfies(fn)([-100, 100]);
-        return each_hyphen_contravenes(fn)([[1, 2, 3], [1, 'x']]);
-      });
       t('test y.king?')(function() {
         var fn;
         fn = y.king_question_;
         each_hyphen_satisfies(fn)([c.white_hyphen_king, c.black_hyphen_king]);
         return each_hyphen_contravenes(fn)([c.white_hyphen_bishop, c.black_hyphen_queen]);
       });
-      t('test y.map?')(function() {
-        var fn;
-        fn = y.map_question_;
-        satisfies(fn)(map);
-        return contravenes(fn)(chart);
-      });
-      t('test y.pair?')(function() {
-        var fn;
-        fn = y.pair_question_;
-        satisfies(fn)([null, void 0]);
-        return contravenes(fn)([null, void 0, null]);
-      });
       t('test y.passant-position?')(function() {
         var fn;
         fn = y.passant_hyphen_position_question_;
         each_hyphen_satisfies(fn)([src, tgt, c.unset_hyphen_passant_hyphen_pos]);
         return contravenes(fn)([1, 2, 3]);
-      });
-      t('test y.path?')(function() {
-        var fn;
-        fn = y.path_question_;
-        satisfies(fn)(path);
-        return contravenes(fn)(pos);
       });
       t('test y.pawn?')(function() {
         var fn;
@@ -154,19 +107,13 @@
         var fn;
         fn = y.position_question_;
         each_hyphen_satisfies(fn)([src, tgt]);
-        return each_hyphen_contravenes(fn)([1, 'x', null, [1, 2, 3], path]);
+        return each_hyphen_contravenes(fn)([1, 'x', null, [1, 2, 3]]);
       });
       t('test y.rook?')(function() {
         var fn;
         fn = y.rook_question_;
         each_hyphen_satisfies(fn)([c.white_hyphen_rook, c.black_hyphen_rook]);
         return each_hyphen_contravenes(fn)([c.white_hyphen_king, c.black_hyphen_queen]);
-      });
-      t('test y.setting?')(function() {
-        var fn;
-        fn = y.setting_question_;
-        satisfies(fn)(setting);
-        return each_hyphen_contravenes(fn)([bd, pos, map, chart]);
       });
       t('test y.square?')(function() {
         var fn;

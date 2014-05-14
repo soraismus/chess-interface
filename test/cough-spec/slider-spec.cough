@@ -39,110 +39,69 @@ define ([
 
   descr 'test slider.cough' (->
 
-    bd               = sc.boards[0]
-    chart1           = sc.charts[0]
-    chart2           = sc.charts[1]
+    gen-pos = g.generate-position
 
-    chart2_1         = sc.chart2s[0]
+    pos2 = gen-pos (7, 5)
 
-    ctx              = sc.contexts[0]
-    map              = sc.maps[0]
-    passant          = sc.passant-positions[0]
-    path             = sc.paths[0]
-    pos1             = sc.positions[0]
-    pos2             = sc.positions[1]
-    initial-board    = sc.initial-board
-    invalid-board    = sc.invalid-board
-    invalid-chessman = sc.invalid-chessmen[0]
-    invalid-pos      = sc.invalid-positions[0]
-    rts              = sc.castling-rights[0]
-    setting          = sc.settings[0]
-    src              = sc.positions[0]
-    tgt              = sc.positions[1]
+    initial-board = sc.initial-board
 
-    t 'test sl.basicMove' (->
-      fn = sl.basicMove
-      to-equal sl.basicMove sl.move
-    )
-
-    t 'test sl.getPotentialMoves' (->
-      fn = sl.getPotentialMoves
+    t 'test sl.getPotentialMoves2' (->
+      fn = sl.getPotentialMoves2
 
       local-pos = g.generate-position (0, 0)
 
-      factory = \src \bd ->
-        g.generate-chart2
-          board  : bd
-          source : src
-          castlingRights  : c.no-castling-rts
-          passantPosition : c.unset-passant-pos
-
-      gen-chart2 = factory local-pos
-
       bd1 = 'rn--------------------------------------------------------------'
-      chart2-3 = gen-chart2 bd1
       offsets1 = [[1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0]]
-      to-equal offsets1 (fn (chart2-3, c.rook))
+      to-equal offsets1 (fn (bd1, local-pos, undefined, undefined, c.rook))
 
       bd2 = 'rN--------------------------------------------------------------'
-      chart2-4 = gen-chart2 bd2
       offsets2 = [[1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0],
                   [0, 1]]
-      to-equal offsets2 (fn (chart2-4, c.rook))
+      to-equal offsets2 (fn (bd2, local-pos, undefined, undefined, c.rook))
 
       bd3 = 'r-------n-------------------------------------------------------'
-      chart2-5 = gen-chart2 bd3
       offsets3 = [[0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7]]
-      to-equal offsets3 (fn (chart2-5, c.rook))
+      to-equal offsets3 (fn (bd3, local-pos, undefined, undefined, c.rook))
 
       bd4 = 'q-n------------------------n------------------------------------'
-      chart2-6 = gen-chart2 bd4
       offsets4 =
         [
           [1, 1], [2, 2],
           [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0],
           [0, 1]
         ]
-      to-equal offsets4 (fn (chart2-6, c.queen))
+      to-equal offsets4 (fn (bd4, local-pos, undefined, undefined, c.queen))
 
       bd5 = '------------------------------------n--------------------------B'
-      chart2-7 = factory (g.generate-position (7, 7)) bd5
       offsets5 = [[6, 6], [5, 5], [4, 4]]
-      to-equal offsets5 (fn (chart2-7, c.bishop))
-
-      invalid-chart2 = 'x'
-      to-throw fn (invalid-chart2, c.rook)
-
-      expect (-> fn (chart2-7, 'invalid-type')) .toThrow ()
+      to-equal offsets5 (fn (
+        bd5, gen-pos (7, 7), undefined, undefined, c.bishop))
 
     )
 
     # TODO: Add specs.
-    t 'test sl.getPotentialKingAttacks' (->)
+    t 'test sl.getPotentialKingAttacks2' (->)
 
-    t 'test sl.modifyCastlingRights' (->
-      fn = sl.modifyCastlingRights
-      chart3 = sc.chart2s[0]
-      chart4 = sc.chart2s[2]
-      to-equal c.full-castling-rts (fn chart3)
-      to-equal c.no-castling-rts (fn chart4)
+    t 'test sl.modifyCastlingRights2' (->
+      fn = sl.modifyCastlingRights2
+      to-equal c.full-castling-rts (fn c.full-castling-rts)
+      to-equal c.no-castling-rts (fn c.no-castling-rts)
     )
 
-    t 'test sl.move' (->
-      fn = sl.move
-      result =
-        'rnbqkbnrppppp-pp--------------------------------PPPPPPPPRNBQKpNR'
-      to-equal result (fn chart2_1 pos2)
+    t 'test sl.move2' (->
+      fn = sl.move2
+      res = 'rnbqkbnrppppp-pp--------------------------------PPPPPPPPRNBQKpNR'
+      to-equal res (fn (initial-board, gen-pos (1, 5)) pos2)
     )
 
-    t 'test sl.setPassantPosition' (->
-      fn = sl.setPassantPosition
-      to-equal c.unset-passant-pos (fn chart2_1)
+    t 'test sl.setPassantPosition2' (->
+      fn = sl.setPassantPosition2
+      to-equal c.unset-passant-pos (fn ())
     )
 
-    t 'test sl.setPromotionPosition' (->
-      fn = sl.setPromotionPosition
-      to-equal c.unset-promotion-pos (fn chart2_1)
+    t 'test sl.setPromotionPosition2' (->
+      fn = sl.setPromotionPosition2
+      to-equal c.unset-promotion-pos (fn ())
     )
 
   )

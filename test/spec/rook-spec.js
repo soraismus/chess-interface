@@ -4,116 +4,54 @@
     var contravenes, descr, each_hyphen_contravenes, each_hyphen_fn_hyphen_result_hyphen_equals, each_hyphen_satisfies, each_hyphen_throws, gen_hyphen_pred_hyphen_guards, satisfies, t, test_hyphen_predicate, test_hyphen_spec, test_hyphen_throwing_hyphen_transformation, test_hyphen_transformation, throws, to_hyphen_be, to_hyphen_be_hyphen_array, to_hyphen_be_hyphen_false, to_hyphen_be_hyphen_fn, to_hyphen_be_hyphen_nbr, to_hyphen_be_hyphen_true, to_hyphen_equal, to_hyphen_have_hyphen_length, to_hyphen_throw, xdescr, xt;
     descr = j.descr, xdescr = j.xdescr, t = j.t, xt = j.xt, test_hyphen_spec = j.test_hyphen_spec, to_hyphen_throw = j.to_hyphen_throw, to_hyphen_be = j.to_hyphen_be, to_hyphen_equal = j.to_hyphen_equal, to_hyphen_be_hyphen_true = j.to_hyphen_be_hyphen_true, to_hyphen_be_hyphen_false = j.to_hyphen_be_hyphen_false, satisfies = j.satisfies, contravenes = j.contravenes, throws = j.throws, each_hyphen_fn_hyphen_result_hyphen_equals = j.each_hyphen_fn_hyphen_result_hyphen_equals, each_hyphen_satisfies = j.each_hyphen_satisfies, each_hyphen_contravenes = j.each_hyphen_contravenes, each_hyphen_throws = j.each_hyphen_throws, to_hyphen_be_hyphen_array = j.to_hyphen_be_hyphen_array, to_hyphen_be_hyphen_fn = j.to_hyphen_be_hyphen_fn, to_hyphen_be_hyphen_nbr = j.to_hyphen_be_hyphen_nbr, to_hyphen_be_hyphen_array = j.to_hyphen_be_hyphen_array, to_hyphen_have_hyphen_length = j.to_hyphen_have_hyphen_length, test_hyphen_predicate = j.test_hyphen_predicate, test_hyphen_transformation = j.test_hyphen_transformation, test_hyphen_throwing_hyphen_transformation = j.test_hyphen_throwing_hyphen_transformation, gen_hyphen_pred_hyphen_guards = j.gen_hyphen_pred_hyphen_guards;
     return descr('test rook.cough')(function() {
-      var bd, chart1, chart2, chart2_1, ctx, initial_hyphen_board, invalid_hyphen_board, invalid_hyphen_chessman, invalid_hyphen_pos, map, passant, path, pos1, pos2, rts, setting, src, tgt;
-      bd = sc.boards[0];
-      chart1 = sc.charts[0];
-      chart2 = sc.charts[1];
-      chart2_1 = sc.chart2s[0];
-      ctx = sc.contexts[0];
-      map = sc.maps[0];
-      passant = sc.passant_hyphen_positions[0];
-      path = sc.paths[0];
-      pos1 = sc.positions[0];
-      pos2 = sc.positions[1];
+      var gen_hyphen_pos, initial_hyphen_board, pos2;
+      gen_hyphen_pos = g.generate_hyphen_position;
+      pos2 = gen_hyphen_pos(7, 5);
       initial_hyphen_board = sc.initial_hyphen_board;
-      invalid_hyphen_board = sc.invalid_hyphen_board;
-      invalid_hyphen_chessman = sc.invalid_hyphen_chessmen[0];
-      invalid_hyphen_pos = sc.invalid_hyphen_positions[0];
-      rts = sc.castling_hyphen_rights[0];
-      setting = sc.settings[0];
-      src = sc.positions[0];
-      tgt = sc.positions[1];
-      t('test r.basicMove')(function() {
-        var fn;
-        fn = r.basicMove;
-        return to_hyphen_equal(r.basicMove)(r.move);
-      });
-      t('test r.getPotentialMoves')(function() {
-        var bd1, bd2, bd3, bd4, bd5, chart2_hyphen_3, chart2_hyphen_4, chart2_hyphen_5, chart2_hyphen_6, chart2_hyphen_7, factory, fn, gen_hyphen_chart2, invalid_hyphen_chart2, local_hyphen_pos, offsets1, offsets2, offsets3, offsets4, offsets5;
-        fn = r.getPotentialMoves;
+      t('test r.getPotentialMoves2')(function() {
+        var bd1, bd2, bd3, fn, local_hyphen_pos, offsets1, offsets2, offsets3;
+        fn = r.getPotentialMoves2;
         local_hyphen_pos = g.generate_hyphen_position(0, 0);
-        factory = function(src) {
-          return function(bd) {
-            return g.generate_hyphen_chart2({
-              board: bd,
-              source: src,
-              castlingRights: c.no_hyphen_castling_hyphen_rts,
-              passantPosition: c.unset_hyphen_passant_hyphen_pos
-            });
-          };
-        };
-        gen_hyphen_chart2 = factory(local_hyphen_pos);
         bd1 = 'rn--------------------------------------------------------------';
-        chart2_hyphen_3 = gen_hyphen_chart2(bd1);
         offsets1 = [[1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0]];
-        to_hyphen_equal(offsets1)(fn(chart2_hyphen_3, c.rook));
+        to_hyphen_equal(offsets1)(fn(bd1, local_hyphen_pos));
         bd2 = 'rN--------------------------------------------------------------';
-        chart2_hyphen_4 = gen_hyphen_chart2(bd2);
         offsets2 = [[1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0], [0, 1]];
-        to_hyphen_equal(offsets2)(fn(chart2_hyphen_4, c.rook));
+        to_hyphen_equal(offsets2)(fn(bd2, local_hyphen_pos));
         bd3 = 'r-------n-------------------------------------------------------';
-        chart2_hyphen_5 = gen_hyphen_chart2(bd3);
         offsets3 = [[0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7]];
-        to_hyphen_equal(offsets3)(fn(chart2_hyphen_5, c.rook));
-        bd4 = 'q-n------------------------n------------------------------------';
-        chart2_hyphen_6 = gen_hyphen_chart2(bd4);
-        offsets4 = [[1, 1], [2, 2], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0], [0, 1]];
-        to_hyphen_equal(offsets4)(fn(chart2_hyphen_6, c.queen));
-        bd5 = '------------------------------------n--------------------------B';
-        chart2_hyphen_7 = factory(g.generate_hyphen_position(7, 7))(bd5);
-        offsets5 = [[6, 6], [5, 5], [4, 4]];
-        to_hyphen_equal(offsets5)(fn(chart2_hyphen_7, c.bishop));
-        invalid_hyphen_chart2 = 'x';
-        to_hyphen_throw(fn)(invalid_hyphen_chart2, c.rook);
-        return expect(function() {
-          return fn(chart2_hyphen_7, 'invalid-type');
-        }).toThrow();
+        return to_hyphen_equal(offsets3)(fn(bd3, local_hyphen_pos));
       });
-      t('test r.getPotentialKingAttacks')(function() {
+      t('test r.getPotentialKingAttacks2')(function() {
         var bd1, fn, offsets1;
-        fn = r.getPotentialKingAttacks;
+        fn = r.getPotentialKingAttacks2;
         bd1 = 'rN--------------------------------------------------------------';
         offsets1 = [[1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0], [0, 1]];
-        return to_hyphen_equal(offsets1)(fn(bd1)(g.generate_hyphen_position(0, 0)));
+        return to_hyphen_equal(offsets1)(fn(bd1, gen_hyphen_pos(0, 0)));
       });
-      t('test r.modifyCastlingRights')(function() {
-        var chart3, chart4, chart5, chart6, fn, gen_hyphen_chart, gen_hyphen_pos, no_hyphen_passant;
-        fn = r.modifyCastlingRights;
-        no_hyphen_passant = c.no_hyphen_passant_hyphen_pos;
-        gen_hyphen_pos = g.generate_hyphen_position;
-        gen_hyphen_chart = function(pos, rts) {
-          return g.generate_hyphen_chart2({
-            board: initial_hyphen_board,
-            source: pos,
-            castlingRights: rts,
-            passantPosition: no_hyphen_passant
-          });
-        };
-        chart3 = gen_hyphen_chart(gen_hyphen_pos(0, 0), 'KQkq');
-        chart4 = gen_hyphen_chart(gen_hyphen_pos(0, 7), 'kq');
-        chart5 = gen_hyphen_chart(gen_hyphen_pos(7, 0), '-');
-        chart6 = gen_hyphen_chart(gen_hyphen_pos(7, 7), 'Kq');
-        to_hyphen_equal('KQk')(fn(chart3));
-        to_hyphen_equal('q')(fn(chart4));
-        to_hyphen_equal('-')(fn(chart5));
-        return to_hyphen_equal('q')(fn(chart6));
-      });
-      t('test r.move')(function() {
-        var fn, local_hyphen_pos, result;
-        fn = r.move;
-        result = 'rnbqkbnrppppp-pp--------------------------------PPPPPPPPRNBQKpNR';
-        local_hyphen_pos = g.generate_hyphen_position(0, 0);
-        return to_hyphen_equal(result)(fn(chart2_1)(pos2));
-      });
-      t('test r.setPassantPosition')(function() {
+      t('test r.modifyCastlingRights2')(function() {
         var fn;
-        fn = r.setPassantPosition;
-        return to_hyphen_equal(c.unset_hyphen_passant_hyphen_pos)(fn(chart2_1));
+        fn = r.modifyCastlingRights2;
+        to_hyphen_equal('KQk')(fn('KQkq', gen_hyphen_pos(0, 0)));
+        to_hyphen_equal('q')(fn('kq', gen_hyphen_pos(0, 7)));
+        to_hyphen_equal('-')(fn('-', gen_hyphen_pos(7, 0)));
+        return to_hyphen_equal('q')(fn('Kq', gen_hyphen_pos(7, 7)));
       });
-      return t('test r.setPromotionPosition')(function() {
+      t('test r.move2')(function() {
+        var fn, res;
+        fn = r.move2;
+        res = 'rnbqkbnrppppp-pp--------------------------------PPPPPPPPRNBQKpNR';
+        return to_hyphen_equal(res)(fn(initial_hyphen_board, gen_hyphen_pos(1, 5))(pos2));
+      });
+      t('test r.setPassantPosition2')(function() {
         var fn;
-        fn = r.setPromotionPosition;
-        return to_hyphen_equal(c.unset_hyphen_promotion_hyphen_pos)(fn(chart2_1));
+        fn = r.setPassantPosition2;
+        return to_hyphen_equal(c.unset_hyphen_passant_hyphen_pos)(fn());
+      });
+      return t('test r.setPromotionPosition2')(function() {
+        var fn;
+        fn = r.setPromotionPosition2;
+        return to_hyphen_equal(c.unset_hyphen_promotion_hyphen_pos)(fn());
       });
     });
   });

@@ -4,37 +4,17 @@
     var contravenes, descr, each_hyphen_contravenes, each_hyphen_fn_hyphen_result_hyphen_equals, each_hyphen_satisfies, each_hyphen_throws, gen_hyphen_pred_hyphen_guards, satisfies, t, test_hyphen_predicate, test_hyphen_spec, test_hyphen_throwing_hyphen_transformation, test_hyphen_transformation, throws, to_hyphen_be, to_hyphen_be_hyphen_array, to_hyphen_be_hyphen_false, to_hyphen_be_hyphen_fn, to_hyphen_be_hyphen_nbr, to_hyphen_be_hyphen_true, to_hyphen_equal, to_hyphen_have_hyphen_length, to_hyphen_throw, xdescr, xt;
     descr = j.descr, xdescr = j.xdescr, t = j.t, xt = j.xt, test_hyphen_spec = j.test_hyphen_spec, to_hyphen_throw = j.to_hyphen_throw, to_hyphen_be = j.to_hyphen_be, to_hyphen_equal = j.to_hyphen_equal, to_hyphen_be_hyphen_true = j.to_hyphen_be_hyphen_true, to_hyphen_be_hyphen_false = j.to_hyphen_be_hyphen_false, satisfies = j.satisfies, contravenes = j.contravenes, throws = j.throws, each_hyphen_fn_hyphen_result_hyphen_equals = j.each_hyphen_fn_hyphen_result_hyphen_equals, each_hyphen_satisfies = j.each_hyphen_satisfies, each_hyphen_contravenes = j.each_hyphen_contravenes, each_hyphen_throws = j.each_hyphen_throws, to_hyphen_be_hyphen_array = j.to_hyphen_be_hyphen_array, to_hyphen_be_hyphen_fn = j.to_hyphen_be_hyphen_fn, to_hyphen_be_hyphen_nbr = j.to_hyphen_be_hyphen_nbr, to_hyphen_be_hyphen_array = j.to_hyphen_be_hyphen_array, to_hyphen_have_hyphen_length = j.to_hyphen_have_hyphen_length, test_hyphen_predicate = j.test_hyphen_predicate, test_hyphen_transformation = j.test_hyphen_transformation, test_hyphen_throwing_hyphen_transformation = j.test_hyphen_throwing_hyphen_transformation, gen_hyphen_pred_hyphen_guards = j.gen_hyphen_pred_hyphen_guards;
     return descr('test utilities.cough')(function() {
-      var bd, chart1, chart2, ctx, initial_hyphen_bd_hyphen__arobase__hyphen_0_hyphen_0, initial_hyphen_board, invalid_hyphen_chessman, invalid_hyphen_pos, map, passant, path, pos0_hyphen_0, pos1, pos2, pos3, pos4_hyphen_5, rts, setting, src, tgt;
+      var bd, initial_hyphen_board, path, pos1, pos3;
       bd = sc.boards[0];
-      chart1 = sc.charts[0];
-      chart2 = sc.charts[1];
-      ctx = sc.contexts[0];
-      map = sc.maps[0];
-      passant = sc.passant_hyphen_positions[0];
       path = sc.paths[0];
       pos1 = sc.positions[0];
-      pos2 = sc.positions[1];
       pos3 = sc.positions[2];
-      pos0_hyphen_0 = g.generate_hyphen_position(0, 0);
-      pos4_hyphen_5 = g.generate_hyphen_position(4, 5);
       initial_hyphen_board = sc.initial_hyphen_board;
-      invalid_hyphen_chessman = sc.invalid_hyphen_chessmen[0];
-      invalid_hyphen_pos = sc.invalid_hyphen_positions[0];
-      rts = sc.castling_hyphen_rights[0];
-      setting = sc.settings[0];
-      src = sc.positions[0];
-      tgt = sc.positions[1];
-      initial_hyphen_bd_hyphen__arobase__hyphen_0_hyphen_0 = g.generate_hyphen_setting(initial_hyphen_board, g.generate_hyphen_position(0, 0));
       t('test u.available?')(function() {
-        var fn, gen_hyphen_map, local_hyphen_bds, local_hyphen_map1, local_hyphen_map2, local_hyphen_map3, local_hyphen_map4, local_hyphen_map5, local_hyphen_map6, local_hyphen_path, local_hyphen_src, local_hyphen_tgt, _ref;
+        var fn, local_hyphen_bds, local_hyphen_src, local_hyphen_tgt;
         local_hyphen_bds = ['r---------------------------------------------------------------', 'rR--------------------------------------------------------------', 'rr--------------------------------------------------------------', 'R---------------------------------------------------------------', 'Rr--------------------------------------------------------------', 'RR--------------------------------------------------------------'];
         local_hyphen_src = g.generate_hyphen_position(0, 0);
         local_hyphen_tgt = g.generate_hyphen_position(0, 1);
-        local_hyphen_path = g.generate_hyphen_path(local_hyphen_src, local_hyphen_tgt);
-        gen_hyphen_map = function(bd) {
-          return g.generate_hyphen_map(bd, local_hyphen_path);
-        };
-        _ref = _.map(gen_hyphen_map)(local_hyphen_bds), local_hyphen_map1 = _ref[0], local_hyphen_map2 = _ref[1], local_hyphen_map3 = _ref[2], local_hyphen_map4 = _ref[3], local_hyphen_map5 = _ref[4], local_hyphen_map6 = _ref[5];
         fn = function(board) {
           return u.available_question_(board, local_hyphen_src)(local_hyphen_tgt);
         };

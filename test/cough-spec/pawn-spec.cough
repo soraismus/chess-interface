@@ -38,160 +38,108 @@ define ([
 
   descr 'test pawn.cough' (->
 
-    bd               = sc.boards[0]
-    chart1           = sc.charts[0]
-    chart2           = sc.charts[1]
+    gen-pos = g.generate-position
 
-    chart2_1         = sc.chart2s[0]
-    ctx              = sc.contexts[0]
-    map              = sc.maps[0]
-    passant          = sc.passant-positions[0]
-    path             = sc.paths[0]
-    pos1             = sc.positions[0]
-    pos2             = sc.positions[1]
-    initial-board    = sc.initial-board
-    invalid-chessman = sc.invalid-chessmen[0]
-    invalid-pos      = sc.invalid-positions[0]
-    rts              = sc.castling-rights[0]
-    setting          = sc.settings[0]
-    src              = sc.positions[0]
-    tgt              = sc.positions[1]
+    initial-board = sc.initial-board
 
-    descr 'p.getPotentialKingAttacks' (->
-      fn = p.getPotentialKingAttacks
+    t 'test p.getPotentialKingAttacks2' (->
+      fn = p.getPotentialKingAttacks2
 
-      local-pos = g.generate-position (1, 1)
+      local-pos = gen-pos (1, 1)
 
       bd1 = '---------p------------------------------------------------------'
-      res1 = [g.generate-position (2, 0), g.generate-position (2, 2)]
-      to-equal res1 (fn bd1 local-pos)
+      res1 = [gen-pos (2, 0), gen-pos (2, 2)]
+      to-equal res1 (fn (bd1, local-pos))
 
       bd2 = '---------P------------------------------------------------------'
-      res2 = [g.generate-position (0, 0), g.generate-position (0, 2)]
-      to-equal res2 (fn bd2 local-pos)
+      res2 = [gen-pos (0, 0), gen-pos (0, 2)]
+      to-equal res2 (fn (bd2, local-pos))
     )
 
-    descr 'p.getPotentialMoves' (->
-      fn = p.getPotentialMoves
+    descr 'p.getPotentialMoves2' (->
+      fn = p.getPotentialMoves2
 
       t 'when a pawn is on its home rank' (->
-        local-chart1 = g.generate-chart2
-          board  : initial-board
-          source : g.generate-position (1, 4)
-          castlingRights  : c.no-castling-rts
-          passantPosition : c.unset-passant-pos
+        local-bd = initial-board
+        local-pos = gen-pos (1, 4)
 
-        potential-mvs1 = [
-          g.generate-position (2, 4)
-          g.generate-position (3, 4)
-        ]
+        potential-mvs1 = [gen-pos (2, 4), gen-pos (3, 4)]
 
-        to-equal potential-mvs1 (fn local-chart1)
+        to-equal potential-mvs1 (fn (
+          local-bd, local-pos, undefined, c.unset-passant-pos))
       )
 
       t 'when a pawn is not on its home rank' (->
-        bd2 = 'rnbqkbnrpppp-ppp------------p------P------------PPP-PPPPRNBQKBNR'
-        local-chart2 = g.generate-chart2
-          board  : bd2
-          source : g.generate-position (3, 4)
-          castlingRights  : c.no-castling-rts
-          passantPosition : c.unset-passant-pos
+        bd2 =
+          'rnbqkbnrpppp-ppp------------p------P------------PPP-PPPPRNBQKBNR'
 
-        potential-mvs2 = [
-          g.generate-position (4, 4)
-          g.generate-position (4, 3)
-        ]
+        local-pos = gen-pos (3, 4)
 
-        to-equal potential-mvs2 (fn local-chart2)
+        potential-mvs2 = [gen-pos (4, 4), gen-pos (4, 3)]
+
+        to-equal potential-mvs2 (fn (
+          bd2, local-pos, undefined, c.unset-passant-pos))
       )
 
       t 'when the "passantPosition" field is set' (->
-        bd3 = 'rnbqkbnrpppp-ppp-------------------Pp-----------PPP-PPPPRNBQKBNR'
-        local-chart3 = g.generate-chart2
-          board  : bd3
-          source : g.generate-position (4, 4)
-          castlingRights  : c.no-castling-rts
-          passantPosition : g.generate-position (5, 3)
+        bd3 =
+          'rnbqkbnrpppp-ppp-------------------Pp-----------PPP-PPPPRNBQKBNR'
 
-        potential-mvs3 = [
-          g.generate-position (5, 4)
-          g.generate-position (5, 3)
-        ]
+        local-pos = gen-pos (4, 4)
 
-        to-equal potential-mvs3 (fn local-chart3)
+        potential-mvs3 = [gen-pos (5, 4), gen-pos (5, 3)]
+
+        to-equal potential-mvs3 (fn (
+          bd3, local-pos, undefined, gen-pos (5, 3)))
       )
 
     )
 
-    t 'test p.modifyCastlingRights' (->
-      fn = p.modifyCastlingRights
-      chart3 = sc.chart2s[0]
-      chart4 = sc.chart2s[2]
-      to-equal c.full-castling-rts (fn chart3)
-      to-equal c.no-castling-rts (fn chart4)
+    t 'test p.modifyCastlingRights2' (->
+      fn = p.modifyCastlingRights2
+      to-equal c.full-castling-rts (fn c.full-castling-rts)
+      to-equal c.no-castling-rts (fn c.no-castling-rts)
     )
 
-    t 'test p.move' (->
-      fn = p.move
+    t 'test p.move2' (->
+      fn = p.move2
       result =
         'rnbqkbnrppppp-pp--------------------------------PPPPPPPPRNBQKpNR'
-      to-equal result (fn chart2_1 pos2)
+      src1 = gen-pos (1, 5)
+      tgt1 = gen-pos (7, 5)
+      to-equal result (fn (
+        initial-board, src1, undefined, c.unset-passant-pos) tgt1)
 
-      chart2_2 = sc.chart2s[3]
-      tgt2 = sc.positions[4]
+      bd2 = 'rnbqkbnr-ppppppp----------------pP--------------P-PPPPPPRNBQKBNR'
+      src2 = gen-pos (4, 0)
+      tgt2 = gen-pos (5, 1)
       res2 = 'rnbqkbnr-ppppppp-------------------------p------P-PPPPPPRNBQKBNR'
-      to-equal res2 (fn chart2_2 tgt2)
+      to-equal res2 (fn (bd2, src2, undefined, tgt2) tgt2)
     )
 
-    t 'test p.setPassantPosition' (->
-      fn = p.setPassantPosition
+    t 'test p.setPassantPosition2' (->
+      fn = p.setPassantPosition2
 
-      src              = g.generate-position (1, 4)
-      tgt              = g.generate-position (3, 4)
-      tgt2 = expected-passant = g.generate-position (2, 4)
+      src              = gen-pos (1, 4)
+      tgt              = gen-pos (3, 4)
+      tgt2 = expected-passant = gen-pos (2, 4)
 
-      local-chart2 = g.generate-chart2
-        board  : initial-board
-        source : src
-        castlingRights  : c.no-castling-rts
-        passantPosition : c.unset-passant-pos
-
-      to-equal expected-passant (fn (local-chart2, tgt))
-
-      to-equal c.unset-passant-pos (fn (local-chart2, tgt2))
+      to-equal expected-passant (fn (c.black, src, tgt))
+      to-equal c.unset-passant-pos (fn (c.black, src, tgt2))
 
     )
 
-    descr 'p.setPromotionPosition' (->
-      fn = p.setPromotionPosition
+    descr 'p.setPromotionPosition2' (->
+      fn = p.setPromotionPosition2
 
       t 'when a pawn reaches the home rank of its opponents' (->
-        local-board =
-          'rnbqkbnr-ppppppp--------------------------------pPPPPPPPRNBQKBN-'
-
-        tgt = g.generate-position (7, 0)
-        local-chart1 = g.generate-chart2
-          board  : local-board
-          source : g.generate-position (6, 0)
-          castlingRights  : c.no-castling-rts
-          passantPosition : c.unset-passant-pos
-
-        to-equal tgt (fn (local-chart1, tgt))
+        tgt = gen-pos (7, 0)
+        to-equal tgt (fn (c.black, tgt))
       )
 
       t 'when a pawn does not reach its opponents\' home rank' (->
-        local-board =
-          'rnbqkbnr-ppppppp-------------------------p-------PPPPPPPRNBQKBN-'
-
-        tgt = g.generate-position (6, 0)
-
-        local-chart1 = g.generate-chart2
-          board  : local-board
-          source : g.generate-position (5, 0)
-          castlingRights  : c.no-castling-rts
-          passantPosition : c.unset-passant-pos
-
-        to-equal c.unset-promotion-pos (fn (local-chart1, tgt))
+        tgt = gen-pos (6, 0)
+        to-equal c.unset-promotion-pos (fn (c.black, tgt))
       )
 
     )

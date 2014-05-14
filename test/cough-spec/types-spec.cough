@@ -29,14 +29,9 @@ define ([
 
   descr 'types.cough' (->
     bd      = sc.boards[0]
-    chart   = sc.charts[0]
-    ctx     = sc.contexts[0]
-    map     = sc.maps[0]
     passant = sc.passant-positions[0]
-    path    = sc.paths[0]
     pos     = sc.positions[0]
     rts     = sc.castling-rights[0]
-    setting = sc.settings[0]
     src     = sc.positions[0]
     tgt     = sc.positions[1]
 
@@ -86,12 +81,6 @@ define ([
       contravenes fn 'x'
     )
 
-    t 'test y.chart?' (->
-      fn = y.chart?
-      satisfies fn chart
-      contravenes fn map
-    )
-
     t 'test y.chessman?' (->
       fn = y.chessman?
       each-satisfies fn [c.white-rook, c.black-queen, c.black-pawn]
@@ -116,52 +105,16 @@ define ([
       contravenes fn [c.white, c.black, c.absent-color-pair]
     )
 
-    t 'test y.context?' (->
-      fn = y.context?
-      satisfies fn ctx
-      contravenes fn map
-    )
-
-    t 'test y.index?' (->
-      fn = y.index?
-      each-satisfies fn c.board-indices
-      each-contravenes fn [100, 'x']
-    )
-
-    t 'test y.integral-pair?' (->
-      fn = y.integral-pair?
-      satisfies fn [-100, 100]
-      each-contravenes fn [[1, 2, 3], [1, 'x']]
-    )
-
     t 'test y.king?' (->
       fn = y.king?
       each-satisfies fn [c.white-king, c.black-king]
       each-contravenes fn [c.white-bishop, c.black-queen]
     )
 
-    t 'test y.map?' (->
-      fn = y.map?
-      satisfies fn map
-      contravenes fn chart
-    )
-
-    t 'test y.pair?' (->
-      fn = y.pair?
-      satisfies fn [null, undefined]
-      contravenes fn [null, undefined, null]
-    )
-
     t 'test y.passant-position?' (->
       fn = y.passant-position?
       each-satisfies fn [src, tgt, c.unset-passant-pos]
       contravenes fn [1, 2, 3]
-    )
-
-    t 'test y.path?' (->
-      fn = y.path?
-      satisfies fn path
-      contravenes fn pos
     )
 
     t 'test y.pawn?' (->
@@ -179,19 +132,13 @@ define ([
     t 'test y.position?' (->
       fn = y.position?
       each-satisfies fn [src, tgt]
-      each-contravenes fn [1, 'x', null, [1, 2, 3], path]
+      each-contravenes fn [1, 'x', null, [1, 2, 3]]
     )
 
     t 'test y.rook?' (->
       fn = y.rook?
       each-satisfies fn [c.white-rook, c.black-rook]
       each-contravenes fn [c.white-king, c.black-queen]
-    )
-
-    t 'test y.setting?' (->
-      fn = y.setting?
-      satisfies fn setting
-      each-contravenes fn [bd, pos, map, chart]
     )
 
     t 'test y.square?' (->
