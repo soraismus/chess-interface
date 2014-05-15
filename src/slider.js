@@ -30,11 +30,11 @@
         return possible_hyphen_moves;
       };
     };
-    getPotentialKingAttacks = function(bd, src, rts, type) {
+    getPotentialKingAttacks = function(bd, src, type) {
       v.vow_hyphen_board(bd);
       v.vow_hyphen_position(src);
       v.vow_hyphen_chessman_hyphen_type(type);
-      return getPotentialMoves(bd, src, rts, void 0, type);
+      return getPotentialMoves(bd, src, void 0, void 0, type);
     };
     get_hyphen_potential_hyphen_moves = function(board, src, chessman_hyphen_type) {
       var accumulate, color, dir, file, offsets, potential_hyphen_moves, rank, _i, _len, _ref;

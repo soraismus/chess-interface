@@ -33,14 +33,14 @@ define ([
 
     possible-moves
 
-  getPotentialKingAttacks = (bd, src, rts, type) ->
+  getPotentialKingAttacks = (bd, src, type) ->
     # Start testing mode.
     v.vow-board bd
     v.vow-position src
     v.vow-chessman-type type
     # End testing mode.
 
-    getPotentialMoves (bd, src, rts, undefined, type)
+    getPotentialMoves (bd, src, undefined, undefined, type)
 
   get-potential-moves = (board, src, chessman-type) ->
     potential-moves = []

@@ -85,7 +85,7 @@ define ([
         v.vow-position src
         # End testing mode.
 
-        getPotentialKingAttacks (bd, src, undefined, c.rook)
+        getPotentialKingAttacks (bd, src, c.rook)
 
   return public-fns
 

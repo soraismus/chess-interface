@@ -127,7 +127,7 @@
       return function(bd, src) {
         v.vow_hyphen_board(bd);
         v.vow_hyphen_position(src);
-        return getPotentialKingAttacks(bd, src, void 0, c.rook);
+        return getPotentialKingAttacks(bd, src, c.rook);
       };
     })(pf.getPotentialKingAttacks);
     return public_hyphen_fns;
