@@ -18,6 +18,8 @@ define ([
 
   gen-pos = g.generate-position
 
+  no-rts = c.no-castling-rts
+
   king-castling-tgt-files = [2, 6]
 
   king-castling-tgts = [
@@ -94,14 +96,13 @@ define ([
   get-potential-castling-moves = (color, castling-rts) ->
     castling-tgts[color][castling-rts]
 
-  getPotentialKingAttacks = (bd, src, rts) ->
+  getPotentialKingAttacks = (bd, src) ->
     # Start testing mode.
     v.vow-board bd
     v.vow-position src
-    v.vow-castling-right-set rts
     # End testing mode.
 
-    getPotentialMoves (bd, src, rts)
+    getPotentialMoves (bd, src, no-rts)
 
   getPotentialMoves = (bd, src, rts) ->
     # Start testing mode.
@@ -111,7 +112,11 @@ define ([
     # End testing mode.
 
     king-color  = x.color-at bd src
-    basic-moves = pf.getBasicPotentialMoves (bd, src, rts, undefined, c.king)
+
+    basic-moves = pf.getBasicPotentialMoves (
+      bd, src, undefined, undefined, c.king)
+
+    return basic-moves if rts == no-rts
 
     basic-moves.concat (get-potential-castling-moves (king-color, rts))
 
