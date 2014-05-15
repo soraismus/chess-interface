@@ -48,7 +48,7 @@
       },
       nbr_hyphen_chessmen_hyphen_per_hyphen_color: 16,
       no_hyphen_castling_hyphen_rts: '-',
-      no_hyphen_pawn_hyphen_promotion: false,
+      no_hyphen_pawn_hyphen_promotion: '-',
       pawn: pawn,
       pawn_hyphen_home_hyphen_ranks: {
         black: 1,
