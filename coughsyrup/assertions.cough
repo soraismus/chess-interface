@@ -1,13 +1,13 @@
 define (['types'], \y ->
 
-  function? = \val ->
-    toString.call val == '[object Function]'
-
   vow = \condition \message ->
     throw new Error (message) unless condition
 
   vow-with = \predicate \message \val ->
     vow (predicate val) message
+
+  unless-undefined = \pred \val ->
+    val == undefined || pred val
 
   validation-pairs = [
     [y.board?,              'board'             ]
@@ -60,25 +60,24 @@ define (['types'], \y ->
     \val -> val.map validator
 
   plural-validators = [
-    vow-all-colors
-    vow-all-indices
-    vow-all-pairs
     vow-all-passant-positions
     vow-all-positions
     vow-all-position-components
   ] = [
-    vow-color
-    vow-index
-    vow-pair
     vow-passant-position
     vow-position
     vow-position-component
   ].map generate-plural-validator
 
+  vow-message-when-set = \val ->
+    msg = 'Invalid message'
+    vow-with (unless-undefined y.string?) msg val
+
+  vow-promotion-position-when-set = \val ->
+    msg = 'Invalid promotion position'
+    vow-with (unless-undefined y.promotion-position?) msg val
+
   return {
-    vow-all-colors
-    vow-all-indices
-    vow-all-pairs
     vow-all-passant-positions
     vow-all-position-components
     vow-all-positions
@@ -93,8 +92,10 @@ define (['types'], \y ->
     vow-context
     vow-index
     vow-integral-pair
+    vow-message-when-set
     vow-pair
     vow-passant-position
+    vow-promotion-position-when-set
     vow-pawn-direction
     vow-player
     vow-position
