@@ -4,6 +4,9 @@ define (['constants'], (c) ->
   # Private Helper Function
   # ------------------------
 
+  boolean? = \val ->
+    val == true || val == false
+
   has = \owner ->
     fn = Object.hasOwnProperty.bind owner
     \prop -> fn prop
@@ -24,8 +27,8 @@ define (['constants'], (c) ->
   # Public Helper Functions
   # -------------------------
 
-  bounded? = \intg ->
-    intg >= 0 && intg <= 7
+  bounded? = \val ->
+    val >= 0 && val <= 7 && ! (boolean? val)
 
   empty? = \square ->
     square == c.empty-square
