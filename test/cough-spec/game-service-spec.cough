@@ -54,6 +54,7 @@ define ([
     bd4 = '--------P---------------------------------------p--------N------'
     bd13 = '-------k---------------------------------------------PPP--r----K'
     bd14 = 'r-bqkb-rpppp-Qpp--n--n------p-----B-P-----------PPPP-PPPRNB-K-NR'
+    bd15 = '--------b-k-----K------rPp--------------------------------------'
 
     # Castling boards
     bd5 = 'r---k--r------------------------------------------------R---K--R'
@@ -84,11 +85,12 @@ define ([
 
     t 'test gs.checkmate?' (->
       fn = gs.checkmate?
-      to-be-true  (fn bd13, no-rts, no-pass, white)
-      to-be-false (fn bd13, no-rts, no-pass, black)
-      to-be-true  (fn bd14, no-rts, no-pass, black)
-      to-be-false (fn bd14, no-rts, no-pass, white)
-      to-be-false (fn bd1,  no-rts, no-pass, black)
+      to-be-true  (fn bd13, no-pass, white)
+      to-be-false (fn bd13, no-pass, black)
+      to-be-true  (fn bd14, no-pass, black)
+      to-be-false (fn bd14, no-pass, white)
+      to-be-false (fn bd1,  no-pass, black)
+      to-be-false (fn bd15, (gen-pos 2, 1), white)
     )
 
     t 'test gs.getPotentialKingAttacks' (->
@@ -145,12 +147,12 @@ define ([
 
     t 'test gs.in-check?' (->
       fn = gs.in-check?
-      to-be-false (fn bd1,  no-rts, black)
-      to-be-false (fn bd1,  no-rts, white)
-      to-be-false (fn bd13, no-rts, black)
-      to-be-true  (fn bd13, no-rts, white)
-      to-be-true  (fn bd14, no-rts, black)
-      to-be-false (fn bd14, no-rts, white)
+      to-be-false (fn bd1,  black)
+      to-be-false (fn bd1,  white)
+      to-be-false (fn bd13, black)
+      to-be-true  (fn bd13, white)
+      to-be-true  (fn bd14, black)
+      to-be-false (fn bd14, white)
     )
 
     t 'test gs.king-position-for' (->
@@ -224,10 +226,10 @@ define ([
     t 'test gs.vulnerable-positions-for' (->
       fn = gs.vulnerable-positions-for
 
-      to-equal [gen-pos (7, 1)] (fn (bd4, no-rts, white))
+      to-equal [gen-pos (7, 1)] (fn (bd4, white))
 
       res2 = [gen-pos (0, 1), gen-pos (6, 3), gen-pos (5, 2), gen-pos (5, 0)]
-      to-equal res2 (fn bd4, no-rts, black)
+      to-equal res2 (fn bd4, black)
 
       pos-w/-rank-7 = \file -> gen-pos (7, file)
       pos-w/-file-2 = \rank -> gen-pos (rank, 2)
@@ -255,7 +257,7 @@ define ([
         gen-pos (0, 2)
       ]
 
-      to-equal res3 (fn bd13, no-rts, white)
+      to-equal res3 (fn bd13, white)
 
     )
 
