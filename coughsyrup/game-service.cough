@@ -26,10 +26,9 @@ define ([
 
     dispatch-table[chessman-type][fn-name]
 
-  checkmate? = (bd, rts, passant, color) ->
+  checkmate? = (bd, passant, color) ->
     # Start testing mode.
     v.vow-board bd
-    v.vow-castling-right-set rts
     v.vow-passant-position passant
     v.vow-color color
     # End testing mode.
@@ -37,26 +36,26 @@ define ([
     ally-positions = x.chessman-positions-from (bd, color)
 
     for ally-pos in ally-positions
-      potential-moves = getPotentialMoves (bd, ally-pos, rts, passant)
+      potential-moves =
+        getPotentialMoves (bd, ally-pos, c.no-castling-rts, passant)
 
       for potential-mv in potential-moves
         new-bd = move (bd, ally-pos, passant) potential-mv
-        return false unless in-check? (new-bd, rts, color)
+        return false unless in-check? (new-bd, color)
 
     true
 
   contains = (potential-positions, tgt) ->
     potential-positions.some (u.same-position? tgt)
 
-  getPotentialKingAttacks = (bd, src, rts) ->
+  getPotentialKingAttacks = (bd, src) ->
     # Start testing mode.
     v.vow-board bd
     v.vow-position src
-    v.vow-castling-right-set rts
     # End testing mode.
 
     type = x.chessman-type-at bd src
-    call 'getPotentialKingAttacks' type (bd, src, rts, type)
+    call 'getPotentialKingAttacks' type (bd, src, type)
 
   getPotentialMoves = (bd, src, rts, passant) ->
     # Start testing mode.
@@ -70,15 +69,14 @@ define ([
     call 'getPotentialMoves' type (bd, src, rts, passant, type)
 
   # TODO: Reconsider necessity of castling-rights
-  in-check? = (board, rts, color) ->
+  in-check? = (board, color) ->
     # Start testing mode.
     v.vow-board board
-    v.vow-castling-right-set rts
     v.vow-color color
     # End testing mode.
 
     king-pos = king-position-for (board, color)
-    vuln-positions = vulnerable-positions-for (board, rts, color)
+    vuln-positions = vulnerable-positions-for (board, color)
     contains (vuln-positions, king-pos)
 
   king-position-for = (board, color) ->
@@ -150,10 +148,9 @@ define ([
     call 'setPromotionPosition' type (color, tgt)
 
   # TODO: Reconsider necessity of castling-rights
-  vulnerable-positions-for = (board, rts, color) ->
+  vulnerable-positions-for = (board, color) ->
     # Start testing mode.
     v.vow-board board
-    v.vow-castling-right-set rts
     v.vow-color color
     # End testing mode.
 
@@ -161,7 +158,7 @@ define ([
     foe-positions = x.chessman-positions-from (board, foe-color)
 
     get-potential-king-attacks = \pos ->
-      getPotentialKingAttacks (board, pos, rts)
+      getPotentialKingAttacks (board, pos)
 
     Array.concat.apply (null, (foe-positions.map get-potential-king-attacks))
 

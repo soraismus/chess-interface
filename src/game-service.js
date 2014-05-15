@@ -16,20 +16,19 @@
         return dispatch_hyphen_table[chessman_hyphen_type][fn_hyphen_name];
       };
     };
-    checkmate_question_ = function(bd, rts, passant, color) {
+    checkmate_question_ = function(bd, passant, color) {
       var ally_hyphen_pos, ally_hyphen_positions, new_hyphen_bd, potential_hyphen_moves, potential_hyphen_mv, _i, _j, _len, _len1;
       v.vow_hyphen_board(bd);
-      v.vow_hyphen_castling_hyphen_right_hyphen_set(rts);
       v.vow_hyphen_passant_hyphen_position(passant);
       v.vow_hyphen_color(color);
       ally_hyphen_positions = x.chessman_hyphen_positions_hyphen_from(bd, color);
       for (_i = 0, _len = ally_hyphen_positions.length; _i < _len; _i++) {
         ally_hyphen_pos = ally_hyphen_positions[_i];
-        potential_hyphen_moves = getPotentialMoves(bd, ally_hyphen_pos, rts, passant);
+        potential_hyphen_moves = getPotentialMoves(bd, ally_hyphen_pos, c.no_hyphen_castling_hyphen_rts, passant);
         for (_j = 0, _len1 = potential_hyphen_moves.length; _j < _len1; _j++) {
           potential_hyphen_mv = potential_hyphen_moves[_j];
           new_hyphen_bd = move(bd, ally_hyphen_pos, passant)(potential_hyphen_mv);
-          if (!in_hyphen_check_question_(new_hyphen_bd, rts, color)) {
+          if (!in_hyphen_check_question_(new_hyphen_bd, color)) {
             return false;
           }
         }
@@ -39,13 +38,12 @@
     contains = function(potential_hyphen_positions, tgt) {
       return potential_hyphen_positions.some(u.same_hyphen_position_question_(tgt));
     };
-    getPotentialKingAttacks = function(bd, src, rts) {
+    getPotentialKingAttacks = function(bd, src) {
       var type;
       v.vow_hyphen_board(bd);
       v.vow_hyphen_position(src);
-      v.vow_hyphen_castling_hyphen_right_hyphen_set(rts);
       type = x.chessman_hyphen_type_hyphen_at(bd)(src);
-      return call('getPotentialKingAttacks')(type)(bd, src, rts, type);
+      return call('getPotentialKingAttacks')(type)(bd, src, type);
     };
     getPotentialMoves = function(bd, src, rts, passant) {
       var type;
@@ -56,13 +54,12 @@
       type = x.chessman_hyphen_type_hyphen_at(bd)(src);
       return call('getPotentialMoves')(type)(bd, src, rts, passant, type);
     };
-    in_hyphen_check_question_ = function(board, rts, color) {
+    in_hyphen_check_question_ = function(board, color) {
       var king_hyphen_pos, vuln_hyphen_positions;
       v.vow_hyphen_board(board);
-      v.vow_hyphen_castling_hyphen_right_hyphen_set(rts);
       v.vow_hyphen_color(color);
       king_hyphen_pos = king_hyphen_position_hyphen_for(board, color);
-      vuln_hyphen_positions = vulnerable_hyphen_positions_hyphen_for(board, rts, color);
+      vuln_hyphen_positions = vulnerable_hyphen_positions_hyphen_for(board, color);
       return contains(vuln_hyphen_positions, king_hyphen_pos);
     };
     king_hyphen_position_hyphen_for = function(board, color) {
@@ -121,15 +118,14 @@
       color = x.color_hyphen_of(chessman);
       return call('setPromotionPosition')(type)(color, tgt);
     };
-    vulnerable_hyphen_positions_hyphen_for = function(board, rts, color) {
+    vulnerable_hyphen_positions_hyphen_for = function(board, color) {
       var foe_hyphen_color, foe_hyphen_positions, get_hyphen_potential_hyphen_king_hyphen_attacks;
       v.vow_hyphen_board(board);
-      v.vow_hyphen_castling_hyphen_right_hyphen_set(rts);
       v.vow_hyphen_color(color);
       foe_hyphen_color = u.opposing_hyphen_color(color);
       foe_hyphen_positions = x.chessman_hyphen_positions_hyphen_from(board, foe_hyphen_color);
       get_hyphen_potential_hyphen_king_hyphen_attacks = function(pos) {
-        return getPotentialKingAttacks(board, pos, rts);
+        return getPotentialKingAttacks(board, pos);
       };
       return Array.concat.apply(null, foe_hyphen_positions.map(get_hyphen_potential_hyphen_king_hyphen_attacks));
     };
