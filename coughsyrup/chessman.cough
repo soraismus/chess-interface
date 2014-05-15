@@ -5,7 +5,14 @@ define ([
   'assertions'
 ], (c, x, u, v) ->
 
-  basicMove = (bd, src) -> \tgt ->
+  modifyCastlingRights = \rts ->
+    # Start testing mode.
+    v.vow-castling-right-set rts
+    # End testing mode.
+
+    rts
+
+  move = (bd, src) -> \tgt ->
     # Start testing mode.
     v.vow-board bd
     v.vow-all-positions [src, tgt]
@@ -15,16 +22,9 @@ define ([
     bd-w/-duplicate-piece = u.replace (src-chessman, bd, tgt)
     u.replace (c.empty-square, bd-w/-duplicate-piece, src)
 
-  modifyCastlingRights = \rts ->
-    # Start testing mode.
-    v.vow-castling-right-set rts
-    # End testing mode.
-
-    rts
-
   return {
-    basicMove
     modifyCastlingRights
+    move
   }
 
 )

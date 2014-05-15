@@ -7,10 +7,8 @@ define ([
   'stepper'
   'assertions'
 ], (_, c, g, x, u, stepper-fns, v) ->
-    
-  pf = public-fns = _.defaults ({}, stepper-fns)
 
-  get-potential-moves = (bd, src) ->
+  getPotentialKingAttacks = (bd, src) ->
     # Start testing mode.
     v.vow-board bd
     v.vow-position src
@@ -18,11 +16,12 @@ define ([
 
     pf.getBasicPotentialMoves (bd, src, undefined, undefined, c.knight)
 
-  pf.getPotentialKingAttacks = get-potential-moves
+  getPotentialMoves = getPotentialKingAttacks
 
-  pf.getPotentialMoves = get-potential-moves
-
-  pf.move = pf.basicMove
+  pf = public-fns = _.defaults ({
+    getPotentialKingAttacks
+    getPotentialMoves
+  }, stepper-fns)
 
   return public-fns
 

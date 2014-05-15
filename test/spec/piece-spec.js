@@ -7,9 +7,9 @@
       var gen_hyphen_pos, initial_hyphen_board;
       gen_hyphen_pos = g.generate_hyphen_position;
       initial_hyphen_board = sc.initial_hyphen_board;
-      t('test p.basicMove')(function() {
+      t('test p.move')(function() {
         var fn, res, src, tgt;
-        fn = p.basicMove;
+        fn = p.move;
         src = gen_hyphen_pos(1, 5);
         tgt = gen_hyphen_pos(7, 5);
         res = 'rnbqkbnrppppp-pp--------------------------------PPPPPPPPRNBQKpNR';

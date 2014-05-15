@@ -42,8 +42,8 @@ define ([
 
     initial-board = sc.initial-board
 
-    t 'test p.basicMove' (->
-      fn = p.basicMove
+    t 'test p.move' (->
+      fn = p.move
       src = gen-pos (1, 5)
       tgt = gen-pos (7, 5)
       res = 'rnbqkbnrppppp-pp--------------------------------PPPPPPPPRNBQKpNR'

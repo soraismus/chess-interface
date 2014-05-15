@@ -69,7 +69,7 @@
       getPotentialKingAttacks: getPotentialKingAttacks,
       getPotentialMoves: getPotentialMoves
     }, piece_hyphen_fns);
-    public_hyphen_fns.move = public_hyphen_fns.basicMove;
+    public_hyphen_fns.move = public_hyphen_fns.move;
     return public_hyphen_fns;
   });
 

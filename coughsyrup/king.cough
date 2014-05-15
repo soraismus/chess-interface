@@ -77,12 +77,6 @@ define ([
     KQk  : t4,  Qk : t4,   Kk  : t4,  k   : t4
     KQ   : t0,  Q  : t0,   K   : t0,  '-' : t0 
 
-  castle = (bd, src, tgt) ->
-    basicMove = pf.basicMove
-    [rook-src, rook-tgt] = rook-castling-path tgt
-    bd-after-king-moves  = basicMove (bd, src) tgt
-    basicMove (bd-after-king-moves, rook-src) rook-tgt
-
   castling? = (src, tgt) ->
     Math.abs (u.file-difference (src, tgt)) > 1
 
@@ -129,34 +123,35 @@ define ([
     king-color = if x.rank-of src == 0 then c.black else c.white
     new-castling-rts[king-color][rts]
 
-  move = (bd, src) -> \tgt ->
-    # Start testing mode.
-    v.vow-board bd
-    v.vow-all-positions [src, tgt]
-    # End testing mode.
-
-    if castling? (src, tgt)
-      castle (bd, src, tgt)
-    else
-      non-castling-move (bd, src, tgt)
-
-  non-castling-move = (bd, src, tgt) ->
-    pf.basicMove (bd, src) tgt
-
   rook-castling-path = \king-tgt ->
     key = JSON.stringify king-tgt
     src = rook-castling-srcs[key]
     tgt = rook-castling-tgts[key]
     [src, tgt]
 
-  # -----------------------------------------------------------------
-
   pf = public-fns = _.defaults ({
     getPotentialKingAttacks
     getPotentialMoves
     modifyCastlingRights
-    move
   }, stepper-fns)
+
+  castle = do (simple-move = pf.move) ->
+    (bd, src, tgt) ->
+      [rook-src, rook-tgt] = rook-castling-path tgt
+      bd-after-king-moves  = simple-move (bd, src) tgt
+      simple-move (bd-after-king-moves, rook-src) rook-tgt
+    
+  pf.move = do (non-castling-move = pf.move) ->
+    (bd, src) -> \tgt ->
+      # Start testing mode.
+      v.vow-board bd
+      v.vow-all-positions [src, tgt]
+      # End testing mode.
+
+      if castling? (src, tgt)
+        castle (bd, src, tgt)
+      else
+        non-castling-move (bd, src) tgt
 
   return public-fns
 

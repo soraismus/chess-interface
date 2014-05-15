@@ -78,7 +78,7 @@ define ([
     getPotentialMoves
   }, piece-fns)
 
-  public-fns.move = public-fns.basicMove
+  public-fns.move = public-fns.move
 
   return public-fns
 
