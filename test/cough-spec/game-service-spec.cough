@@ -45,6 +45,7 @@ define ([
 
     no-rts  = c.no-castling-rts
     no-pass = c.unset-passant-pos
+    no-prom = c.unset-promotion-pos
 
     Kkq = 'Kkq'
 
@@ -191,6 +192,52 @@ define ([
       to-be-false (move-legal? pos0-3 pos7-3)
 
       to-be-true  (fn (bd2, pos0-3, no-rts, no-pass) pos7-3)
+    )
+
+    t 'test gs.query-game-service' (->
+      fn = gs.query-game-service
+
+      ctx =
+        board  : bd1
+        player : white
+        castlingRights  : 'KQkq'
+        passantPosition : no-pass
+
+
+      b2 = 'rnbqkbnrpppppppp--------------------P-----------PPPP-PPPRNBQKBNR'
+      pass2 = gen-pos 5, 4
+      res1 = fn ctx, (gen-pos 6, 4), (gen-pos 4, 4)
+      to-equal b2 res1.board
+      to-equal black res1.player
+      to-equal pass2 res1.passantPosition
+      to-equal no-prom res1.promotionPosition
+
+      b3 = 'rnbqkbnrpppp-ppp------------p-------P-----------PPPP-PPPRNBQKBNR'
+      pass3 = gen-pos 2, 4
+      res2 = fn res1, (gen-pos 1, 4), (gen-pos 3, 4)
+      to-equal b3 res2.board
+      to-equal white res2.player
+      to-equal pass3 res2.passantPosition
+      to-equal no-prom res2.promotionPosition
+
+      b4 = 'rnbqkbnrpppp-ppp------------p-------P--------N--PPPP-PPPRNBQKB-R'
+      res3 = fn res2, (gen-pos 7, 6), (gen-pos 5, 5)
+      to-equal b4 res3.board
+      to-equal black res3.player
+      to-equal no-pass res3.passantPosition
+      to-equal no-prom res3.promotionPosition
+      to-equal undefined res3.message
+
+      res4 = fn res3, (gen-pos 0, 7), (gen-pos 5, 7)
+
+      res5 = fn res3, (gen-pos 0, 1), (gen-pos 2, 2)
+
+      console.log res1
+      console.log res2
+      console.log res3
+      console.log res4
+      console.log res5
+
     )
 
     t 'test gs.setPassantPosition' (->

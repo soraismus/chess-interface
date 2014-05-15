@@ -4,12 +4,13 @@
     var contravenes, descr, each_hyphen_contravenes, each_hyphen_fn_hyphen_result_hyphen_equals, each_hyphen_satisfies, each_hyphen_throws, gen_hyphen_pred_hyphen_guards, satisfies, t, test_hyphen_predicate, test_hyphen_spec, test_hyphen_throwing_hyphen_transformation, test_hyphen_transformation, throws, to_hyphen_be, to_hyphen_be_hyphen_array, to_hyphen_be_hyphen_false, to_hyphen_be_hyphen_fn, to_hyphen_be_hyphen_nbr, to_hyphen_be_hyphen_true, to_hyphen_equal, to_hyphen_have_hyphen_length, to_hyphen_throw, xdescr, xt;
     descr = j.descr, xdescr = j.xdescr, t = j.t, xt = j.xt, test_hyphen_spec = j.test_hyphen_spec, to_hyphen_throw = j.to_hyphen_throw, to_hyphen_be = j.to_hyphen_be, to_hyphen_equal = j.to_hyphen_equal, to_hyphen_be_hyphen_true = j.to_hyphen_be_hyphen_true, to_hyphen_be_hyphen_false = j.to_hyphen_be_hyphen_false, satisfies = j.satisfies, contravenes = j.contravenes, throws = j.throws, each_hyphen_fn_hyphen_result_hyphen_equals = j.each_hyphen_fn_hyphen_result_hyphen_equals, each_hyphen_satisfies = j.each_hyphen_satisfies, each_hyphen_contravenes = j.each_hyphen_contravenes, each_hyphen_throws = j.each_hyphen_throws, to_hyphen_be_hyphen_array = j.to_hyphen_be_hyphen_array, to_hyphen_be_hyphen_fn = j.to_hyphen_be_hyphen_fn, to_hyphen_be_hyphen_nbr = j.to_hyphen_be_hyphen_nbr, to_hyphen_be_hyphen_array = j.to_hyphen_be_hyphen_array, to_hyphen_have_hyphen_length = j.to_hyphen_have_hyphen_length, test_hyphen_predicate = j.test_hyphen_predicate, test_hyphen_transformation = j.test_hyphen_transformation, test_hyphen_throwing_hyphen_transformation = j.test_hyphen_throwing_hyphen_transformation, gen_hyphen_pred_hyphen_guards = j.gen_hyphen_pred_hyphen_guards;
     return descr('test game-service.cough')(function() {
-      var Kkq, bd1, bd10, bd11, bd12, bd13, bd14, bd15, bd2, bd3, bd4, bd5, bd6, bd7, bd8, bd9, black, gen_hyphen_pos, no_hyphen_pass, no_hyphen_rts, pos0_hyphen_0, pos0_hyphen_3, pos0_hyphen_4, pos1_hyphen_4, pos2_hyphen_3, pos2_hyphen_4, pos2_hyphen_6, pos3_hyphen_4, pos5_hyphen_1, pos5_hyphen_2, pos7_hyphen_1, pos7_hyphen_3, pos7_hyphen_4, pos7_hyphen_6, white;
+      var Kkq, bd1, bd10, bd11, bd12, bd13, bd14, bd15, bd2, bd3, bd4, bd5, bd6, bd7, bd8, bd9, black, gen_hyphen_pos, no_hyphen_pass, no_hyphen_prom, no_hyphen_rts, pos0_hyphen_0, pos0_hyphen_3, pos0_hyphen_4, pos1_hyphen_4, pos2_hyphen_3, pos2_hyphen_4, pos2_hyphen_6, pos3_hyphen_4, pos5_hyphen_1, pos5_hyphen_2, pos7_hyphen_1, pos7_hyphen_3, pos7_hyphen_4, pos7_hyphen_6, white;
       gen_hyphen_pos = g.generate_hyphen_position;
       black = c.black;
       white = c.white;
       no_hyphen_rts = c.no_hyphen_castling_hyphen_rts;
       no_hyphen_pass = c.unset_hyphen_passant_hyphen_pos;
+      no_hyphen_prom = c.unset_hyphen_promotion_hyphen_pos;
       Kkq = 'Kkq';
       bd1 = sc.initial_hyphen_board;
       bd2 = '---q-------------------------------------------------------K----';
@@ -110,6 +111,44 @@
         to_hyphen_be_hyphen_true(move_hyphen_legal_question_(pos7_hyphen_1)(pos5_hyphen_2));
         to_hyphen_be_hyphen_false(move_hyphen_legal_question_(pos0_hyphen_3)(pos7_hyphen_3));
         return to_hyphen_be_hyphen_true(fn(bd2, pos0_hyphen_3, no_hyphen_rts, no_hyphen_pass)(pos7_hyphen_3));
+      });
+      t('test gs.query-game-service')(function() {
+        var b2, b3, b4, ctx, fn, pass2, pass3, res1, res2, res3, res4, res5;
+        fn = gs.query_hyphen_game_hyphen_service;
+        ctx = {
+          board: bd1,
+          player: white,
+          castlingRights: 'KQkq',
+          passantPosition: no_hyphen_pass
+        };
+        b2 = 'rnbqkbnrpppppppp--------------------P-----------PPPP-PPPRNBQKBNR';
+        pass2 = gen_hyphen_pos(5, 4);
+        res1 = fn(ctx, gen_hyphen_pos(6, 4), gen_hyphen_pos(4, 4));
+        to_hyphen_equal(b2)(res1.board);
+        to_hyphen_equal(black)(res1.player);
+        to_hyphen_equal(pass2)(res1.passantPosition);
+        to_hyphen_equal(no_hyphen_prom)(res1.promotionPosition);
+        b3 = 'rnbqkbnrpppp-ppp------------p-------P-----------PPPP-PPPRNBQKBNR';
+        pass3 = gen_hyphen_pos(2, 4);
+        res2 = fn(res1, gen_hyphen_pos(1, 4), gen_hyphen_pos(3, 4));
+        to_hyphen_equal(b3)(res2.board);
+        to_hyphen_equal(white)(res2.player);
+        to_hyphen_equal(pass3)(res2.passantPosition);
+        to_hyphen_equal(no_hyphen_prom)(res2.promotionPosition);
+        b4 = 'rnbqkbnrpppp-ppp------------p-------P--------N--PPPP-PPPRNBQKB-R';
+        res3 = fn(res2, gen_hyphen_pos(7, 6), gen_hyphen_pos(5, 5));
+        to_hyphen_equal(b4)(res3.board);
+        to_hyphen_equal(black)(res3.player);
+        to_hyphen_equal(no_hyphen_pass)(res3.passantPosition);
+        to_hyphen_equal(no_hyphen_prom)(res3.promotionPosition);
+        to_hyphen_equal(void 0)(res3.message);
+        res4 = fn(res3, gen_hyphen_pos(0, 7), gen_hyphen_pos(5, 7));
+        res5 = fn(res3, gen_hyphen_pos(0, 1), gen_hyphen_pos(2, 2));
+        console.log(res1);
+        console.log(res2);
+        console.log(res3);
+        console.log(res4);
+        return console.log(res5);
       });
       t('test gs.setPassantPosition')(function() {
         var fn, to_hyphen_unset;
