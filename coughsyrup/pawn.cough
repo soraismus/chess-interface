@@ -43,6 +43,22 @@ define ([
 
     [rank + dir, file]
 
+  delete-passant-if-enpassant-capture = (bd, color, set-passant, tgt) ->
+    # Start testing mode.
+    v.vow-board bd
+    v.vow-color color
+    v.vow-all-positions [set-passant, tgt]
+    # Endt testing mode.
+
+    if u.same-position? tgt set-passant
+      delete-passed-pawn (bd, color, set-passant)
+    else
+      bd
+
+  delete-passed-pawn = (board, color, passant) ->
+    direction = direction-for color
+    u.replace (c.empty-square, board, behind (direction, passant))
+
   direction-for = \color ->
     directions[color]
 
@@ -130,25 +146,6 @@ define ([
 
     moves.filter u.inessent?
 
-  delete-passed-pawn = (board, color, passant) ->
-    direction = direction-for color
-    u.replace (c.empty-square, board, behind (direction, passant))
-
-  move = (bd, src, passant) -> \tgt ->
-    # Start testing mode.
-    v.vow-board bd
-    v.vow-all-positions [src, tgt]
-    v.vow-passant-position passant
-    # End testing mode.
-
-    bd-after-basic-move = pf.basicMove (bd, src) tgt
-
-    if u.passant-position-unset? passant
-      bd-after-basic-move
-    else
-      color = x.color-at bd src
-      delete-passed-pawn (bd-after-basic-move, color, passant)
-
   setPassantPosition = (pawn-color, src, tgt) ->
     # Start testing mode.
     v.vow-color pawn-color
@@ -177,10 +174,24 @@ define ([
   pf = public-fns = _.defaults ({
     getPotentialKingAttacks
     getPotentialMoves
-    move
     setPassantPosition
     setPromotionPosition
   }, chessman-fns)
+
+  pf.move = do (simple-move = pf.move) ->
+    (bd, src, passant) -> \tgt ->
+      # Start testing mode.
+      v.vow-board bd
+      v.vow-all-positions [src, tgt]
+      v.vow-passant-position passant
+      # End testing mode.
+
+      bd-after-basic-move = simple-move (bd, src) tgt
+
+      return bd-after-basic-move if u.passant-position-unset? passant
+
+      delete-passant-if-enpassant-capture (
+        bd-after-basic-move, (x.color-at bd src), passant, tgt)
 
   return public-fns
 

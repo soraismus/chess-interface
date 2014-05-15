@@ -113,6 +113,13 @@ define ([
       tgt2 = gen-pos (5, 1)
       res2 = 'rnbqkbnr-ppppppp-------------------------p------P-PPPPPPRNBQKBNR'
       to-equal res2 (fn (bd2, src2, tgt2) tgt2)
+
+      bd3 = 'rnbqkbnrpppppppp--------------------P-----------PPPP-PPPRNBQKpNR'
+      src3 = gen-pos (1, 4)
+      passant = gen-pos (5, 4)
+      tgt3 = gen-pos (3, 4)
+      res3 = 'rnbqkbnrpppp-ppp------------p-------P-----------PPPP-PPPRNBQKpNR'
+      to-equal res3 (fn (bd3, src3, passant) tgt3)
     )
 
     t 'test p.setPassantPosition' (->
