@@ -1,11 +1,5 @@
 define (['constants'], (c) ->
 
-  # ----------
-  # Constants
-  # ----------
-
-  ctx-props = ['board', 'player', 'castlingRights', 'passantPosition']
-
   # ------------------------
   # Private Helper Function
   # ------------------------
@@ -22,9 +16,6 @@ define (['constants'], (c) ->
   satisfies-regex? = \regex \val ->
     if (string? val) then (regex.test val) else false
 
-  string? = \val ->
-    toString.call val == '[object String]'
-
   # -------------------------
   # Public Helper Functions
   # -------------------------
@@ -37,6 +28,12 @@ define (['constants'], (c) ->
 
   inessent? = \pos ->
     pos.every bounded?
+
+  string? = \val ->
+    toString.call val == '[object String]'
+
+  undefined? = \val ->
+     val == undefined
 
   # -----------------------
   # Classifying Predicates
@@ -91,11 +88,17 @@ define (['constants'], (c) ->
   position-component? = \val ->
     bounded? val && integer? val
 
+  promotion-position? = \pos ->
+    unset-promotion-position? pos || position? pos
+
   square? = \val ->
     chessman? val || empty? val
 
   unset-passant-position? = \val ->
     val == c.unset-passant-pos
+
+  unset-promotion-position? = \val ->
+    val == c.unset-promotion-pos
 
   return {
     black?
@@ -112,11 +115,13 @@ define (['constants'], (c) ->
     inessent?
     integral-pair?
     passant-position?
+    promotion-position?
     pawn-direction?
     position?
     position-component?
     square?
     string?
+    undefined?
     unset-passant-position?
   }
 
