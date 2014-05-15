@@ -38,8 +38,8 @@ define ([
 
   descr 'test stepper.cough' (->
 
-    t 'test st.getBasicPotentialMoves' (->
-      fn = st.getBasicPotentialMoves
+    t 'test st.getPotentialMoves' (->
+      fn = st.getPotentialMoves
 
       local-pos = g.generate-position (3, 3)
 

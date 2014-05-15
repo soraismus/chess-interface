@@ -68,6 +68,10 @@ define ([
 
   pf = public-fns = _.defaults slider-fns { modifyCastlingRights }
 
+  # --------------------------
+  # Override mixin functions.
+  # --------------------------
+
   pf.getPotentialMoves = do (getPotentialMoves = pf.getPotentialMoves) ->
     (bd, src) ->
       # Start testing mode.

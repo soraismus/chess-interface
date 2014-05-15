@@ -178,6 +178,10 @@ define ([
     setPromotionPosition
   }
 
+  # --------------------------
+  # Override mixin functions.
+  # --------------------------
+
   pf.move = do (simple-move = pf.move) ->
     (bd, src, passant) -> \tgt ->
       # Start testing mode.

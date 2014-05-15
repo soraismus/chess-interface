@@ -7,7 +7,7 @@ define ([
   'assertions'
 ], (_, x, u, g, piece-fns, v) ->
 
-  getBasicPotentialMoves = (bd, src, rts, passant, type) ->
+  getPotentialMoves = (bd, src, rts, passant, type) ->
     # Start testing mode.
     v.vow-board bd
     v.vow-position src
@@ -34,7 +34,7 @@ define ([
 
     moves
 
-  public-fns = _.defaults piece-fns { getBasicPotentialMoves }
+  public-fns = _.defaults piece-fns { getPotentialMoves }
 
   return public-fns
 

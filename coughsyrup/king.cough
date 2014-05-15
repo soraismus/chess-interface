@@ -96,23 +96,7 @@ define ([
     v.vow-position src
     # End testing mode.
 
-    getPotentialMoves (bd, src, no-rts)
-
-  getPotentialMoves = (bd, src, rts) ->
-    # Start testing mode.
-    v.vow-board bd
-    v.vow-position src
-    v.vow-castling-right-set rts
-    # End testing mode.
-
-    king-color  = x.color-at bd src
-
-    basic-moves = pf.getBasicPotentialMoves (
-      bd, src, undefined, undefined, c.king)
-
-    return basic-moves if rts == no-rts
-
-    basic-moves.concat (get-potential-castling-moves (king-color, rts))
+    pf.getPotentialMoves (bd, src, no-rts)
 
   modifyCastlingRights = (rts, src) ->
     # Start testing mode.
@@ -131,15 +115,35 @@ define ([
 
   pf = public-fns = _.defaults stepper-fns {
     getPotentialKingAttacks
-    getPotentialMoves
     modifyCastlingRights
   }
+
+  # --------------------------
+  # Override mixin functions.
+  # --------------------------
 
   castle = do (simple-move = pf.move) ->
     (bd, src, tgt) ->
       [rook-src, rook-tgt] = rook-castling-path tgt
       bd-after-king-moves  = simple-move (bd, src) tgt
       simple-move (bd-after-king-moves, rook-src) rook-tgt
+
+  pf.getPotentialMoves = do (getPotentialMoves = pf.getPotentialMoves) ->
+    (bd, src, rts) ->
+      # Start testing mode.
+      v.vow-board bd
+      v.vow-position src
+      v.vow-castling-right-set rts
+      # End testing mode.
+
+      king-color  = x.color-at bd src
+
+      basic-moves = getPotentialMoves (
+        bd, src, undefined, undefined, c.king)
+
+      return basic-moves if rts == no-rts
+
+      basic-moves.concat (get-potential-castling-moves (king-color, rts))
     
   pf.move = do (non-castling-move = pf.move) ->
     (bd, src) -> \tgt ->
