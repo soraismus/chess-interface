@@ -1,5 +1,5 @@
 define ([
-  'mydash'
+  'base-helpers'
   'constants'
   'constructors'
   'utilities'
@@ -24,7 +24,7 @@ define ([
     # Start testing mode.
     v.vow-all-positions [src, tgt]
     # End testing mode.
-    _.abs (u.rank-difference (src, tgt)) > 1
+    Math.abs (u.rank-difference (src, tgt)) > 1
 
   at-home-rank? = (color, rank) ->
     home-ranks[color] == rank
@@ -48,7 +48,7 @@ define ([
 
   get-diagonal-positions = (rank, file, dir) ->
     gen-pos = g.generate-position!.bind (null, rank + dir)
-    _.filter u.inessent? (_.map gen-pos [file - 1, file + 1])
+    ([file - 1, file + 1].map gen-pos).filter u.inessent?
 
   get-diag-attacks = (board, rank, file, color, dir, passant) ->
     # Start testing mode.
@@ -61,11 +61,11 @@ define ([
 
     foe-present? = \pos -> u.opponent? [color, color-at pos]
     passant?     = u.same-position? passant
-    available?   = _.or [foe-present?, passant?]
+    available?   = \val -> foe-present? val || passant? val
     color-at     = x.color-at board
     diag-attacks = get-diagonal-positions (rank, file, dir)
     
-    _.filter available? diag-attacks
+    diag-attacks.filter available?
 
   get-fwd-moves = (board, rank, file, color, dir) ->
     # Start testing mode.
@@ -128,7 +128,7 @@ define ([
       get-diag-attacks (bd, rank, file, color, dir, passant)
     )
 
-    _.filter u.inessent? moves
+    moves.filter u.inessent?
 
   delete-passed-pawn = (board, color, passant) ->
     direction = direction-for color
@@ -174,13 +174,13 @@ define ([
     else
       c.unset-promotion-pos
 
-  pf = public-fns = _.defaults [chessman-fns] {
+  pf = public-fns = _.defaults ({
     getPotentialKingAttacks
     getPotentialMoves
     move
     setPassantPosition
     setPromotionPosition
-  }
+  }, chessman-fns)
 
   return public-fns
 

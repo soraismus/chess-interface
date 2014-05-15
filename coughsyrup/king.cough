@@ -1,5 +1,5 @@
 define ([
-  'mydash'
+  'base-helpers'
   'constants'
   'constructors'
   'extractors'
@@ -27,7 +27,7 @@ define ([
     g8 = gen-pos (0, 6)
   ]
 
-  [c1-key, g1-key, c8-key, g8-key] = _.map JSON.stringify king-castling-tgts
+  [c1-key, g1-key, c8-key, g8-key] = king-castling-tgts.map JSON.stringify
 
   possible-rook-paths = [[5, 7], [3, 0], [61, 63], [59, 56]]
 
@@ -82,12 +82,12 @@ define ([
     basicMove (bd-after-king-moves, rook-src) rook-tgt
 
   castling? = (src, tgt) ->
-    _.abs (u.file-difference (src, tgt)) > 1
+    Math.abs (u.file-difference (src, tgt)) > 1
 
   castling-permitted? = (castling-rts, black?) -> \rank-diff ->
     kingward? = rank-diff > 0
     matcher = u.castling-matcher (black?, kingward?)
-    _.match matcher 'noFlags' castling-rts
+    /#{matcher}/.test castling-rts
 
   # TODO: Check for non-transitable castling paths.
   # TODO: Check that no pos in the castling path is attackable.
@@ -146,12 +146,12 @@ define ([
 
   # -----------------------------------------------------------------
 
-  pf = public-fns = _.defaults [stepper-fns] {
+  pf = public-fns = _.defaults ({
     getPotentialKingAttacks
     getPotentialMoves
     modifyCastlingRights
     move
-  }
+  }, stepper-fns)
 
   return public-fns
 

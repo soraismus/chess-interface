@@ -7,8 +7,9 @@ define (['jFns', 'constants', 'assertions'], (j, c, v) ->
     xt
     test-spec
     to-throw
+    not-to-throw
     to-be
-    to-equal
+    not-to-throw
     to-be-true
     to-be-false
     satisfies
@@ -40,43 +41,43 @@ define (['jFns', 'constants', 'assertions'], (j, c, v) ->
     t 'test v.vow-board' (->
       fn = v.vow-board
       to-throw fn ctx
-      to-equal bd (fn bd)
+      not-to-throw (fn bd)
     )
 
     t 'test v.vow-bounded' (->
       fn = v.vow-bounded
       to-throw fn 10
-      to-equal (4) (fn 4)
+      not-to-throw (fn 4)
     )
 
     t 'test v.castling-right' (->
       fn = v.vow-castling-right
       to-throw fn 'X'
-      to-equal ('K') (fn 'K')
+      not-to-throw (fn 'K')
     )
 
     t 'test v.castling-righ-set' (->
       fn = v.vow-castling-right-set 
       to-throw fn 'KQxkq'
-      to-equal ('KQk') (fn 'KQk')
+      not-to-throw (fn 'KQk')
     )
 
     t 'test v.vow-chessman' (->
       fn = v.vow-chessman
       to-throw fn 'X'
-      to-equal c.white-knight (fn c.white-knight)
+      not-to-throw (fn c.white-knight)
     )
 
     t 'test v.vow-chessman-type' (->
       fn = v.vow-chessman-type 
       to-throw fn c.white-knight
-      to-equal c.knight (fn c.knight)
+      not-to-throw (fn c.knight)
     )
 
     t 'test v.vow-color' (->
       fn = v.vow-color
       to-throw fn 'x'
-      to-equal c.white (fn c.white)
+      not-to-throw (fn c.white)
     )
 
     t 'test v.vow-color-pair' (->
@@ -84,52 +85,52 @@ define (['jFns', 'constants', 'assertions'], (j, c, v) ->
       to-throw fn ['x', c.white]
 
       color-pair = [c.white, c.black]
-      to-equal color-pair (fn color-pair)
+      not-to-throw (fn color-pair)
     )
 
     t 'test v.vow-context' (->
       fn = v.vow-context
       to-throw fn bd
-      to-equal ctx (fn ctx)
+      not-to-throw (fn ctx)
     )
 
     t 'test v.vow-integral-pair' (->
       fn = v.vow-integral-pair 
       to-throw fn [5, 5.5]
       i-pair = [7, 4]
-      to-equal i-pair (fn i-pair)
+      not-to-throw (fn i-pair)
     )
 
     t 'test v.vow-passant-position' (->
       fn = v.vow-passant-position
       to-throw fn [1, 8]
-      to-equal passant (fn passant)
+      not-to-throw (fn passant)
     )
 
     t 'test v.vow-path' (->
       fn = v.vow-path
       to-throw fn ([1, 2, 3])
       path = [[4, 2], [1, 5]]
-      to-equal path (fn path)
+      not-to-throw (fn path)
     )
 
     t 'test v.vow-position' (->
       fn = v.vow-position
       to-throw fn passant
-      to-equal src (fn src)
+      not-to-throw (fn src)
     )
 
     t 'test v.vow-square' (->
       fn = v.vow-square
       to-throw fn 'x'
-      to-equal c.empty-square (fn c.empty-square)
-      to-equal c.black-bishop (fn c.black-bishop)
+      not-to-throw (fn c.empty-square)
+      not-to-throw (fn c.black-bishop)
     )
 
     t 'test v.vow-chessman-type' (->
       fn = v.vow-chessman-type
       to-throw fn 'x'
-      to-equal c.pawn (fn c.pawn)
+      not-to-throw (fn c.pawn)
     )
 
   )

@@ -1,12 +1,11 @@
 define ([
-  'mydash'
+  'base-helpers'
   'constructors'
   'extractors'
-  'types'
   'utilities'
   'piece'
   'assertions'
-], (_, g, x, y, u, piece-fns, v) ->
+], (_, g, x, u, piece-fns, v) ->
 
   accumulate-till-blocked = (board, color1) -> (rank, file, dir) ->
     possible-moves = []
@@ -74,10 +73,10 @@ define ([
 
     moves
 
-  public-fns = _.defaults [piece-fns] {
+  public-fns = _.defaults ({
     getPotentialKingAttacks
     getPotentialMoves
-  }
+  }, piece-fns)
 
   public-fns.move = public-fns.basicMove
 

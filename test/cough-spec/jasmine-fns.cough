@@ -10,6 +10,9 @@ define (['mydash'], (_) ->
 
   to-throw = \fn \arg -> expect (fn.bind (null, arg)) .toThrow ()
 
+  not-to-throw = \fn \arg ->
+    expect (fn.bind (null, arg)) .not .toThrow ()
+
   to-be = \actual \expected -> expect (expected) .toBe actual
 
   to-equal = \actual \expected -> expect (expected) .toEqual actual
@@ -67,6 +70,7 @@ define (['mydash'], (_) ->
     each-throws
     gen-pred-specs
     gen-pred-guards
+    not-to-throw
     satisfies
     t
     test-spec

@@ -1,12 +1,11 @@
 define ([
-  'mydash'
+  'base-helpers'
   'extractors'
   'utilities'
   'constructors'
-  'types'
   'piece'
   'assertions'
-], (_, x, u, g, y, piece-fns, v) ->
+], (_, x, u, g, piece-fns, v) ->
 
   getBasicPotentialMoves = (bd, src, rts, passant, type) ->
     # Start testing mode.
@@ -35,9 +34,7 @@ define ([
 
     moves
 
-  public-fns = _.defaults [piece-fns] {
-    getBasicPotentialMoves
-  }
+  public-fns = _.defaults ({ getBasicPotentialMoves }, piece-fns)
 
   return public-fns
 

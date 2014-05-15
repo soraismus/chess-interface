@@ -1,4 +1,4 @@
-define (['mydash'], (_) ->
+define ( ->
 
   black-chessmen = [
     black-king   = 'k'
@@ -73,8 +73,6 @@ define (['mydash'], (_) ->
     black-queen
 
     black-rook
-
-    board-indices : _.range [64]
 
     castling-black
 

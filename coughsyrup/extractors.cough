@@ -1,4 +1,17 @@
-define (['mydash', 'constants', 'types', 'assertions'], (_, c, y, v) ->
+define ([
+  'base-helpers'
+  'constants'
+  'types'
+  'assertions'
+], (_, c, y, v) ->
+
+  type-of = {}
+  type-of[c.black-king  ] = c.king
+  type-of[c.black-queen ] = c.queen
+  type-of[c.black-rook  ] = c.rook
+  type-of[c.black-bishop] = c.bishop
+  type-of[c.black-knight] = c.knight
+  type-of[c.black-pawn  ] = c.pawn
 
   # -----------------
   # Helper Functions
@@ -14,13 +27,13 @@ define (['mydash', 'constants', 'types', 'assertions'], (_, c, y, v) ->
     8 * rank + file
 
   # No assertions b/c #opponent-mated? encounters indices < 0 or > 63.
-  to-2d = \idx -> [_.floor (idx / 8), idx % 8]
+  to-2d = \idx -> [Math.floor (idx / 8), idx % 8]
 
   corresponding-black-chessman = \chessman ->
     # Start testing mode.
     v.vow-chessman chessman
     # End testing mode.
-    if (_.isUC chessman) then (_.toLC chessman) else chessman
+    if (_.white? chessman) then (_.to-black chessman) else chessman
 
   of-color? = \color \square ->
     # Start testing mode.
@@ -51,7 +64,7 @@ define (['mydash', 'constants', 'types', 'assertions'], (_, c, y, v) ->
         i += 1
         positions.push (to-2d i) if color-pred sq
 
-    _.each (get-pos color) split-board
+    split-board.forEach (get-pos color)
 
     positions
 
@@ -67,9 +80,7 @@ define (['mydash', 'constants', 'types', 'assertions'], (_, c, y, v) ->
     v.vow-chessman chessman
     # End testing mode.
 
-    abbrev  = corresponding-black-chessman chessman
-    type-of = _.zipAssign c.black-chessmen c.chessman-types
-
+    abbrev = corresponding-black-chessman chessman
     type-of[abbrev]
 
   color-at = \board \pos ->
@@ -83,26 +94,25 @@ define (['mydash', 'constants', 'types', 'assertions'], (_, c, y, v) ->
     # Start testing mode.
     v.vow-square square
     # End testing mode.
-    _.switchWith c.absent-color [_.isLC, _.isUC] [c.black, c.white] square
+
+    switch
+      when (_.black? square) then c.black
+      when (_.white? square) then c.white
+      else c.absent-color
 
   colors-at = \board \positions ->
     # Start testing mode.
     v.vow-board board
     v.vow-all-positions positions
     # End testing mode.
-    _.map (color-at board) positions
+    positions.map (color-at board)
 
-  file-of = \val ->
+  file-of = ([rank, file]) ->
     # Start testing mode.
-    _.vowStruct [y.position?, y.setting?] val
+    v.vow-position [rank, file]
     # End testing mode.
 
-    evaluators = [
-      ([rank, file])          -> file
-      ([board, [rank, file]]) -> file
-    ]
-
-    _.switch [y.position?, y.setting?] evaluators val
+    file
 
   rank-&-file-from = \val ->
     # Start testing mode.
@@ -111,24 +121,19 @@ define (['mydash', 'constants', 'types', 'assertions'], (_, c, y, v) ->
 
     val
 
-  rank-of = \val ->
+  rank-of = ([rank, file]) ->
     # Start testing mode.
-    _.vowStruct [y.position?, y.setting?] val
+    v.vow-position [rank, file]
     # End testing mode.
 
-    evaluators = [
-      ([rank, file])          -> rank
-      ([board, [rank, file]]) -> rank
-    ]
-
-    _.switch [y.position?, y.setting?] evaluators val
+    rank
 
   square-at = \board \pos ->
     # Start testing mode.
     v.vow-board board
     v.vow-position pos
     # End testing mode.
-    _.charAt (to-1d pos) board
+    board[to-1d pos]
 
   return {
     chessman-positions-from

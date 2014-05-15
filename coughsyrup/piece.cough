@@ -1,12 +1,4 @@
-define ([
-  'mydash'
-  'constants'
-  'constructors'
-  'utilities'
-  'extractors'
-  'chessman'
-  'assertions'
-], (_, c, g, u, x, chessman-fns, v) ->
+define (['base-helpers', 'constants', 'chessman'], (_, c, chessman-fns) ->
 
   setPassantPosition = ->
     c.unset-passant-pos
@@ -14,10 +6,10 @@ define ([
   setPromotionPosition = ->
     c.unset-promotion-pos
 
-  public-fns = _.defaults [chessman-fns] {
+  public-fns = _.defaults ({
     setPassantPosition
     setPromotionPosition
-  }
+  }, chessman-fns)
 
   return public-fns
 

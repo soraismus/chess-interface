@@ -45,7 +45,7 @@ define ([
       fn = y.bounded?
       each-satisfies fn [0, 1, 7]
       each-contravenes fn [-1, 8]
-      each-throws fn [[0, 0], 'a', true]
+      #each-throws fn [[0, 0], 'a', true]
     )
 
     t 'test y.empty?' (->

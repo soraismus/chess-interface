@@ -1,4 +1,17 @@
-define (['mydash', 'constants', 'types', 'assertions'], (_, c, y, v) ->
+define ([
+  'base-helpers'
+  'constants'
+  'types'
+  'assertions'
+], (_, c, y, v) ->
+
+  black-chessman-from = {}
+  black-chessman-from[c.king  ] = c.black-king
+  black-chessman-from[c.queen ] = c.black-queen
+  black-chessman-from[c.rook  ] = c.black-rook
+  black-chessman-from[c.bishop] = c.black-bishop
+  black-chessman-from[c.knight] = c.black-knight
+  black-chessman-from[c.pawn  ] = c.black-pawn
 
   generate-chart = (context, path) ->
     # Start testing mode.
@@ -20,7 +33,6 @@ define (['mydash', 'constants', 'types', 'assertions'], (_, c, y, v) ->
     v.vow-color color
     # End testing mode.
 
-    black-chessman-from = _.zipAssign c.chessman-types c.black-chessmen
     black-chessman = black-chessman-from[chessman-type]
     if (y.black? color) then black-chessman else (_.toUC black-chessman)
 

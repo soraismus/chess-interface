@@ -1,5 +1,4 @@
 define ([
-  'mydash'
   'constants'
   'utilities'
   'extractors'
@@ -9,7 +8,7 @@ define ([
   'knight'
   'pawn'
   'assertions'
-], (_, c, u, x, slider-fns, king-fns, rook-fns, knight-fns, pawn-fns, v) ->
+], (c, u, x, slider-fns, king-fns, rook-fns, knight-fns, pawn-fns, v) ->
 
   dispatch-table = {}
   dispatch-table[c.king  ] = king-fns
@@ -21,7 +20,7 @@ define ([
 
   call = \fn-name \chessman-type ->
     # Start testing mode.
-    _.vowStr fn-name
+    v.vow-string fn-name
     v.vow-chessman-type chessman-type
     # End testing mode.
 
@@ -47,7 +46,7 @@ define ([
     true
 
   contains = (potential-positions, tgt) ->
-    _.any (u.same-position? tgt) potential-positions
+    potential-positions.some (u.same-position? tgt)
 
   getPotentialKingAttacks = (bd, src, rts) ->
     # Start testing mode.
@@ -89,7 +88,7 @@ define ([
     # End testing mode.
 
     king = if u.black? color then c.black-king else c.white-king
-    u.to-2d (_.indexOf board king)
+    u.to-2d (board.indexOf king)
 
   modifyCastlingRights = (bd, src, rts) ->
     # Start testing mode.
@@ -164,7 +163,7 @@ define ([
     get-potential-king-attacks = \pos ->
       getPotentialKingAttacks (board, pos, rts)
 
-    _.meld (_.map get-potential-king-attacks foe-positions)
+    Array.concat.apply (null, (foe-positions.map get-potential-king-attacks))
 
   # Start testing mode.
 

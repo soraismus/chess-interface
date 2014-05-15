@@ -1,11 +1,10 @@
 define ([
-  'mydash'
+  'base-helpers'
   'constants'
   'extractors'
-  'utilities'
   'slider'
   'assertions'
-], (_, c, x, u, slider-fns, v) ->
+], (_, c, x, slider-fns, v) ->
 
   KQk = 'KQk'
   KQq = 'KQq'
@@ -67,16 +66,14 @@ define ([
   which-side? = \src ->
     if kingside? src then 'kingside' else 'queenside'
 
-  pf = public-fns = _.defaults [slider-fns] {
-    modifyCastlingRights
-  }
+  pf = public-fns = _.defaults ({ modifyCastlingRights }, slider-fns)
 
   pf.getPotentialMoves = do (getPotentialMoves = pf.getPotentialMoves) ->
     (bd, src) ->
       # Start testing mode.
       v.vow-board bd
       v.vow-position src
-      # End testing mode
+      # End testing mode.
 
       getPotentialMoves (bd, src, undefined, undefined, c.rook)
 
@@ -86,7 +83,7 @@ define ([
         # Start testing mode.
         v.vow-board bd
         v.vow-position src
-        # End testing mode
+        # End testing mode.
 
         getPotentialKingAttacks (bd, src, undefined, c.rook)
 

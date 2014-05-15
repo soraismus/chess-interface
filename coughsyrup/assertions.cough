@@ -1,4 +1,14 @@
-define (['mydash', 'types'], (_, y) ->
+define (['types'], \y ->
+
+  function? = \val ->
+    toString.call val == '[object Function]'
+
+  vow = \condition \message ->
+    throw new Error (message) unless condition
+
+  vow-with = \predicate \message \val ->
+    vow (predicate val) message
+    
 
   validation-pairs = [
     [y.board?,              'board'             ]
@@ -26,10 +36,11 @@ define (['mydash', 'types'], (_, y) ->
     [y.rook?,               'rook'              ]
     [y.setting?,            'setting'           ]
     [y.square?,             'square'            ]
+    [y.string?,             'string'            ]
   ]
 
   generate-singular-validator = ([pred, str]) ->
-    _.vowWith pred "Invalid #{str}"
+    vow-with pred "Invalid #{str}"
 
   singular-validators = [
     vow-board
@@ -57,10 +68,11 @@ define (['mydash', 'types'], (_, y) ->
     vow-rook
     vow-setting
     vow-square
-  ] = _.map generate-singular-validator validation-pairs
+    vow-string
+  ] = validation-pairs.map generate-singular-validator
 
   generate-plural-validator = \validator ->
-    _.map validator
+    \val -> val.map validator
 
   plural-validators = [
     vow-all-colors
@@ -69,14 +81,14 @@ define (['mydash', 'types'], (_, y) ->
     vow-all-passant-positions
     vow-all-positions
     vow-all-position-components
-  ] = _.map generate-plural-validator [
+  ] = [
     vow-color
     vow-index
     vow-pair
     vow-passant-position
     vow-position
     vow-position-component
-  ]
+  ].map generate-plural-validator
 
   return {
     vow-all-colors
@@ -109,6 +121,7 @@ define (['mydash', 'types'], (_, y) ->
     vow-rook
     vow-setting
     vow-square
+    vow-string
   }
 
 )

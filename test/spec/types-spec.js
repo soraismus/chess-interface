@@ -21,8 +21,7 @@
         var fn;
         fn = y.bounded_question_;
         each_hyphen_satisfies(fn)([0, 1, 7]);
-        each_hyphen_contravenes(fn)([-1, 8]);
-        return each_hyphen_throws(fn)([[0, 0], 'a', true]);
+        return each_hyphen_contravenes(fn)([-1, 8]);
       });
       t('test y.empty?')(function() {
         var fn;

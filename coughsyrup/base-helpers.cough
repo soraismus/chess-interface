@@ -1,0 +1,30 @@
+define (['constants'], (c) ->
+
+  defaults = \obj ->
+    args = Array.prototype.slice.call (arguments, 1)
+
+    args.forEach \source ->
+      if source
+        for prop of source
+          obj[prop] = source[prop] if obj[prop] == undefined
+
+    obj
+
+  black? = \sq ->
+    sq == String.toLowerCase sq && sq != c.empty-square
+
+  white? = \sq ->
+    sq == String.toUpperCase sq && sq != c.empty-square
+
+  to-black = String.toLowerCase
+  to-white = String.toUpperCase
+
+  return {
+    black?
+    defaults
+    white?
+    to-black
+    to-white
+  }
+
+)

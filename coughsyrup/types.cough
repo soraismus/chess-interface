@@ -1,4 +1,4 @@
-define (['mydash', 'constants'], (_, c) ->
+define (['constants'], (c) ->
 
   # ------------------------
   # Private Helper Function
@@ -8,23 +8,30 @@ define (['mydash', 'constants'], (_, c) ->
     fn = Object.hasOwnProperty.bind(owner)
     \prop -> fn prop
 
+  hash? = \val ->
+    toString.call val == '[object Object]'
+
+  integer? = \val ->
+    val == val >> 0
+
   satisfies-regex? = \regex \val ->
-    if (_.isString val) then (_.regexTest regex val) else false
+    if (string? val) then (regex.test val) else false
+
+  string? = \val ->
+    toString.call val == '[object String]'
 
   # -------------------------
   # Public Helper Functions
   # -------------------------
 
   bounded? = \intg ->
-    # Start testing mode.
-    _.vowInt intg
-    # End testing mode.
+    intg >= 0 && intg <= 7
 
-    _.iBtw 0 7 intg
+  empty? = \square ->
+    square == c.empty-square
 
-  empty? = \square -> square == c.empty-square
-
-  inessent? = \pos -> _.both bounded? pos
+  inessent? = \pos ->
+    pos.every bounded?
 
   # -----------------------
   # Classifying Predicates
@@ -34,50 +41,64 @@ define (['mydash', 'constants'], (_, c) ->
     color == c.black
 
   board? = \val ->
-    satisfies-regex?  /^[kqrbnp-]{64,64}$/i  val
+    satisfies-regex? /^[kqrbnp-]{64,64}$/i  val
 
-  castling-right? = \val -> satisfies-regex? /^[KQkq]$/ val
+  castling-right? = \val ->
+    satisfies-regex? /^[KQkq]$/ val
 
-  castling-right-set? = \val -> satisfies-regex? /(^-$)|(^K?Q?k?q?$)/ val
+  castling-right-set? = \val ->
+    satisfies-regex? /(^-$)|(^K?Q?k?q?$)/ val
 
   chart2? = \val ->
-    _.isHash val && do (has = has val) ->
+    hash? val && do (has = has val) ->
         has 'board' &&
         has 'source' &&
         has 'castlingRights' &&
         has 'passantPosition'
 
-  chessman? = \val -> satisfies-regex? /^[kqrbnp]$/i val
+  chessman? = \val ->
+    satisfies-regex? /^[kqrbnp]$/i val
 
-  chessman-type? = \val -> _.contains c.chessman-types val
+  chessman-type? = \val ->
+    c.chessman-types.some (\type -> type == val)
 
-  color? = \val -> _.contains c.colors val
+  color? = \val ->
+    c.colors.some (\color -> color == val)
 
-  color-pair? = \val -> pair? val && _.both color? val
+  color-pair? = \val ->
+    pair? val && val.every color?
 
   context? = \val ->
     board? val['board'] &&
         castling-right-set? val['castlingRights'] &&
         passant-position? val['passantPosition']
 
-  integral-pair? = \val -> pair? val && _.both _.isInteger val
+  integral-pair? = \val ->
+    pair? val && val.every integer?
 
-  pair? = \val -> _.isArray val && _.length val == 2
+  pair? = \val ->
+    Array.isArray val && val.length == 2
 
   passant-position? = \pos ->
     unset-passant-position? pos || position? pos
 
-  path? = \val -> pair? val && _.both position? val
+  path? = \val -> 
+    pair? val && val.every position?
 
-  pawn-direction? = \val -> val == 1 || val == -1
+  pawn-direction? = \val ->
+    val == 1 || val == -1
 
-  position? = \val -> integral-pair? val && inessent? val
+  position? = \val ->
+    integral-pair? val && inessent? val
 
-  position-component? = \val -> bounded? val && _.isInteger val
+  position-component? = \val ->
+    bounded? val && integer? val
 
-  square? = \val -> chessman? val || empty? val
+  square? = \val ->
+    chessman? val || empty? val
 
-  unset-passant-position? = \val -> val == c.unset-passant-pos
+  unset-passant-position? = \val ->
+    val == c.unset-passant-pos
 
   return {
     black?
@@ -100,6 +121,7 @@ define (['mydash', 'constants'], (_, c) ->
     position?
     position-component?
     square?
+    string?
     unset-passant-position?
   }
 
