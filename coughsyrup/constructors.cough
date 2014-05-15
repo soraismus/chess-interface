@@ -13,20 +13,6 @@ define ([
   black-chessman-from[c.knight] = c.black-knight
   black-chessman-from[c.pawn  ] = c.black-pawn
 
-  generate-chart = (context, path) ->
-    # Start testing mode.
-    v.vow-context context
-    v.vow-path path
-    # End testing mode.
-
-    [context, path]
-
-  generate-chart2 = \conf ->
-    # Start testing mode.
-    v.vow-chart2 conf
-    # End testing mode.
-    conf
-
   generate-chessman = (chessman-type, color) ->
     # Start testing mode.
     v.vow-chessman-type chessman-type
@@ -74,8 +60,6 @@ define ([
     [board, pos]
 
   return {
-    generate-chart
-    generate-chart2
     generate-chessman
     generate-context
     generate-map

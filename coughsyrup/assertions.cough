@@ -8,15 +8,12 @@ define (['types'], \y ->
 
   vow-with = \predicate \message \val ->
     vow (predicate val) message
-    
 
   validation-pairs = [
     [y.board?,              'board'             ]
     [y.bounded?,            'bounded number'    ]
     [y.castling-right?,     'castling right'    ]
     [y.castling-right-set?, 'castling right set']
-    [y.chart?,              'chart'             ]
-    [y.chart2?,             'chart2'            ]
     [y.chessman?,           'chessman'          ]
     [y.chessman-type?,      'chessman type'     ]
     [y.color?,              'color'             ]
@@ -24,17 +21,12 @@ define (['types'], \y ->
     [y.context?,            'context'           ]
     [y.index?,              'index'             ]
     [y.integral-pair?,      'integral pair'     ]
-    [y.map?,                'map'               ]
     [y.pair?,               'pair'              ]
     [y.passant-position?,   'passant position'  ]
-    [y.path?,               'path'              ]
     [y.pawn-direction?,     'pawn direction'    ]
     [y.player?,             'player'            ]
     [y.position?,           'position'          ]
     [y.position-component?, 'position component']
-    [y.query?,              'query'             ]
-    [y.rook?,               'rook'              ]
-    [y.setting?,            'setting'           ]
     [y.square?,             'square'            ]
     [y.string?,             'string'            ]
   ]
@@ -47,8 +39,6 @@ define (['types'], \y ->
     vow-bounded
     vow-castling-right
     vow-castling-right-set
-    vow-chart
-    vow-chart2
     vow-chessman
     vow-chessman-type
     vow-color
@@ -56,17 +46,12 @@ define (['types'], \y ->
     vow-context
     vow-index
     vow-integral-pair
-    vow-map
     vow-pair
     vow-passant-position
-    vow-path
     vow-pawn-direction
     vow-player
     vow-position
     vow-position-component
-    vow-query
-    vow-rook
-    vow-setting
     vow-square
     vow-string
   ] = validation-pairs.map generate-singular-validator
@@ -101,8 +86,6 @@ define (['types'], \y ->
     vow-bounded
     vow-castling-right
     vow-castling-right-set
-    vow-chart
-    vow-chart2
     vow-chessman
     vow-chessman-type
     vow-color
@@ -110,16 +93,11 @@ define (['types'], \y ->
     vow-context
     vow-index
     vow-integral-pair
-    vow-map
     vow-pair
     vow-passant-position
-    vow-path
     vow-pawn-direction
     vow-player
     vow-position
-    vow-query
-    vow-rook
-    vow-setting
     vow-square
     vow-string
   }

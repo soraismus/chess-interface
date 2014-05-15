@@ -31,8 +31,6 @@ define (['jFns', 'constants', 'assertions'], (j, c, v) ->
     rts = c.full-castling-rts
     passant = c.unset-passant-pos
 
-    ctx = { board : bd, castlingRights : rts, passantPosition : passant }
-
     src = [2, 4]
     tgt = [5, 4]
     
@@ -40,44 +38,44 @@ define (['jFns', 'constants', 'assertions'], (j, c, v) ->
 
     t 'test v.vow-board' (->
       fn = v.vow-board
-      to-throw fn ctx
-      not-to-throw (fn bd)
+      to-throw fn {}
+      not-to-throw fn bd
     )
 
     t 'test v.vow-bounded' (->
       fn = v.vow-bounded
       to-throw fn 10
-      not-to-throw (fn 4)
+      not-to-throw fn 4
     )
 
     t 'test v.castling-right' (->
       fn = v.vow-castling-right
       to-throw fn 'X'
-      not-to-throw (fn 'K')
+      not-to-throw fn 'K'
     )
 
     t 'test v.castling-righ-set' (->
       fn = v.vow-castling-right-set 
       to-throw fn 'KQxkq'
-      not-to-throw (fn 'KQk')
+      not-to-throw fn 'KQk'
     )
 
     t 'test v.vow-chessman' (->
       fn = v.vow-chessman
       to-throw fn 'X'
-      not-to-throw (fn c.white-knight)
+      not-to-throw fn c.white-knight
     )
 
     t 'test v.vow-chessman-type' (->
       fn = v.vow-chessman-type 
       to-throw fn c.white-knight
-      not-to-throw (fn c.knight)
+      not-to-throw fn c.knight
     )
 
     t 'test v.vow-color' (->
       fn = v.vow-color
       to-throw fn 'x'
-      not-to-throw (fn c.white)
+      not-to-throw fn c.white
     )
 
     t 'test v.vow-color-pair' (->
@@ -85,52 +83,64 @@ define (['jFns', 'constants', 'assertions'], (j, c, v) ->
       to-throw fn ['x', c.white]
 
       color-pair = [c.white, c.black]
-      not-to-throw (fn color-pair)
+      not-to-throw fn color-pair
     )
 
     t 'test v.vow-context' (->
       fn = v.vow-context
-      to-throw fn bd
-      not-to-throw (fn ctx)
+
+      invalid-ctx1 =
+        board  : 'invalid board'
+        player : c.white
+        castlingRights  : rts
+        passantPosition : passant
+
+      invalid-ctx2 =
+        board  : bd
+        player : c.white
+        castlingRights  : rts
+
+      each-throws fn [invalid-ctx1, invalid-ctx2]
+
+      valid-ctx =
+        board  : bd
+        player : c.white
+        castlingRights  : rts
+        passantPosition : passant
+
+      not-to-throw fn valid-ctx
     )
 
     t 'test v.vow-integral-pair' (->
       fn = v.vow-integral-pair 
       to-throw fn [5, 5.5]
       i-pair = [7, 4]
-      not-to-throw (fn i-pair)
+      not-to-throw fn i-pair
     )
 
     t 'test v.vow-passant-position' (->
       fn = v.vow-passant-position
       to-throw fn [1, 8]
-      not-to-throw (fn passant)
-    )
-
-    t 'test v.vow-path' (->
-      fn = v.vow-path
-      to-throw fn ([1, 2, 3])
-      path = [[4, 2], [1, 5]]
-      not-to-throw (fn path)
+      not-to-throw fn passant
     )
 
     t 'test v.vow-position' (->
       fn = v.vow-position
       to-throw fn passant
-      not-to-throw (fn src)
+      not-to-throw fn src
     )
 
     t 'test v.vow-square' (->
       fn = v.vow-square
       to-throw fn 'x'
-      not-to-throw (fn c.empty-square)
-      not-to-throw (fn c.black-bishop)
+      not-to-throw fn c.empty-square
+      not-to-throw fn c.black-bishop
     )
 
     t 'test v.vow-chessman-type' (->
       fn = v.vow-chessman-type
       to-throw fn 'x'
-      not-to-throw (fn c.pawn)
+      not-to-throw fn c.pawn
     )
 
   )

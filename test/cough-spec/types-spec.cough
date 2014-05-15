@@ -35,10 +35,13 @@ define ([
     src     = sc.positions[0]
     tgt     = sc.positions[1]
 
+    white = c.white
+    black = c.black
+
     t 'test y.black?' (->
       fn = y.black?
-      satisfies fn c.black
-      each-contravenes fn [c.white, c.emtpy-square, 1, null]
+      satisfies fn black
+      each-contravenes fn [white, c.emtpy-square, 1, null]
     )
     
     t 'test y.bounded?' (->
@@ -94,14 +97,40 @@ define ([
 
     t 'test y.color?' (->
       fn = y.color?
-      each-satisfies fn [c.white, c.black, c.absent-color]
+      each-satisfies fn [white, black, c.absent-color]
       contravenes fn 'x'
     )
 
     t 'test y.color-pair?' (->
       fn = y.color-pair?
-      satisfies fn [c.white, c.black]
-      contravenes fn [c.white, c.black, c.absent-color-pair]
+      satisfies fn [white, black]
+      contravenes fn [white, black, c.absent-color-pair]
+    )
+
+    t 'test y.context?' (->
+      fn = y.context?
+
+      ctx =
+        board  : bd
+        player : white
+        castlingRights  : rts
+        passantPosition : passant
+
+      super-ctx =
+        board  : bd
+        player : white
+        castlingRights  : rts
+        passantPosition : passant
+        message : 'This object has additional properties.'
+
+      each-satisfies fn [ctx, super-ctx]
+
+      invalid-ctx =
+        board  : bd
+        player : white
+        castlingRights  : rts
+
+      each-contravenes fn [bd, pos, rts, passant, undefined, invalid-ctx]
     )
 
     t 'test y.passant-position?' (->

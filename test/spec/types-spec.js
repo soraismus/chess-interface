@@ -4,18 +4,20 @@
     var contravenes, descr, each_hyphen_contravenes, each_hyphen_satisfies, each_hyphen_throws, satisfies, t, test_hyphen_predicate, test_hyphen_spec, throws, to_hyphen_be, to_hyphen_be_hyphen_false, to_hyphen_be_hyphen_fn, to_hyphen_be_hyphen_true, to_hyphen_equal, to_hyphen_throw, xdescr, xt;
     descr = j.descr, xdescr = j.xdescr, t = j.t, xt = j.xt, test_hyphen_spec = j.test_hyphen_spec, to_hyphen_throw = j.to_hyphen_throw, to_hyphen_be = j.to_hyphen_be, to_hyphen_equal = j.to_hyphen_equal, to_hyphen_be_hyphen_true = j.to_hyphen_be_hyphen_true, to_hyphen_be_hyphen_false = j.to_hyphen_be_hyphen_false, satisfies = j.satisfies, contravenes = j.contravenes, throws = j.throws, each_hyphen_satisfies = j.each_hyphen_satisfies, each_hyphen_contravenes = j.each_hyphen_contravenes, each_hyphen_throws = j.each_hyphen_throws, to_hyphen_be_hyphen_fn = j.to_hyphen_be_hyphen_fn, test_hyphen_predicate = j.test_hyphen_predicate;
     return descr('types.cough')(function() {
-      var bd, passant, pos, rts, src, tgt;
+      var bd, black, passant, pos, rts, src, tgt, white;
       bd = sc.boards[0];
       passant = sc.passant_hyphen_positions[0];
       pos = sc.positions[0];
       rts = sc.castling_hyphen_rights[0];
       src = sc.positions[0];
       tgt = sc.positions[1];
+      white = c.white;
+      black = c.black;
       t('test y.black?')(function() {
         var fn;
         fn = y.black_question_;
-        satisfies(fn)(c.black);
-        return each_hyphen_contravenes(fn)([c.white, c.emtpy_hyphen_square, 1, null]);
+        satisfies(fn)(black);
+        return each_hyphen_contravenes(fn)([white, c.emtpy_hyphen_square, 1, null]);
       });
       t('test y.bounded?')(function() {
         var fn;
@@ -69,14 +71,38 @@
       t('test y.color?')(function() {
         var fn;
         fn = y.color_question_;
-        each_hyphen_satisfies(fn)([c.white, c.black, c.absent_hyphen_color]);
+        each_hyphen_satisfies(fn)([white, black, c.absent_hyphen_color]);
         return contravenes(fn)('x');
       });
       t('test y.color-pair?')(function() {
         var fn;
         fn = y.color_hyphen_pair_question_;
-        satisfies(fn)([c.white, c.black]);
-        return contravenes(fn)([c.white, c.black, c.absent_hyphen_color_hyphen_pair]);
+        satisfies(fn)([white, black]);
+        return contravenes(fn)([white, black, c.absent_hyphen_color_hyphen_pair]);
+      });
+      t('test y.context?')(function() {
+        var ctx, fn, invalid_hyphen_ctx, super_hyphen_ctx;
+        fn = y.context_question_;
+        ctx = {
+          board: bd,
+          player: white,
+          castlingRights: rts,
+          passantPosition: passant
+        };
+        super_hyphen_ctx = {
+          board: bd,
+          player: white,
+          castlingRights: rts,
+          passantPosition: passant,
+          message: 'This object has additional properties.'
+        };
+        each_hyphen_satisfies(fn)([ctx, super_hyphen_ctx]);
+        invalid_hyphen_ctx = {
+          board: bd,
+          player: white,
+          castlingRights: rts
+        };
+        return each_hyphen_contravenes(fn)([bd, pos, rts, passant, void 0, invalid_hyphen_ctx]);
       });
       t('test y.passant-position?')(function() {
         var fn;

@@ -27,14 +27,9 @@
       };
     };
     return descr('test extractors.cough')(function() {
-      var bd, chart1, chart2, ctx, initial_hyphen_board, invalid_hyphen_chessman, invalid_hyphen_pos, map, passant, path, pos0_hyphen_0, pos1, pos2, pos4_hyphen_5, rts, setting, src, tgt;
+      var bd, initial_hyphen_board, invalid_hyphen_chessman, invalid_hyphen_pos, passant, pos0_hyphen_0, pos1, pos2, pos4_hyphen_5, rts, src, tgt;
       bd = sc.boards[0];
-      chart1 = sc.charts[0];
-      chart2 = sc.charts[1];
-      ctx = sc.contexts[0];
-      map = sc.maps[0];
       passant = sc.passant_hyphen_positions[0];
-      path = sc.paths[0];
       pos1 = sc.positions[0];
       pos2 = sc.positions[1];
       pos0_hyphen_0 = g.generate_hyphen_position(0, 0);
@@ -43,7 +38,6 @@
       invalid_hyphen_chessman = sc.invalid_hyphen_chessmen[0];
       invalid_hyphen_pos = sc.invalid_hyphen_positions[0];
       rts = sc.castling_hyphen_rights[0];
-      setting = sc.settings[0];
       src = sc.positions[0];
       tgt = sc.positions[1];
       t('test x.to-1d')(function() {
@@ -72,7 +66,7 @@
         to_hyphen_equal(c.king)(fn(c.black_hyphen_king));
         to_hyphen_equal(c.king)(fn(c.white_hyphen_king));
         to_hyphen_equal(c.bishop)(fn(c.black_hyphen_bishop));
-        return each_hyphen_throws(fn)([c.king, bd, setting]);
+        return each_hyphen_throws(fn)([c.king, bd]);
       });
       t('test x.color-at')(function() {
         var fn;
@@ -86,28 +80,28 @@
         to_hyphen_equal(c.black)(fn(c.black_hyphen_king));
         to_hyphen_equal(c.white)(fn(c.white_hyphen_king));
         to_hyphen_equal(c.black)(fn(c.black_hyphen_bishop));
-        return each_hyphen_throws(fn)([c.king, bd, setting]);
+        return each_hyphen_throws(fn)([c.king, bd]);
       });
       t('test x.file-of')(function() {
         var fn;
         fn = x.file_hyphen_of;
         to_hyphen_equal(0)(fn(pos0_hyphen_0));
         to_hyphen_equal(5)(fn(pos4_hyphen_5));
-        return each_hyphen_throws(fn)([bd, map, chart1]);
+        return to_hyphen_throw(fn)(bd);
       });
       t('test x.rank-&-file-from')(function() {
         var fn;
         fn = x.rank_hyphen__ampersand__hyphen_file_hyphen_from;
         to_hyphen_equal([0, 0])(fn(pos0_hyphen_0));
         to_hyphen_equal([4, 5])(fn(pos4_hyphen_5));
-        return each_hyphen_throws(fn)([bd, map, chart1]);
+        return to_hyphen_throw(fn)(bd);
       });
       t('test x.rank-of')(function() {
         var fn;
         fn = x.rank_hyphen_of;
         to_hyphen_equal(0)(fn(pos0_hyphen_0));
         to_hyphen_equal(4)(fn(pos4_hyphen_5));
-        return each_hyphen_throws(fn)([bd, void 0, map]);
+        return each_hyphen_throws(fn)([bd, void 0]);
       });
       return t('test x.square-at')(function() {
         var fn, local_hyphen_pos;

@@ -1,15 +1,17 @@
 define (['constants'], (c) ->
 
+  # ----------
+  # Constants
+  # ----------
+
+  ctx-props = ['board', 'player', 'castlingRights', 'passantPosition']
+
   # ------------------------
   # Private Helper Function
   # ------------------------
 
   boolean? = \val ->
     val == true || val == false
-
-  has = \owner ->
-    fn = Object.hasOwnProperty.bind owner
-    \prop -> fn prop
 
   hash? = \val ->
     toString.call val == '[object Object]'
@@ -52,13 +54,6 @@ define (['constants'], (c) ->
   castling-right-set? = \val ->
     satisfies-regex? /(^-$)|(^K?Q?k?q?$)/ val
 
-  chart2? = \val ->
-    hash? val && do (has = has val) ->
-        has 'board' &&
-        has 'source' &&
-        has 'castlingRights' &&
-        has 'passantPosition'
-
   chessman? = \val ->
     satisfies-regex? /^[kqrbnp]$/i val
 
@@ -72,9 +67,11 @@ define (['constants'], (c) ->
     pair? val && val.every color?
 
   context? = \val ->
-    board? val['board'] &&
-        castling-right-set? val['castlingRights'] &&
-        passant-position? val['passantPosition']
+    hash? val &&
+      board? val.board &&
+      color? val.player &&
+      castling-right-set? val.castlingRights &&
+      passant-position? val.passantPosition
 
   integral-pair? = \val ->
     pair? val && val.every integer?
@@ -84,9 +81,6 @@ define (['constants'], (c) ->
 
   passant-position? = \pos ->
     unset-passant-position? pos || position? pos
-
-  path? = \val -> 
-    pair? val && val.every position?
 
   pawn-direction? = \val ->
     val == 1 || val == -1
@@ -109,7 +103,6 @@ define (['constants'], (c) ->
     bounded?
     castling-right?
     castling-right-set?
-    chart2?
     chessman?
     chessman-type?
     color?
@@ -119,7 +112,6 @@ define (['constants'], (c) ->
     inessent?
     integral-pair?
     passant-position?
-    path?
     pawn-direction?
     position?
     position-component?

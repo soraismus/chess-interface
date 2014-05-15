@@ -44,12 +44,7 @@ define ([
   descr 'test extractors.cough' (->
 
     bd               = sc.boards[0]
-    chart1           = sc.charts[0]
-    chart2           = sc.charts[1]
-    ctx              = sc.contexts[0]
-    map              = sc.maps[0]
     passant          = sc.passant-positions[0]
-    path             = sc.paths[0]
     pos1             = sc.positions[0]
     pos2             = sc.positions[1]
     pos0-0           = g.generate-position (0, 0)
@@ -58,7 +53,6 @@ define ([
     invalid-chessman = sc.invalid-chessmen[0]
     invalid-pos      = sc.invalid-positions[0]
     rts              = sc.castling-rights[0]
-    setting          = sc.settings[0]
     src              = sc.positions[0]
     tgt              = sc.positions[1]
 
@@ -87,7 +81,7 @@ define ([
       to-equal c.king (fn c.black-king)
       to-equal c.king (fn c.white-king)
       to-equal c.bishop (fn c.black-bishop)
-      each-throws fn [c.king, bd, setting]
+      each-throws fn [c.king, bd]
     )
 
     t 'test x.color-at' (->
@@ -101,28 +95,28 @@ define ([
       to-equal c.black (fn c.black-king)
       to-equal c.white (fn c.white-king)
       to-equal c.black (fn c.black-bishop)
-      each-throws fn [c.king, bd, setting]
+      each-throws fn [c.king, bd]
     )
 
     t 'test x.file-of' (->
       fn = x.file-of
       to-equal 0 (fn pos0-0)
       to-equal 5 (fn pos4-5)
-      each-throws fn [bd, map, chart1]
+      to-throw fn bd
     )
 
     t 'test x.rank-&-file-from' (->
       fn = x.rank-&-file-from
       to-equal [0, 0] (fn pos0-0)
       to-equal [4, 5] (fn pos4-5)
-      each-throws fn [bd, map, chart1]
+      to-throw fn bd
     )
 
     t 'test x.rank-of' (->
       fn = x.rank-of
       to-equal 0 (fn pos0-0)
       to-equal 4 (fn pos4-5)
-      each-throws fn [bd, undefined, map]
+      each-throws fn [bd, undefined]
     )
 
     t 'test x.square-at' (->

@@ -40,7 +40,6 @@ define ([
   descr 'test utilities.cough' (->
 
     bd               = sc.boards[0]
-    path             = sc.paths[0]
     pos1             = sc.positions[0]
     pos3             = sc.positions[2]
     initial-board    = sc.initial-board
