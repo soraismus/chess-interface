@@ -118,6 +118,13 @@ define (['jFns', 'constants', 'assertions'], (j, c, v) ->
       not-to-throw fn i-pair
     )
 
+    t 'test v.vow-message-when-set' (->
+      fn = v.vow-message-when-set
+      each-throws fn [1, [], null]
+      not-to-throw fn 'any string'
+      not-to-throw fn undefined
+    )
+
     t 'test v.vow-passant-position' (->
       fn = v.vow-passant-position
       to-throw fn [1, 8]
@@ -128,6 +135,13 @@ define (['jFns', 'constants', 'assertions'], (j, c, v) ->
       fn = v.vow-position
       to-throw fn passant
       not-to-throw fn src
+    )
+
+    t 'test v.vow-promotion-position-when-set' (->
+      fn = v.vow-promotion-position-when-set
+      to-throw fn [1, 8]
+      not-to-throw fn c.unset-promotion-pos
+      not-to-throw fn undefined
     )
 
     t 'test v.vow-square' (->

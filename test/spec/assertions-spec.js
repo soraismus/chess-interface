@@ -90,6 +90,13 @@
         i_hyphen_pair = [7, 4];
         return not_hyphen_to_hyphen_throw(fn)(i_hyphen_pair);
       });
+      t('test v.vow-message-when-set')(function() {
+        var fn;
+        fn = v.vow_hyphen_message_hyphen_when_hyphen_set;
+        each_hyphen_throws(fn)([1, [], null]);
+        not_hyphen_to_hyphen_throw(fn)('any string');
+        return not_hyphen_to_hyphen_throw(fn)(void 0);
+      });
       t('test v.vow-passant-position')(function() {
         var fn;
         fn = v.vow_hyphen_passant_hyphen_position;
@@ -101,6 +108,13 @@
         fn = v.vow_hyphen_position;
         to_hyphen_throw(fn)(passant);
         return not_hyphen_to_hyphen_throw(fn)(src);
+      });
+      t('test v.vow-promotion-position-when-set')(function() {
+        var fn;
+        fn = v.vow_hyphen_promotion_hyphen_position_hyphen_when_hyphen_set;
+        to_hyphen_throw(fn)([1, 8]);
+        not_hyphen_to_hyphen_throw(fn)(c.unset_hyphen_promotion_hyphen_pos);
+        return not_hyphen_to_hyphen_throw(fn)(void 0);
       });
       t('test v.vow-square')(function() {
         var fn;
