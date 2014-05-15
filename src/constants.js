@@ -48,7 +48,6 @@
       },
       nbr_hyphen_chessmen_hyphen_per_hyphen_color: 16,
       no_hyphen_castling_hyphen_rts: '-',
-      no_hyphen_pawn_hyphen_promotion: '-',
       pawn: pawn,
       pawn_hyphen_home_hyphen_ranks: {
         black: 1,
@@ -64,7 +63,7 @@
       rook: rook,
       unset_hyphen_check_hyphen_status: {},
       unset_hyphen_passant_hyphen_pos: '-',
-      unset_hyphen_promotion_hyphen_pos: false,
+      unset_hyphen_promotion_hyphen_pos: '-',
       white: white,
       white_hyphen_bishop: white_hyphen_bishop,
       white_hyphen_chessmen: white_hyphen_chessmen,

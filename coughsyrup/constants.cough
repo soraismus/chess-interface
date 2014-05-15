@@ -123,8 +123,6 @@ define ( ->
 
     no-castling-rts : '-'
 
-    no-pawn-promotion : '-'
-
     pawn
 
     pawn-home-ranks :
@@ -147,7 +145,7 @@ define ( ->
 
     unset-passant-pos : '-'
 
-    unset-promotion-pos : false
+    unset-promotion-pos : '-'
 
     white
 
