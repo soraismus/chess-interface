@@ -1,4 +1,5 @@
 define ([
+  'base-helpers'
   'constants'
   'utilities'
   'extractors'
@@ -8,7 +9,7 @@ define ([
   'knight'
   'pawn'
   'assertions'
-], (c, u, x, slider-fns, king-fns, rook-fns, knight-fns, pawn-fns, v) ->
+], (_, c, u, x, slider-fns, king-fns, rook-fns, knight-fns, pawn-fns, v) ->
 
   dispatch-table = {}
   dispatch-table[c.king  ] = king-fns
@@ -17,6 +18,10 @@ define ([
   dispatch-table[c.bishop] = slider-fns
   dispatch-table[c.knight] = knight-fns
   dispatch-table[c.pawn  ] = pawn-fns
+
+  add-msg = (ctx, msg) ->
+    { board, player, castlingRights, passantPosition } = ctx
+    { board, player, castlingRights, passantPosition, message : msg }
 
   call = \fn-name \chessman-type ->
     # Start testing mode.
@@ -48,6 +53,25 @@ define ([
   contains = (potential-positions, tgt) ->
     potential-positions.some (u.same-position? tgt)
 
+  extract-props = \ctx ->
+    { board, player, castlingRights, passantPosition } = ctx
+    [board, player, castlingRights, passantPosition]
+
+  game-completed-response = ->
+    message : 'checkmate'
+
+  game-continues-response = \new-ctx ->
+    add-msg (new-ctx, 'check')
+
+  generate-new-ctx = (new-bd, orig-ctx, src, tgt) ->
+    [orig-bd, player, rts] = extract-props orig-ctx
+
+    board  : new-bd
+    player : u.opposing-color player
+    castlingRights    : modifyCastlingRights (orig-bd, src, rts)
+    passantPosition   : setPassantPosition   (orig-bd, src, tgt)
+    promotionPosition : setPromotionPosition (orig-bd, src, tgt)
+
   getPotentialKingAttacks = (bd, src) ->
     # Start testing mode.
     v.vow-board bd
@@ -68,7 +92,6 @@ define ([
     type = x.chessman-type-at bd src
     call 'getPotentialMoves' type (bd, src, rts, passant, type)
 
-  # TODO: Reconsider necessity of castling-rights
   in-check? = (board, color) ->
     # Start testing mode.
     v.vow-board board
@@ -87,6 +110,18 @@ define ([
 
     king = if u.black? color then c.black-king else c.white-king
     u.to-2d (board.indexOf king)
+
+  king-safe-response = \new-ctx ->
+    # Coupling.
+    { board, player } = new-ctx
+    
+    if opponent-in-check? (board, player)
+      possible-checkmate-response (new-ctx)
+    else
+      new-ctx
+
+  king-unsafe-response = \ctx ->
+    add-msg (ctx, 'illegal move')
 
   modifyCastlingRights = (bd, src, rts) ->
     # Start testing mode.
@@ -108,6 +143,9 @@ define ([
     type = x.chessman-type-at bd src
     call 'move' type (bd, src, passant) tgt
 
+  move-illegal-response = \ctx ->
+    add-msg (ctx, 'illegal move')
+
   move-legal? = (bd, src, rts, passant) -> \tgt ->
     # Start testing mode.
     v.vow-board bd
@@ -121,7 +159,36 @@ define ([
     
     contains (potential-tgts, tgt)
 
-  query-game-service = ->
+  # Note: 'rts' is not necessary.
+  move-legal-response = (orig-ctx, src, tgt) ->
+    [bd, player, rts, passant] = extract-props orig-ctx
+
+    new-bd = move (bd, src, passant) tgt
+
+    if in-check? (new-bd, player)
+      king-unsafe-response (orig-ctx)
+    else
+      new-ctx = generate-new-ctx (new-bd, orig-ctx, src, tgt)
+      king-safe-response (new-ctx)
+
+  opponent-in-check? = in-check?
+
+  possible-checkmate-response = \new-ctx ->
+    # Coupling.
+    { board, player, passantPosition } = new-ctx
+
+    if checkmate? (board, passantPosition, player)
+      game-completed-response ()
+    else
+      game-continues-response (new-ctx)
+
+  query-game-service = (ctx, src, tgt) ->
+    [bd, player, rts, passant] = extract-props ctx
+
+    if move-legal? (bd, src, rts, passant) tgt
+      move-legal-response (ctx, src, tgt)
+    else
+      move-illegal-response ctx
 
   setPassantPosition = (bd, src, tgt) ->
     # Start testing mode.
@@ -147,7 +214,6 @@ define ([
 
     call 'setPromotionPosition' type (color, tgt)
 
-  # TODO: Reconsider necessity of castling-rights
   vulnerable-positions-for = (board, color) ->
     # Start testing mode.
     v.vow-board board
@@ -187,5 +253,6 @@ define ([
   # Start production mode.
   # return { query-game-service }
   # End production mode.
+
 
 )
