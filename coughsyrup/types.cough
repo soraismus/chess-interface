@@ -5,7 +5,7 @@ define (['constants'], (c) ->
   # ------------------------
 
   has = \owner ->
-    fn = Object.hasOwnProperty.bind(owner)
+    fn = Object.hasOwnProperty.bind owner
     \prop -> fn prop
 
   hash? = \val ->
