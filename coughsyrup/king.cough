@@ -129,11 +129,11 @@ define ([
     tgt = rook-castling-tgts[key]
     [src, tgt]
 
-  pf = public-fns = _.defaults ({
+  pf = public-fns = _.defaults stepper-fns {
     getPotentialKingAttacks
     getPotentialMoves
     modifyCastlingRights
-  }, stepper-fns)
+  }
 
   castle = do (simple-move = pf.move) ->
     (bd, src, tgt) ->

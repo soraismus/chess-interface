@@ -171,12 +171,12 @@ define ([
     else
       c.unset-promotion-pos
 
-  pf = public-fns = _.defaults ({
+  pf = public-fns = _.defaults chessman-fns {
     getPotentialKingAttacks
     getPotentialMoves
     setPassantPosition
     setPromotionPosition
-  }, chessman-fns)
+  }
 
   pf.move = do (simple-move = pf.move) ->
     (bd, src, passant) -> \tgt ->

@@ -113,9 +113,9 @@
         return 'queenside';
       }
     };
-    pf = public_hyphen_fns = _.defaults({
+    pf = public_hyphen_fns = _.defaults(slider_hyphen_fns)({
       modifyCastlingRights: modifyCastlingRights
-    }, slider_hyphen_fns);
+    });
     pf.getPotentialMoves = (function(getPotentialMoves) {
       return function(bd, src) {
         v.vow_hyphen_board(bd);

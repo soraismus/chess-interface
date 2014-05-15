@@ -136,12 +136,12 @@
         return c.unset_hyphen_promotion_hyphen_pos;
       }
     };
-    pf = public_hyphen_fns = _.defaults({
+    pf = public_hyphen_fns = _.defaults(chessman_hyphen_fns)({
       getPotentialKingAttacks: getPotentialKingAttacks,
       getPotentialMoves: getPotentialMoves,
       setPassantPosition: setPassantPosition,
       setPromotionPosition: setPromotionPosition
-    }, chessman_hyphen_fns);
+    });
     pf.move = (function(simple_hyphen_move) {
       return function(bd, src, passant) {
         return function(tgt) {

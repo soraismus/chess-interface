@@ -151,11 +151,11 @@
       tgt = rook_hyphen_castling_hyphen_tgts[key];
       return [src, tgt];
     };
-    pf = public_hyphen_fns = _.defaults({
+    pf = public_hyphen_fns = _.defaults(stepper_hyphen_fns)({
       getPotentialKingAttacks: getPotentialKingAttacks,
       getPotentialMoves: getPotentialMoves,
       modifyCastlingRights: modifyCastlingRights
-    }, stepper_hyphen_fns);
+    });
     castle = (function(simple_hyphen_move) {
       return function(bd, src, tgt) {
         var bd_hyphen_after_hyphen_king_hyphen_moves, rook_hyphen_src, rook_hyphen_tgt, _ref1;

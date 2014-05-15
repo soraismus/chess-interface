@@ -34,7 +34,7 @@ define ([
 
     moves
 
-  public-fns = _.defaults ({ getBasicPotentialMoves }, piece-fns)
+  public-fns = _.defaults piece-fns { getBasicPotentialMoves }
 
   return public-fns
 

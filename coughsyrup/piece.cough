@@ -6,10 +6,10 @@ define (['base-helpers', 'constants', 'chessman'], (_, c, chessman-fns) ->
   setPromotionPosition = ->
     c.unset-promotion-pos
 
-  public-fns = _.defaults ({
+  public-fns = _.defaults chessman-fns {
     setPassantPosition
     setPromotionPosition
-  }, chessman-fns)
+  }
 
   return public-fns
 

@@ -65,10 +65,10 @@
       }
       return moves;
     };
-    public_hyphen_fns = _.defaults({
+    public_hyphen_fns = _.defaults(piece_hyphen_fns)({
       getPotentialKingAttacks: getPotentialKingAttacks,
       getPotentialMoves: getPotentialMoves
-    }, piece_hyphen_fns);
+    });
     public_hyphen_fns.move = public_hyphen_fns.move;
     return public_hyphen_fns;
   });

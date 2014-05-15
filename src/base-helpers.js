@@ -2,27 +2,19 @@
 (function() {
   define(['constants'], function(c) {
     var black_question_, defaults, to_hyphen_black, to_hyphen_white, white_question_;
-    defaults = function(obj) {
-      var args;
-      args = Array.prototype.slice.call(arguments, 1);
-      args.forEach(function(source) {
-        var prop, _results;
-        if (source) {
-          _results = [];
-          for (prop in source) {
-            if (obj[prop] === void 0) {
-              _results.push(obj[prop] = source[prop]);
-            } else {
-              _results.push(void 0);
-            }
-          }
-          return _results;
-        }
-      });
-      return obj;
-    };
     black_question_ = function(sq) {
       return sq === String.toLowerCase(sq) && sq !== c.empty_hyphen_square;
+    };
+    defaults = function(mixin) {
+      return function(val) {
+        var prop;
+        for (prop in mixin) {
+          if (val[prop] === void 0) {
+            val[prop] = mixin[prop];
+          }
+        }
+        return val;
+      };
     };
     white_question_ = function(sq) {
       return sq === String.toUpperCase(sq) && sq !== c.empty_hyphen_square;

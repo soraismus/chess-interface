@@ -8,10 +8,10 @@
     setPromotionPosition = function() {
       return c.unset_hyphen_promotion_hyphen_pos;
     };
-    public_hyphen_fns = _.defaults({
+    public_hyphen_fns = _.defaults(chessman_hyphen_fns)({
       setPassantPosition: setPassantPosition,
       setPromotionPosition: setPromotionPosition
-    }, chessman_hyphen_fns);
+    });
     return public_hyphen_fns;
   });
 

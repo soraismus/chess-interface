@@ -26,9 +26,9 @@
       }
       return moves;
     };
-    public_hyphen_fns = _.defaults({
+    public_hyphen_fns = _.defaults(piece_hyphen_fns)({
       getBasicPotentialMoves: getBasicPotentialMoves
-    }, piece_hyphen_fns);
+    });
     return public_hyphen_fns;
   });
 

@@ -73,10 +73,10 @@ define ([
 
     moves
 
-  public-fns = _.defaults ({
+  public-fns = _.defaults piece-fns {
     getPotentialKingAttacks
     getPotentialMoves
-  }, piece-fns)
+  }
 
   public-fns.move = public-fns.move
 

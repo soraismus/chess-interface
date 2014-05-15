@@ -18,10 +18,10 @@ define ([
 
   getPotentialMoves = getPotentialKingAttacks
 
-  pf = public-fns = _.defaults ({
+  pf = public-fns = _.defaults stepper-fns {
     getPotentialKingAttacks
     getPotentialMoves
-  }, stepper-fns)
+  }
 
   return public-fns
 

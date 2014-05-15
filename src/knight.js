@@ -8,10 +8,10 @@
       return pf.getBasicPotentialMoves(bd, src, void 0, void 0, c.knight);
     };
     getPotentialMoves = getPotentialKingAttacks;
-    pf = public_hyphen_fns = _.defaults({
+    pf = public_hyphen_fns = _.defaults(stepper_hyphen_fns)({
       getPotentialKingAttacks: getPotentialKingAttacks,
       getPotentialMoves: getPotentialMoves
-    }, stepper_hyphen_fns);
+    });
     return public_hyphen_fns;
   });
 
