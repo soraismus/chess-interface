@@ -145,6 +145,12 @@ define ([
       each-contravenes fn [1, 'x', null, [1, 2, 3]]
     )
 
+    t 'test y.promotion-position?' (->
+      fn = y.promotion-position?
+      each-satisfies fn [src, tgt, c.unset-promotion-pos]
+      contravenes fn [1, 2, 3]
+    )
+
     t 'test y.square?' (->
       fn = y.square?
       each-satisfies fn [c.white-king, c.black-pawn, c.empty-square]

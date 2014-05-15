@@ -116,6 +116,12 @@
         each_hyphen_satisfies(fn)([src, tgt]);
         return each_hyphen_contravenes(fn)([1, 'x', null, [1, 2, 3]]);
       });
+      t('test y.promotion-position?')(function() {
+        var fn;
+        fn = y.promotion_hyphen_position_question_;
+        each_hyphen_satisfies(fn)([src, tgt, c.unset_hyphen_promotion_hyphen_pos]);
+        return contravenes(fn)([1, 2, 3]);
+      });
       t('test y.square?')(function() {
         var fn;
         fn = y.square_question_;
