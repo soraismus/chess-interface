@@ -19,8 +19,8 @@ define ([
   dispatch-table[c.pawn  ] = pawn-fns
 
   add-msg = (ctx, msg) ->
-    { board, player, castlingRights, passantPosition } = ctx
-    { board, player, castlingRights, passantPosition, message : msg }
+    (new-ctx = copy ctx).message = msg
+    new-ctx
 
   call = \fn-name \chessman-type ->
     # Start testing mode.
@@ -52,12 +52,16 @@ define ([
   contains = (potential-positions, tgt) ->
     potential-positions.some (u.same-position? tgt)
 
+  copy = \ctx ->
+    {board, player, castlingRights, passantPosition, promotionPosition} = ctx
+    {board, player, castlingRights, passantPosition, promotionPosition}
+
   extract-props = \ctx ->
     { board, player, castlingRights, passantPosition } = ctx
     [board, player, castlingRights, passantPosition]
 
-  game-completed-response = ->
-    message : 'checkmate'
+  game-completed-response = \new-ctx ->
+    add-msg (new-ctx, 'checkmate')
 
   game-continues-response = \new-ctx ->
     add-msg (new-ctx, 'check')
@@ -172,9 +176,16 @@ define ([
     [new-bd, opponent, _, new-passant] = extract-props new-ctx
 
     if checkmate? (new-bd, new-passant, opponent)
-      game-completed-response ()
+      game-completed-response (new-ctx)
     else
       game-continues-response (new-ctx)
+
+  promote = \ctx \chessman ->
+    new-board = u.replace (chessman, ctx.board, ctx.promotionPosition)
+    new-ctx = copy ctx
+    new-ctx.board = new-board
+    new-ctx.promotionPosition = c.unset-promotion-pos
+    new-ctx
 
   query-game-service = (ctx, src, tgt) ->
     [bd, player, rts, passant] = extract-props ctx
@@ -234,6 +245,7 @@ define ([
     modifyCastlingRights
     move
     move-legal?
+    promote
     query-game-service
     setPassantPosition
     setPromotionPosition
@@ -246,7 +258,10 @@ define ([
 
   # Start production mode.
 
-  return { query-game-service }
+  return {
+    promote
+    query-game-service
+  }
 
   # End production mode.
 
