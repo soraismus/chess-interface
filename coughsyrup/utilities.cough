@@ -54,6 +54,12 @@ define (['constants', 'extractors', 'types', 'assertions'], (c, x, y, v) ->
   inessent? = \pos ->
     y.inessent? pos
 
+  occupied? = \square ->
+    # Start testing mode.
+    v.vow-square square
+    # End testing mode.
+    ! (y.empty? square)
+
   offsets-for = \chessman-type ->
     # Start testing mode.
     v.vow-chessman-type chessman-type
@@ -93,6 +99,12 @@ define (['constants', 'extractors', 'types', 'assertions'], (c, x, y, v) ->
     # End testing mode.
     passant-position == c.unset-passant-pos
 
+  promotion-position-set? = \promotion-position ->
+    # Start testing mode.
+    v.vow-promotion-position promotion-position
+    # End testing mode.
+    promotion-position != c.unset-promotion-pos
+
   rank-difference = (src, tgt) ->
     # Start testing mode.
     v.vow-all-positions [src, tgt]
@@ -127,10 +139,12 @@ define (['constants', 'extractors', 'types', 'assertions'], (c, x, y, v) ->
     empty-at?
     file-difference
     inessent?
+    occupied?
     offsets-for
     opponent?
     opposing-color
     passant-position-unset?
+    promotion-position-set?
     rank-difference
     replace
     same-position?
