@@ -1,0 +1,182 @@
+define ([
+  'constructors'
+  'extractors'
+  'utilities'
+  'game-service'
+  'react'
+  'jquery'
+  'jqueryUi'
+], (g, x, u, gs, React, $) ->
+
+  # ----------
+  # Constants
+  # ----------
+
+  dom = React.DOM
+  div = dom.div
+
+  zero-to-seven = [0, 1, 2, 3, 4, 5, 6, 7]
+
+  courtiers = ['q', 'r', 'b', 'n']
+
+  type-at = x.corresponding-black-chessman
+
+  # -------------------------------
+  # Simple Event-Management System
+  # -------------------------------
+
+  [register, trigger] = do ->
+    events = {}
+
+    register = (name, callback-w/-ctx) ->
+      callback = \optional-arg ->
+        result = callback-w/-ctx (optional-arg)
+        delete events[name]
+        result
+
+      events[name] = callback
+
+    trigger = (name, optional-arg) ->
+      events[name] (optional-arg)
+
+    [register, trigger]
+
+  # ------------------
+  # Game UI Functions
+  # ------------------
+
+  add-board = (player, board, inactive?) ->
+    ranks = zero-to-seven.map (add-rank (player, board))
+    dom.table
+      className : css-board-class inactive?
+      ranks
+
+  add-chessman = (player, color, type, row, col) ->
+    dom.img
+      className : css-chessman-class (player, color, row, col)
+      src       : src-for (color, type)
+
+  add-mount-point = (player, board, prom-pos) ->
+
+    prev-player = u.opposing-color player
+
+    display-prom-opts? = u.promotion-position-set? prom-pos
+
+    div
+      className : 'mount-point'
+      add-board (player, board, display-prom-opts?)
+      add-promotion-options (display-prom-opts?, prev-player)
+
+  add-promotion-msg = \message ->
+    dom.span
+      id : 'promotion-msg'
+      message
+
+  add-promotion-option = \color \png-type ->
+    chessman = g.generate-chessman ((x.chessman-type-of png-type), color)
+    div
+      id        : "promotion-type-#{png-type}"
+      className : 'promotion-option'
+      onClick   : ->
+        new-ctx = trigger ('promote', chessman)
+        render new-ctx
+      add-promotion-option-image (color, png-type)
+
+  add-promotion-option-image = (color, png-type) ->
+    dom.img
+      className : 'promotion-option-img'
+      src       : src-for (color, png-type)
+
+  add-promotion-options = (to-be-displayed?, color) ->
+    return null unless to-be-displayed?
+
+    content = 'Promote your pawn.'
+    div (
+      id : 'promotion-options'
+      add-promotion-msg content
+      courtiers.map (add-promotion-option color)
+    )
+
+  add-rank = (player, board) -> (row) ->
+    do (add-square = add-square (player, board, row)) ->
+      squares = zero-to-seven.map add-square
+      dom.tr
+        className : 'row'
+        squares
+
+  add-square = (player, board, row) -> (col) ->
+    square   = x.square-at (board) ([row, col])
+    chessman = chessman-on (player, square, row, col)
+    dom.td
+      id        : "pos-#{row}-#{col}"
+      className : css-square-class (row, col)
+      chessman
+
+  chessman-on = (player, square, row, col) ->
+    if u.occupied? square
+      color = x.color-of square
+      type  = type-at square
+      add-chessman (player, color, type, row, col)
+    else
+      null
+
+  css-board-class = \inactive? ->
+    if inactive? == '-' then 'board inactive' else 'board'
+
+  css-chessman-class = (player, color, row, col) ->
+    state = if player == color then 'active' else 'inactive'
+    "#{state} ch-pos-#{row}-#{col}"
+
+  css-square-class = (row, col) ->
+    "sq sq-pos-#{row}-#{col}"
+
+  extract-pos = \node-class ->
+    regx = /..-pos-(\d)-(\d)/
+    res  = regx.exec node-class
+    [row, col] = res[1..].map Number.toInteger
+
+  query-game-service = (event, ui, ctx) ->
+    src = extract-pos (ui.draggable[0].className)
+    tgt = extract-pos (event.target.className)
+
+    gs.query-game-service (ctx, src, tgt)
+
+  register-promote = \ctx ->
+    if u.promotion-position-set? (x.promotion-position-from ctx)
+      register ('promote', gs.promote ctx)
+
+  render = \ctx ->
+    { board, player, promotionPosition } = ctx
+
+    establish-drag-&-drop = ->
+      active-nodes = $('.active')
+      draggable    = active-nodes.draggable.bind (active-nodes)
+      draggable
+        snap        : '.sq'
+        snapMode    : 'inner'
+        stack       : '.piece'
+        containment : '.board'
+        start       : ->
+          register ('revert', -> draggable ('option', 'revert', true))
+
+      $('.sq').droppable
+        accept : '.active'
+        drop   : (event, ui) ->
+          new-ctx = query-game-service (event, ui, ctx)
+          register-promote new-ctx
+          render new-ctx
+          trigger 'revert'
+
+    React.renderComponent (
+      add-mount-point (player, board, promotionPosition)
+      document.getElementById 'chess'
+    )
+
+    establish-drag-&-drop ()
+
+  src-for = (color, png-type) ->
+    "assets/#{color}#{png-type}.png"
+
+  return { render }
+
+)

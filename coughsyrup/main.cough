@@ -1,0 +1,26 @@
+require.config
+  shim :
+    jqueryUi   :
+      deps     : ['jquery']
+      exports  : 'jqueryUi'
+
+  paths :
+    jquery   : 'http://code.jquery.com/jquery-1.9.1'
+    jqueryUi : 'http://code.jquery.com/ui/1.10.3/jquery-ui'
+    react    : 'http://fb.me/react-0.10.0'
+
+require (['constants', 'game-ui'], (c, game) ->
+
+  initial-board =
+    'rnbqkbnrPppppppp--------------------------------PpPPPPPPRNBQKBNR'
+
+  initial-ctx =
+    board             : initial-board
+    player            : c.white
+    castlingRights    : c.full-castling-rts
+    passantPosition   : c.unset-passant-pos
+    promotionPosition : c.unset-promotion-pos
+
+  game.render initial-ctx
+
+)
