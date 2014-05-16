@@ -4,8 +4,9 @@ define ([
   'specConstants'
   'constants'
   'constructors'
+  'types'
   'game-service'
-], (_, j, sc, c, g, gs) ->
+], (_, j, sc, c, g, y, gs) ->
 
   {
     descr
@@ -34,7 +35,8 @@ define ([
     no-pass = c.unset-passant-pos
     no-prom = c.unset-promotion-pos
 
-    Kkq = 'Kkq'
+    KQkq = 'KQkq'
+    Kkq  = 'Kkq'
 
     bd1 = sc.initial-board
     bd2 = '---q-------------------------------------------------------K----'
@@ -145,11 +147,9 @@ define ([
 
     t 'test gs.king-position-for' (->
       fn = gs.king-position-for
-
       to-equal pos0-4 (fn bd3, black)
       to-equal pos7-4 (fn bd3, white)
       to-equal pos7-6 (fn bd9, white)
-      
     )
 
     t 'test gs.modifyCastlingRights' (->
@@ -184,46 +184,78 @@ define ([
     t 'test gs.query-game-service' (->
       fn = gs.query-game-service
 
-      ctx =
-        board  : bd1
-        player : white
-        castlingRights  : 'KQkq'
-        passantPosition : no-pass
+      gen-resp = (board, player, castlingRights
+        passantPosition, arg5
+      ) ->
 
+        resp = { board, player, castlingRights, passantPosition } 
+
+        if y.promotion-position? arg5
+          resp.promotionPosition = arg5
+        else
+          resp.message = arg5
+
+        resp
+
+      ctx1 = g.generate-context bd1, white, KQkq, no-pass
 
       b2 = 'rnbqkbnrpppppppp--------------------P-----------PPPP-PPPRNBQKBNR'
       pass2 = gen-pos 5, 4
-      res1 = fn ctx, (gen-pos 6, 4), (gen-pos 4, 4)
-      to-equal b2 res1.board
-      to-equal black res1.player
-      to-equal pass2 res1.passantPosition
-      to-equal no-prom res1.promotionPosition
+      resp2 = gen-resp b2, black, KQkq, pass2, no-prom
+
+      res1 = fn ctx1, (gen-pos 6, 4), (gen-pos 4, 4)
+      to-equal resp2 res1
 
       b3 = 'rnbqkbnrpppp-ppp------------p-------P-----------PPPP-PPPRNBQKBNR'
       pass3 = gen-pos 2, 4
+      resp3 = gen-resp b3, white, KQkq, pass3, no-prom
+
       res2 = fn res1, (gen-pos 1, 4), (gen-pos 3, 4)
-      to-equal b3 res2.board
-      to-equal white res2.player
-      to-equal pass3 res2.passantPosition
-      to-equal no-prom res2.promotionPosition
+      to-equal resp3 res2
 
       b4 = 'rnbqkbnrpppp-ppp------------p-------P--------N--PPPP-PPPRNBQKB-R'
+      resp4 = gen-resp b4, black, KQkq, no-pass, no-prom
+
       res3 = fn res2, (gen-pos 7, 6), (gen-pos 5, 5)
-      to-equal b4 res3.board
-      to-equal black res3.player
-      to-equal no-pass res3.passantPosition
-      to-equal no-prom res3.promotionPosition
-      to-equal undefined res3.message
+      to-equal resp4 res3
+
+      resp5 = gen-resp b4, black, KQkq, no-pass, 'illegal move'
 
       res4 = fn res3, (gen-pos 0, 7), (gen-pos 5, 7)
+      to-equal resp5 res4
+
+      b5 = 'r-bqkbnrpppp-ppp--n---------p-------P--------N--PPPP-PPPRNBQKB-R'
+      resp6 = gen-resp b5, white, KQkq, no-pass, no-prom
 
       res5 = fn res3, (gen-pos 0, 1), (gen-pos 2, 2)
+      to-equal resp6 res5
 
-      console.log res1
-      console.log res2
-      console.log res3
-      console.log res4
-      console.log res5
+      b6 = 'r-bqkbnrpppp-ppp--n------B--p-------P--------N--PPPP-PPPRNBQK--R'
+      resp7 = gen-resp b6, black, KQkq, no-pass, no-prom
+
+      res6 = fn res5, (gen-pos 7, 5), (gen-pos 3, 1)
+      to-equal resp7 res6
+
+      b7 = 'r-bqkb-rpppp-ppp--n--n---B--p-------P--------N--PPPP-PPPRNBQK--R'
+      resp8 = gen-resp b7, white, KQkq, no-pass, no-prom
+
+      res7 = fn res6, (gen-pos 0, 6), (gen-pos 2, 5)
+      to-equal resp8 res7
+
+      b8 = 'r-bqkb-rpppp-ppp--n--n---B--p-------P--------N--PPPP-PPPRNBQ-RK-'
+      resp9 = gen-resp b8, black, 'kq', no-pass, no-prom
+
+      res8 = fn res7, (gen-pos 7, 4), (gen-pos 7, 6)
+      to-equal resp9 res8
+
+      b9 = 'rnbqkbnrpPpppppp----------------------------------PPPPPPRNBQKBNR'
+      c2 = g.generate-context b9, white, no-rts, no-pass
+
+      b10 = 'Pnbqkbnrp-pppppp----------------------------------PPPPPPRNBQKBNR'
+      resp10 = gen-resp b10, black, no-rts, no-pass, (gen-pos 0, 0)
+
+      res9 = fn c2, (gen-pos 1, 1), (gen-pos 0, 0)
+      to-equal resp10 res9
 
     )
 
