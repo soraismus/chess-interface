@@ -51,21 +51,39 @@ define ([
       className : css-board-class inactive?
       ranks
 
+  # WET -- c.f. add-promotion-msg.
+  add-checkmate-msg = \message ->
+    dom.span
+      id : 'checkmate-msg'
+      message
+
+  add-checkmate-notification = (checkmate?, color) ->
+    return null unless checkmate?
+
+    winner = if u.black? color then 'White' else 'Black'
+    content = "#{winner} has won."
+
+    div 
+      id : 'checkmate-notification'
+      add-checkmate-msg content
+
   add-chessman = (player, color, type, row, col) ->
     dom.img
       className : css-chessman-class (player, color, row, col)
       src       : src-for (color, type)
 
-  add-mount-point = (player, board, prom-pos) ->
+  add-parent-node = (player, board, prom-pos, msg) ->
 
     prev-player = u.opposing-color player
 
     display-prom-opts? = u.promotion-position-set? prom-pos
+    checkmate? = msg == 'checkmate'
 
     div
       className : 'mount-point'
       add-board (player, board, display-prom-opts?)
       add-promotion-options (display-prom-opts?, prev-player)
+      add-checkmate-notification (checkmate?, player)
 
   add-promotion-msg = \message ->
     dom.span
@@ -146,7 +164,7 @@ define ([
       register ('promote', gs.promote ctx)
 
   render = \ctx ->
-    { board, player, promotionPosition } = ctx
+    { board, player, promotionPosition, message } = ctx
 
     establish-drag-&-drop = ->
       active-nodes = $('.active')
@@ -168,7 +186,7 @@ define ([
           trigger 'revert'
 
     React.renderComponent (
-      add-mount-point (player, board, promotionPosition)
+      add-parent-node (player, board, promotionPosition, message)
       document.getElementById 'chess'
     )
 

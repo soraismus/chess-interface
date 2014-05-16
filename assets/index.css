@@ -54,7 +54,7 @@
   margin-right: auto;
 }
 
-#promotion-options {
+#promotion-options, #checkmate-notification {
   visibility: hidden;
   top: 39%;
   left: 22%;
@@ -74,7 +74,15 @@
   100% { opacity: 0.9; visibility: visible; }
 }
 
+#checkmate-msg {
+  position: relative;
+  top: 35%;
+  font: 28px/26px sans-serif;
+}
+
 #promotion-msg {
+  position: relative;
+  top: 7%;
   font: 22px/26px sans-serif;
 }
 
