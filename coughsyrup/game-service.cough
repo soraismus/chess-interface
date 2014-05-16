@@ -157,9 +157,8 @@ define ([
     
     contains (potential-tgts, tgt)
 
-  # Note: 'rts' is not necessary.
   move-legal-response = (orig-ctx, src, tgt) ->
-    [bd, player, rts, passant] = extract-props orig-ctx
+    [bd, player, _, passant] = extract-props orig-ctx
 
     new-bd = move (bd, src, passant) tgt
 

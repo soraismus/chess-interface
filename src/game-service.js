@@ -150,8 +150,8 @@
       };
     };
     move_hyphen_legal_hyphen_response = function(orig_hyphen_ctx, src, tgt) {
-      var bd, new_hyphen_bd, new_hyphen_ctx, passant, player, rts, _ref;
-      _ref = extract_hyphen_props(orig_hyphen_ctx), bd = _ref[0], player = _ref[1], rts = _ref[2], passant = _ref[3];
+      var bd, new_hyphen_bd, new_hyphen_ctx, passant, player, _, _ref;
+      _ref = extract_hyphen_props(orig_hyphen_ctx), bd = _ref[0], player = _ref[1], _ = _ref[2], passant = _ref[3];
       new_hyphen_bd = move(bd, src, passant)(tgt);
       if (in_hyphen_check_question_(new_hyphen_bd, player)) {
         return king_hyphen_unsafe_hyphen_response(orig_hyphen_ctx);
