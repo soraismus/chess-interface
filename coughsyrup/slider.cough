@@ -78,8 +78,6 @@ define ([
     getPotentialMoves
   }
 
-  public-fns.move = public-fns.move
-
   return public-fns
 
 )
