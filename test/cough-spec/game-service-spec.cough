@@ -1,12 +1,11 @@
 define ([
-  'mydash'
   'jFns'
   'specConstants'
   'constants'
   'constructors'
   'types'
   'game-service'
-], (_, j, sc, c, g, y, gs) ->
+], (j, sc, c, g, y, gs) ->
 
   {
     descr

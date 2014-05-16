@@ -1,12 +1,11 @@
 define ([
-  'mydash'
   'jFns'
   'constants'
   'constructors'
   'extractors'
   'specConstants'
   'utilities'
-], (_, j, c, g, x, sc, u) ->
+], (j, c, g, x, sc, u) ->
 
   {
     descr

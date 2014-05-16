@@ -1,11 +1,10 @@
 define ([
-  'mydash'
   'jFns'
   'constants'
   'constructors'
   'extractors'
   'specConstants'
-], (_, j, c, g, x, sc) ->
+], (j, c, g, x, sc) ->
 
   {
     descr
@@ -37,9 +36,9 @@ define ([
   to-be-array = \val -> to-equal (jasmine.any Array) val
   to-be-string = \val -> to-equal (jasmine.any String) val
   to-be-nbr = \val -> to-equal (jasmine.any Number) val
-  to-have-length = \length \val -> to-equal length (_.length val)
+  to-have-length = \length \val -> to-equal length val.length
   each-fn-result-equals = \expected \fn \val ->
-    _.each (\val -> to-equal expected (fn val)) val
+    val.forEach (\val -> to-equal expected (fn val))
 
   descr 'test extractors.cough' (->
 

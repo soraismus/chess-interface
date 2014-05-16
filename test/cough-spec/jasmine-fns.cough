@@ -1,4 +1,4 @@
-define (['mydash'], (_) ->
+define ( ->
 
   descr  = \a1 \a2 -> describe (a1, a2)
   xdescr = \a1 \a2 -> xdescribe (a1, a2)
@@ -30,46 +30,27 @@ define (['mydash'], (_) ->
   throws = \predicate \input -> to-throw predicate input
 
   each-satisfies = \predicate \inputs ->
-    _.each (satisfies predicate) inputs
+    inputs.forEach (satisfies predicate)
 
   each-contravenes = \predicate \inputs ->
-    _.each (contravenes predicate) inputs
+    inputs.forEach (contravenes predicate)
 
-  each-throws = \fn \inputs -> _.each (to-throw fn) inputs
+  each-throws = \fn \inputs -> inputs.forEach (to-throw fn)
 
   to-be-fn = \expected ->
     expect (expected) .toEqual (jasmine.any (Function))
 
-  manage-subset = \spec \message \element-set ->
-    test-spec = test-spec spec
-
-    if _.isArray message
-      _.zipEach2 test-spec message element-set unless _.empty message
-    else
-      test-spec message element-set
-
-  gen-pred-specs = \predicate ->
-    _.mapOnto [satisfies, contravenes, throws] predicate
-
-  gen-pred-guards = \predicate ->
-    _.map _.each (gen-pred-specs predicate)
-
   to-be-array = \val -> to-equal (jasmine.any Array) val
   to-be-string = \val -> to-equal (jasmine.any String) val
   to-be-nbr = \val -> to-equal (jasmine.any Number) val
-  to-have-length = \length \val -> to-equal length (_.length val)
-  each-fn-result-equals = \expected \fn \val ->
-    _.each (\val -> to-equal expected (fn val)) val
+  to-have-length = \length \val -> to-equal length val.length
 
   return {
     contravenes
     descr
     each-contravenes
-    each-fn-result-equals
     each-satisfies
     each-throws
-    gen-pred-specs
-    gen-pred-guards
     not-to-throw
     satisfies
     t
