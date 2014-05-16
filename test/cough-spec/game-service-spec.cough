@@ -193,6 +193,7 @@ define ([
         if y.promotion-position? arg5
           resp.promotionPosition = arg5
         else
+          resp.promotionPosition = no-prom
           resp.message = arg5
 
         resp

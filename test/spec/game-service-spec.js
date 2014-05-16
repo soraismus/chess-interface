@@ -127,6 +127,7 @@
           if (y.promotion_hyphen_position_question_(arg5)) {
             resp.promotionPosition = arg5;
           } else {
+            resp.promotionPosition = no_hyphen_prom;
             resp.message = arg5;
           }
           return resp;
