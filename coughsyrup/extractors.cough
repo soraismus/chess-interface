@@ -114,6 +114,13 @@ define ([
 
     file
 
+  promotion-position-from = \ctx ->
+    # Start testing mode.
+    v.vow-context ctx
+    # End testing mode.
+
+    ctx.promotionPosition
+
   rank-&-file-from = \val ->
     # Start testing mode.
     v.vow-integral-pair val
@@ -144,6 +151,7 @@ define ([
     color-of
     colors-at
     file-of
+    promotion-position-from
     rank-&-file-from
     rank-of
     square-at
