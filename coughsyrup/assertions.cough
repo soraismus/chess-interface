@@ -27,6 +27,7 @@ define (['types'], \y ->
     [y.player?,             'player'            ]
     [y.position?,           'position'          ]
     [y.position-component?, 'position component']
+    [y.promotion-position?, 'promotion position']
     [y.square?,             'square'            ]
     [y.string?,             'string'            ]
   ]
@@ -52,6 +53,7 @@ define (['types'], \y ->
     vow-player
     vow-position
     vow-position-component
+    vow-promotion-position
     vow-square
     vow-string
   ] = validation-pairs.map generate-singular-validator
@@ -99,6 +101,7 @@ define (['types'], \y ->
     vow-pawn-direction
     vow-player
     vow-position
+    vow-promotion-position
     vow-square
     vow-string
   }
