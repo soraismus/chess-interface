@@ -1,5 +1,4 @@
 define ([
-  'base-helpers'
   'constants'
   'utilities'
   'extractors'
@@ -9,7 +8,7 @@ define ([
   'knight'
   'pawn'
   'assertions'
-], (_, c, u, x, slider-fns, king-fns, rook-fns, knight-fns, pawn-fns, v) ->
+], (c, u, x, slider-fns, king-fns, rook-fns, knight-fns, pawn-fns, v) ->
 
   dispatch-table = {}
   dispatch-table[c.king  ] = king-fns
@@ -112,10 +111,9 @@ define ([
     u.to-2d (board.indexOf king)
 
   king-safe-response = \new-ctx ->
-    # Coupling.
-    { board, player } = new-ctx
+    [new-bd, opponent] = extract-props new-ctx
     
-    if opponent-in-check? (board, player)
+    if in-check? (new-bd, opponent)
       possible-checkmate-response (new-ctx)
     else
       new-ctx
@@ -171,13 +169,10 @@ define ([
       new-ctx = generate-new-ctx (new-bd, orig-ctx, src, tgt)
       king-safe-response (new-ctx)
 
-  opponent-in-check? = in-check?
-
   possible-checkmate-response = \new-ctx ->
-    # Coupling.
-    { board, player, passantPosition } = new-ctx
+    [new-bd, opponent, _, new-passant] = extract-props new-ctx
 
-    if checkmate? (board, passantPosition, player)
+    if checkmate? (new-bd, new-passant, opponent)
       game-completed-response ()
     else
       game-continues-response (new-ctx)
@@ -251,7 +246,9 @@ define ([
   # End testing mode.
 
   # Start production mode.
-  # return { query-game-service }
+
+  return { query-game-service }
+
   # End production mode.
 
 
