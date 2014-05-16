@@ -22,27 +22,16 @@ define ([
     black-chessman = black-chessman-from[chessman-type]
     if (y.black? color) then black-chessman else (_.toUC black-chessman)
 
-  generate-context = (board, rts, passant) ->
+  generate-context = (board, player-color, rts, passant) ->
+  generate-context = (board, player, castlingRights, passantPosition) ->
     # Start testing mode.
     v.vow-board board
-    v.vow-castling-right-set rts
-    v.vow-passant-position passant
+    v.vow-color player
+    v.vow-castling-right-set castlingRights
+    v.vow-passant-position passantPosition
     # End testing mode.
 
-    board: board, castlingRights: rts, passantPosition: passant
-
-  generate-map = (board, path) ->
-    # Start testing mode.
-    v.vow-board board
-    v.vow-path path
-    # End testing mode.
-    [board, path]
-
-  generate-path = (src, tgt) ->
-    # Start testing mode.
-    v.vow-all-positions [src, tgt]
-    # End testing mode.
-    [tgt, src]
+    { board, player, castlingRights, passantPosition }
 
   generate-position = (rank, file) ->
     # Start testing mode.
@@ -50,23 +39,14 @@ define ([
     # End testing mode.
     generate-position! (rank, file)
 
-  generate-position! = (rank, file) -> [rank, file]
-
-  generate-setting = (board, pos) ->
-    # Start testing mode.
-    v.vow-board board
-    v.vow-position pos
-    # End testing mode.
-    [board, pos]
+  generate-position! = (rank, file) ->
+    [rank, file]
 
   return {
     generate-chessman
     generate-context
-    generate-map
-    generate-path
     generate-position
     generate-position!
-    generate-setting
   } 
 
 )
