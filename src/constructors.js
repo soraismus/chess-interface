@@ -17,7 +17,7 @@
       if (y.black_question_(color)) {
         return black_hyphen_chessman;
       } else {
-        return _.toUC(black_hyphen_chessman);
+        return _.to_hyphen_white(black_hyphen_chessman);
       }
     };
     generate_hyphen_context = function(board, player_hyphen_color, rts, passant) {};

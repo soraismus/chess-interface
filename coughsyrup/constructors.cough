@@ -20,7 +20,7 @@ define ([
     # End testing mode.
 
     black-chessman = black-chessman-from[chessman-type]
-    if (y.black? color) then black-chessman else (_.toUC black-chessman)
+    if (y.black? color) then black-chessman else (_.to-white black-chessman)
 
   generate-context = (board, player-color, rts, passant) ->
   generate-context = (board, player, castlingRights, passantPosition) ->
