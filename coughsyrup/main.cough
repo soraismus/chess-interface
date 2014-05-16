@@ -11,16 +11,6 @@ require.config
 
 require (['constants', 'game-ui'], (c, game) ->
 
-  initial-board =
-    'rnbqkbnrPppppppp--------------------------------PpPPPPPPRNBQKBNR'
-
-  initial-ctx =
-    board             : initial-board
-    player            : c.white
-    castlingRights    : c.full-castling-rts
-    passantPosition   : c.unset-passant-pos
-    promotionPosition : c.unset-promotion-pos
-
-  game.render initial-ctx
+  game.render c.initial-context
 
 )

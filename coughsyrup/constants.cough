@@ -46,10 +46,19 @@ define ( ->
     castling-white-queenward = 'Q'
   ]
 
+  initial-board =
+    'rnbqkbnrPppppppp--------------------------------PpPPPPPPRNBQKBNR'
+
+  full-castling-rts = 'KQkq'
+
   players = [
     white-player = 'w'
     black-player = 'b'
   ]
+
+  unset-passant-pos = '-'
+
+  unset-promotion-pos = '-'
 
   return {
     absent-color
@@ -96,6 +105,13 @@ define ( ->
 
     empty-square : '-'
 
+    initial-context :
+      board             : initial-board
+      player            : white
+      castlingRights    : full-castling-rts
+      passantPosition   : unset-passant-pos
+      promotionPosition : unset-promotion-pos
+
     full-castling-rts : 'KQkq'
 
     king
@@ -141,11 +157,9 @@ define ( ->
 
     rook
 
-    unset-check-status : {}
+    unset-passant-pos
 
-    unset-passant-pos : '-'
-
-    unset-promotion-pos : '-'
+    unset-promotion-pos
 
     white
 

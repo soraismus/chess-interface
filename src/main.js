@@ -15,16 +15,7 @@
   });
 
   require(['constants', 'game-ui'], function(c, game) {
-    var initial_hyphen_board, initial_hyphen_ctx;
-    initial_hyphen_board = 'rnbqkbnrPppppppp--------------------------------PpPPPPPPRNBQKBNR';
-    initial_hyphen_ctx = {
-      board: initial_hyphen_board,
-      player: c.white,
-      castlingRights: c.full_hyphen_castling_hyphen_rts,
-      passantPosition: c.unset_hyphen_passant_hyphen_pos,
-      promotionPosition: c.unset_hyphen_promotion_hyphen_pos
-    };
-    return game.render(initial_hyphen_ctx);
+    return game.render(c.initial_hyphen_context);
   });
 
 }).call(this);
