@@ -8,7 +8,10 @@ define (['constants'], (c) ->
     val == true || val == false
 
   hash? = \val ->
-    toString.call val == '[object Object]'
+    javascript-type? ('Object', val)
+
+  javascript-type? = (type, val) ->
+    toString.call val == '[object ' + type + ']'
 
   integer? = \val ->
     val == val >> 0
@@ -30,7 +33,7 @@ define (['constants'], (c) ->
     pos.every bounded?
 
   string? = \val ->
-    toString.call val == '[object String]'
+    javascript-type? ('String', val)
 
   undefined? = \val ->
      val == undefined
