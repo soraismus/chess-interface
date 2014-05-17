@@ -29,6 +29,9 @@ define ([
     g8 = gen-pos (0, 6)
   ]
 
+  b1 = gen-pos (7, 1)
+  b8 = gen-pos (0, 1)
+
   [c1-key, g1-key, c8-key, g8-key] = king-castling-tgts.map JSON.stringify
 
   possible-rook-paths = [[5, 7], [3, 0], [61, 63], [59, 56]]
@@ -77,6 +80,12 @@ define ([
     KQk  : t4,  Qk : t4,   Kk  : t4,  k   : t4
     KQ   : t0,  Q  : t0,   K   : t0,  '-' : t0 
 
+  castling-paths = {}
+  castling-paths[c1-key] = [(e1 = gen-pos (7, 4)), gen-pos (7, 3), c1]
+  castling-paths[g1-key] = [e1, gen-pos (7, 5), g1] 
+  castling-paths[c8-key] = [(e8 = gen-pos (0, 4)), gen-pos (0, 3), c8]
+  castling-paths[g8-key] = [e8, gen-pos (0, 5), g8]
+
   castling? = (src, tgt) ->
     Math.abs (u.file-difference (src, tgt)) > 1
 
@@ -85,10 +94,11 @@ define ([
     matcher = u.castling-matcher (black?, kingward?)
     /#{matcher}/.test castling-rts
 
-  # TODO: Check for non-transitable castling paths.
-  # TODO: Check that no pos in the castling path is attackable.
-  get-potential-castling-moves = (color, castling-rts) ->
+  get-potential-castling-moves = (bd, color, castling-rts, attackable?) ->
+
     castling-tgts[color][castling-rts]
+        .filter (queenside-transitable? bd)
+        .filter (safe? (bd, color, attackable?))
 
   getPotentialKingAttacks = (bd, src) ->
     # Start testing mode.
@@ -107,11 +117,28 @@ define ([
     king-color = if x.rank-of src == 0 then c.black else c.white
     new-castling-rts[king-color][rts]
 
+  queenside-transitable? = \board \tgt ->
+    switch tgt
+      when c1 then (u.empty-at? board b1)
+      when c8 then (u.empty-at? board b8)
+      else true
+
   rook-castling-path = \king-tgt ->
     key = JSON.stringify king-tgt
     src = rook-castling-srcs[key]
     tgt = rook-castling-tgts[key]
     [src, tgt]
+
+  safe? = (board, color, attackable?) -> (tgt) ->
+    key = JSON.stringify tgt
+
+    do (attackable? = attackable?.bind (null, board, color)) ->
+
+      ! (castling-paths[key].some attackable?)
+
+  # ----------------
+  # Mixin : Stepper
+  # ----------------
 
   pf = public-fns = _.defaults stepper-fns {
     getPotentialKingAttacks
@@ -128,8 +155,8 @@ define ([
       bd-after-king-moves  = simple-move (bd, src) tgt
       simple-move (bd-after-king-moves, rook-src) rook-tgt
 
-  pf.getPotentialMoves = do (getPotentialMoves = pf.getPotentialMoves) ->
-    (bd, src, rts) ->
+  pf.getPotentialMoves = do (get-simple-moves = pf.getPotentialMoves) ->
+    (bd, src, rts, _0, _1, attackable?) ->
       # Start testing mode.
       v.vow-board bd
       v.vow-position src
@@ -138,12 +165,13 @@ define ([
 
       king-color  = x.color-at bd src
 
-      basic-moves = getPotentialMoves (
+      simple-moves = get-simple-moves (
         bd, src, undefined, undefined, c.king)
 
-      return basic-moves if rts == no-rts
+      return simple-moves if rts == no-rts
 
-      basic-moves.concat (get-potential-castling-moves (king-color, rts))
+      simple-moves.concat (
+        get-potential-castling-moves (bd, king-color, rts, attackable?))
     
   pf.move = do (non-castling-move = pf.move) ->
     (bd, src) -> \tgt ->
