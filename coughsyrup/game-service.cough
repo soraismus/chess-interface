@@ -22,6 +22,15 @@ define ([
     (new-ctx = copy ctx).message = msg
     new-ctx
 
+  attackable? = (board, color, pos) ->
+    # Start testing mode.
+    v.vow-board board
+    v.vow-position pos
+    # End testing mode.
+
+    vuln-positions = vulnerable-positions-for (board, color)
+    contains (vuln-positions, pos)
+
   call = \fn-name \chessman-type ->
     # Start testing mode.
     v.vow-string fn-name
@@ -93,7 +102,7 @@ define ([
     # End testing mode.
 
     type = x.chessman-type-at bd src
-    call 'getPotentialMoves' type (bd, src, rts, passant, type)
+    call 'getPotentialMoves' type (bd, src, rts, passant, type, attackable?)
 
   in-check? = (board, color) ->
     # Start testing mode.
@@ -102,8 +111,7 @@ define ([
     # End testing mode.
 
     king-pos = king-position-for (board, color)
-    vuln-positions = vulnerable-positions-for (board, color)
-    contains (vuln-positions, king-pos)
+    attackable? (board, color, king-pos)
 
   king-position-for = (board, color) ->
     # Start testing mode.
@@ -236,6 +244,7 @@ define ([
   # Start testing mode.
 
   test-mode = {
+    attackable?
     call
     checkmate?
     getPotentialKingAttacks

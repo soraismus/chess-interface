@@ -2,7 +2,7 @@
 (function() {
   define(['base-helpers', 'extractors', 'utilities', 'constructors', 'piece', 'assertions'], function(_, x, u, g, piece_hyphen_fns, v) {
     var getPotentialMoves, public_hyphen_fns;
-    getPotentialMoves = function(bd, src, rts, passant, type) {
+    getPotentialMoves = function(bd, src, rts, passant, type, attackable_question_) {
       var available_question_, dir, file, file_hyphen_diff, gen_hyphen_pos_bang_, inessent_question_, moves, new_hyphen_file, new_hyphen_rank, offsets, rank, rank_hyphen__ampersand__hyphen_file_hyphen_from, rank_hyphen_diff, tgt, _i, _len, _ref, _ref1;
       v.vow_hyphen_board(bd);
       v.vow_hyphen_position(src);
