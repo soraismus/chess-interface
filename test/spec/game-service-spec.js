@@ -4,7 +4,7 @@
     var contravenes, descr, each_hyphen_contravenes, each_hyphen_satisfies, each_hyphen_throws, satisfies, t, to_hyphen_be_hyphen_false, to_hyphen_be_hyphen_true, to_hyphen_equal, to_hyphen_throw, xdescr, xt;
     descr = j.descr, xdescr = j.xdescr, t = j.t, xt = j.xt, to_hyphen_throw = j.to_hyphen_throw, to_hyphen_equal = j.to_hyphen_equal, to_hyphen_be_hyphen_true = j.to_hyphen_be_hyphen_true, to_hyphen_be_hyphen_false = j.to_hyphen_be_hyphen_false, satisfies = j.satisfies, contravenes = j.contravenes, each_hyphen_satisfies = j.each_hyphen_satisfies, each_hyphen_contravenes = j.each_hyphen_contravenes, each_hyphen_throws = j.each_hyphen_throws;
     return descr('test game-service.cough')(function() {
-      var KQkq, Kkq, bd1, bd10, bd11, bd12, bd13, bd14, bd15, bd2, bd3, bd4, bd5, bd6, bd7, bd8, bd9, black, gen_hyphen_pos, no_hyphen_pass, no_hyphen_prom, no_hyphen_rts, pos0_hyphen_0, pos0_hyphen_3, pos0_hyphen_4, pos1_hyphen_4, pos2_hyphen_3, pos2_hyphen_4, pos2_hyphen_6, pos3_hyphen_4, pos5_hyphen_1, pos5_hyphen_2, pos7_hyphen_1, pos7_hyphen_3, pos7_hyphen_4, pos7_hyphen_6, white;
+      var KQkq, Kkq, bd1, bd10, bd11, bd12, bd13, bd14, bd15, bd16, bd17, bd18, bd19, bd2, bd3, bd4, bd5, bd6, bd7, bd8, bd9, black, gen_hyphen_pos, no_hyphen_pass, no_hyphen_prom, no_hyphen_rts, pos0_hyphen_0, pos0_hyphen_3, pos0_hyphen_4, pos1_hyphen_4, pos2_hyphen_3, pos2_hyphen_4, pos2_hyphen_6, pos3_hyphen_4, pos5_hyphen_1, pos5_hyphen_2, pos7_hyphen_1, pos7_hyphen_3, pos7_hyphen_4, pos7_hyphen_6, white;
       gen_hyphen_pos = g.generate_hyphen_position;
       black = c.black;
       white = c.white;
@@ -25,6 +25,10 @@
       bd7 = 'r----rk-------------------------------------------------R---K--R';
       bd8 = 'r---k--r--------------------------------------------------KR---R';
       bd9 = 'r---k--r------------------------------------------------R----RK-';
+      bd16 = 'rn--k--r----------------------------------------------------K---';
+      bd17 = 'r---k--r----------------------------------------------------K---';
+      bd18 = 'r---k--r----------------------------------------------------K-R-';
+      bd19 = 'r---k--rpppppppp--------------------------------PPPPPPPP----K-R-';
       bd10 = '------------------------------pPpP------------------------------';
       bd11 = '------------------------------pP---------p----------------------';
       bd12 = '----------------------P---------pP------------------------------';
@@ -61,10 +65,23 @@
         return to_hyphen_equal(res2)(fn(bd1, pos7_hyphen_1, no_hyphen_rts));
       });
       t('test gs.getPotentialMoves')(function() {
-        var fn, res1;
+        var fn, kingward, next_hyphen_rank, queenward, res1, res2, res3, res4, res5, same_hyphen_rank, two_hyphen_ranks;
         fn = gs.getPotentialMoves;
         res1 = [gen_hyphen_pos(1, 4), gen_hyphen_pos(2, 5), gen_hyphen_pos(3, 6), gen_hyphen_pos(4, 7), gen_hyphen_pos(1, 3), gen_hyphen_pos(2, 3), gen_hyphen_pos(3, 3), gen_hyphen_pos(4, 3), gen_hyphen_pos(5, 3), gen_hyphen_pos(6, 3), gen_hyphen_pos(7, 3), gen_hyphen_pos(1, 2), gen_hyphen_pos(2, 1), gen_hyphen_pos(3, 0), gen_hyphen_pos(0, 4), gen_hyphen_pos(0, 5), gen_hyphen_pos(0, 6), gen_hyphen_pos(0, 7), gen_hyphen_pos(0, 2), gen_hyphen_pos(0, 1), gen_hyphen_pos(0, 0)];
-        return to_hyphen_equal(res1)(fn(bd2, pos0_hyphen_3, no_hyphen_rts, no_hyphen_pass, c.queen));
+        to_hyphen_equal(res1)(fn(bd2, pos0_hyphen_3, no_hyphen_rts, no_hyphen_pass, c.queen));
+        next_hyphen_rank = [gen_hyphen_pos(1, 5), gen_hyphen_pos(1, 4), gen_hyphen_pos(1, 3)];
+        same_hyphen_rank = [gen_hyphen_pos(0, 5), gen_hyphen_pos(0, 3)];
+        kingward = [gen_hyphen_pos(0, 6)];
+        queenward = [gen_hyphen_pos(0, 2)];
+        two_hyphen_ranks = Array.concat(next_hyphen_rank, same_hyphen_rank);
+        res2 = Array.concat(two_hyphen_ranks, kingward);
+        res3 = Array.concat(two_hyphen_ranks, queenward, kingward);
+        res4 = Array.concat(two_hyphen_ranks, queenward);
+        res5 = Array.concat(same_hyphen_rank, queenward, kingward);
+        to_hyphen_equal(res2)(fn(bd16, pos0_hyphen_4, KQkq, no_hyphen_pass));
+        to_hyphen_equal(res3)(fn(bd17, pos0_hyphen_4, KQkq, no_hyphen_pass));
+        to_hyphen_equal(res4)(fn(bd18, pos0_hyphen_4, KQkq, no_hyphen_pass));
+        return to_hyphen_equal(res5)(fn(bd19, pos0_hyphen_4, KQkq, no_hyphen_pass));
       });
       t('test gs.in-check?')(function() {
         var fn;
