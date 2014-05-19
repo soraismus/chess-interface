@@ -1,0 +1,152 @@
+define ([
+  'jFns'
+  'constants'
+  'constructors'
+  'fen-service'
+], (j, c, g, fs) ->
+
+  {
+    descr
+    xdescr
+    t
+    xt
+    to-throw
+    to-equal
+    to-be-true
+    to-be-false
+    satisfies
+    contravenes
+    each-satisfies
+    each-contravenes
+    each-throws
+  } = j
+
+  descr 'fen-service.cough' (->
+
+    boards = [
+      bd1 = 'rnbqkbnrpppppppp--------------------------------PPPPPPPPRNBQKBNR'
+      bd2 = 'rnbqkbnrpppppppp--------------------P-----------PPPP-PPPRNBQKBNR'
+      bd3 = 'rnbqkbnrpp-ppppp----------p---------P-----------PPPP-PPPRNBQKBNR'
+      bd4 = 'rnbqkbnrpp-ppppp----------p---------P--------N--PPPP-PPPRNBQKB-R'
+    ]
+
+    fen-boards = [
+      fen-bd1 = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR'
+      fen-bd2 = 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR'
+      fen-bd3 = 'rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR'
+      fen-bd4 = 'rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R'
+    ]
+
+    position-codes = [
+      a1 = 'a1'
+      h1 = 'h1'
+      b2 = 'b2'
+      e4 = 'e4'
+      a8 = 'a8'
+      h8 = 'h8'
+      unset-code = '-'
+    ]
+
+    gen-pos = g.generate-position
+
+    positions = [
+      pos7-0 = gen-pos (7, 0)
+      pos7-7 = gen-pos (7, 7)
+      pos6-1 = gen-pos (6, 1)
+      pos4-4 = gen-pos (4, 4)
+      pos0-0 = gen-pos (0, 0)
+      pos0-7 = gen-pos (0, 7)
+      unset-pos = '-'
+    ]
+
+    fens = [
+      'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+      'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1'
+      'rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2'
+      'rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2'
+    ]
+
+    gen-ctx = (
+      board
+      player
+      castlingRights
+      passantPosition 
+      clock
+      moveNumber
+      promotionPosition
+    ) ->
+
+      {
+        board
+        player
+        castlingRights
+        passantPosition 
+        clock
+        moveNumber
+        promotionPosition
+      }
+
+    w = 'w'
+    b = 'b'
+    KQkq = 'KQkq'
+    e = '-'
+
+    contexts = [
+      gen-ctx (bd1, w, KQkq, e, 0, 1, e)
+      gen-ctx (bd2, b, KQkq, (gen-pos 5, 4), 0, 1, e)
+      gen-ctx (bd3, w, KQkq, (gen-pos 2, 2), 0, 2, e)
+      gen-ctx (bd4, b, KQkq, e, 1, 2, e)
+    ]
+
+    descr '#contract-board' (->
+      t 'should express hyphen sequences as numerals and place
+          slashes between ranks' (->
+
+        fn = fs.contract-board
+        to-equal fen-boards (boards.map fn)
+      )
+    )
+
+    descr '#decode-positon-code' (->
+      t 'should convert interpret the initial letter as the file and
+          the second numeral as a rank' (->
+
+        fn = fs.decode-position-code
+        to-equal positions (position-codes.map fn)
+      )
+    )
+
+    descr '#decode-fen' (->
+      t 'should convert a fen string into a context object' (->
+        fn = fs.decode-fen
+        to-equal contexts (fens.map fn)
+      )
+    )
+
+    descr '#encode-context' (->
+      t 'should convert a context object into a fen string' (->
+        fn = fs.encode-context
+        to-equal fens (contexts.map fn)
+      )
+    )
+
+    descr '#encode-passant-position' (->
+      t 'should create a pair of characters, the first of which is
+          a letter converted from the file and the second of which
+          is a numeral converted from the rank' (->
+
+        fn = fs.encode-passant-position
+        to-equal position-codes (positions.map fn)
+      )
+    )
+
+    descr '#expand-fen-board' (->
+      t 'should remove slashes and expand numerals into hypen sequences' (->
+        fn = fs.expand-fen-board
+        to-equal boards (fen-boards.map fn)
+      )
+    )
+
+  )
+
+)

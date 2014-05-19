@@ -1,0 +1,158 @@
+define ([
+  'constants'
+  'types'
+  'utilities'
+  'assertions'
+], (c, y, u, v) ->
+
+  contract-board = \board ->
+    # Start testing mode.
+    v.vow-board board
+    # End testing mode.
+
+    rgx    = /.{8,8}/g
+    match  = rgx.exec(board)
+    result = contract-spaces match[0]
+
+    while ((match = rgx.exec(board)) != null)
+      result += "/#{contract-spaces match[0]}"
+
+    return result
+
+  contract-spaces = \string ->
+    while ((match = string.match(/-+/)) != null)
+      string = string.replace(match[0], match[0].length)
+
+    return string
+
+  decode-fen = \fen ->
+    # Start testing mode.
+    v.vow-fen fen
+    # End testing mode.
+
+    [fen-bd, player, castlingRights, fen-passant, fen-clock, fen-mv-nbr] =
+      fen.split space
+
+    board             = expand-fen-board fen-bd
+    passantPosition   = decode-position-code fen-passant
+    promotionPosition = '-'
+    clock             = Number.parseInt (fen-clock, 10)
+    moveNumber        = Number.parseInt (fen-mv-nbr, 10)
+    
+    {
+      board
+      player
+      castlingRights
+      passantPosition
+      promotionPosition
+      clock
+      moveNumber
+    }
+
+  decode-position-code = \pos-code ->
+    # Start testing mode.
+    v.vow-passant-position-code pos-code
+    # End testing mode.
+
+    if y.unset-passant-position-code? pos-code
+      c.unset-passant-pos-code
+    else
+      decode-set-position-code pos-code
+
+  decode-set-position-code = \pos-code ->
+    rank = 8 - Number.parseInt (pos-code[1], 10)
+    file = (pos-code.charCodeAt 0) - 97
+
+    return [rank, file]
+
+  digit-as-string? = \char ->
+    /^[1-8]$/.test char
+
+  encode-context = \ctx ->
+    # Start testing mode.
+    v.vow-context ctx
+    # End testing mode.
+
+    { player, castlingRights } = ctx
+
+    fen-bd = contract-board ctx.board
+    fen-passant = encode-passant-position ctx.passantPosition
+    fen-clock = ctx.clock
+    fen-mv-nbr = ctx.moveNumber
+
+    generate-fen (
+      fen-bd, player, castlingRights, fen-passant, fen-clock, fen-mv-nbr)
+
+  encode-passant-position = \passant ->
+    # Start testing mode.
+    v.vow-passant-position passant
+    # End testing mode.
+
+    if y.unset-passant-position? passant
+      c.unset-passant-pos
+    else
+      encode-set-passant-position passant
+
+  encode-set-passant-position = ([rank, file]) ->
+    file-letter = String.fromCharCode (97 + file)
+    rank-number = 8 - rank
+
+    "#{file-letter}#{rank-number}"
+
+  expand-fen-board = \fen-board ->
+    # Start testing mode.
+    v.vow-fen-board fen-board
+    # End testing mode.
+
+    fen-board.replace('/', '', 'g')
+             .split('')
+             .map(expand-char)
+             .join('')
+
+  expand-char = \char ->
+    if (digit-as-string? char) then (expand-empty-squares char) else char
+
+  expand-empty-squares = \digit-as-string ->
+    # Start testing mode.
+    v.vow (/\d/.test digit-as-string) 'Invalid numeric character'
+    # End testing mode.
+
+    nbr-times = Number.parseInt (digit-as-string, 10)
+    empty-square.repeat nbr-times
+
+  generate-fen = (bd, plyr, rts, pass, clock, mv-nbr) ->
+    "#{bd} #{plyr} #{rts} #{pass} #{clock} #{mv-nbr}"
+
+  # ----------
+  # Constants
+  # ----------
+
+  black        = 'b'
+  empty-square = '-'
+  empty-string = ''
+  space        = ' '
+  white        = 'w'
+
+  # ------------
+  # Fen Service
+  # ------------
+
+  # Start testing mode.
+
+  return {
+    contract-board
+    decode-fen
+    decode-position-code
+    encode-context
+    encode-passant-position
+    expand-fen-board
+  }
+
+  # End testing mode.
+
+  # Start production mode.
+  fen-service = { extract-chart }
+  return fen-service
+  # End production mode.
+
+)
