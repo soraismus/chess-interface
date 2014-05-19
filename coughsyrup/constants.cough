@@ -113,6 +113,8 @@ define ( ->
       castlingRights    : full-castling-rts
       passantPosition   : unset-passant-pos
       promotionPosition : unset-promotion-pos
+      clock             : 0
+      moveNumber        : 0
 
     full-castling-rts : 'KQkq'
 

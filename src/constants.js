@@ -46,7 +46,9 @@
         player: white,
         castlingRights: full_hyphen_castling_hyphen_rts,
         passantPosition: unset_hyphen_passant_hyphen_pos,
-        promotionPosition: unset_hyphen_promotion_hyphen_pos
+        promotionPosition: unset_hyphen_promotion_hyphen_pos,
+        clock: 0,
+        moveNumber: 0
       },
       full_hyphen_castling_hyphen_rts: 'KQkq',
       king: king,
