@@ -4,7 +4,6 @@ require.config({
     jasmine       : '../test/lib/jasmine',
     jasmineHtml   : '../test/lib/jasmine-html',
     jFns          : '../test/spec/jasmine-fns',
-    mydash        : 'lib/mydash',
     spec          : '../test/spec',
     specConstants : '../test/spec/spec-constants',
     testem        : '/testem',
@@ -36,6 +35,7 @@ require (['jasmineHtml', 'testem'], function () {
   var specs = [
     'spec/assertions-spec',
     'spec/extractors-spec',
+    'spec/fen-service-spec',
     'spec/game-service-spec',
     'spec/king-spec',
     'spec/knight-spec',
