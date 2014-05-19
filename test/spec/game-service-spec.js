@@ -133,60 +133,62 @@
       t('test gs.query-game-service')(function() {
         var b10, b2, b3, b4, b5, b6, b7, b8, b9, c2, ctx1, fn, gen_hyphen_resp, pass2, pass3, res1, res2, res3, res4, res5, res6, res7, res8, res9, resp10, resp2, resp3, resp4, resp5, resp6, resp7, resp8, resp9;
         fn = gs.query_hyphen_game_hyphen_service;
-        gen_hyphen_resp = function(board, player, castlingRights, passantPosition, arg5) {
+        gen_hyphen_resp = function(board, player, castlingRights, passantPosition, clock, moveNumber, arg7) {
           var resp;
           resp = {
             board: board,
             player: player,
             castlingRights: castlingRights,
-            passantPosition: passantPosition
+            passantPosition: passantPosition,
+            clock: clock,
+            moveNumber: moveNumber
           };
-          if (y.promotion_hyphen_position_question_(arg5)) {
-            resp.promotionPosition = arg5;
+          if (y.promotion_hyphen_position_question_(arg7)) {
+            resp.promotionPosition = arg7;
           } else {
             resp.promotionPosition = no_hyphen_prom;
-            resp.message = arg5;
+            resp.message = arg7;
           }
           return resp;
         };
-        ctx1 = g.generate_hyphen_context(bd1, white, KQkq, no_hyphen_pass);
+        ctx1 = g.generate_hyphen_context(bd1, white, KQkq, no_hyphen_pass, 0, 0);
         b2 = 'rnbqkbnrpppppppp--------------------P-----------PPPP-PPPRNBQKBNR';
         pass2 = gen_hyphen_pos(5, 4);
-        resp2 = gen_hyphen_resp(b2, black, KQkq, pass2, no_hyphen_prom);
+        resp2 = gen_hyphen_resp(b2, black, KQkq, pass2, 1, 0, no_hyphen_prom);
         res1 = fn(ctx1, gen_hyphen_pos(6, 4), gen_hyphen_pos(4, 4));
         to_hyphen_equal(resp2)(res1);
         b3 = 'rnbqkbnrpppp-ppp------------p-------P-----------PPPP-PPPRNBQKBNR';
         pass3 = gen_hyphen_pos(2, 4);
-        resp3 = gen_hyphen_resp(b3, white, KQkq, pass3, no_hyphen_prom);
+        resp3 = gen_hyphen_resp(b3, white, KQkq, pass3, 2, 1, no_hyphen_prom);
         res2 = fn(res1, gen_hyphen_pos(1, 4), gen_hyphen_pos(3, 4));
         to_hyphen_equal(resp3)(res2);
         b4 = 'rnbqkbnrpppp-ppp------------p-------P--------N--PPPP-PPPRNBQKB-R';
-        resp4 = gen_hyphen_resp(b4, black, KQkq, no_hyphen_pass, no_hyphen_prom);
+        resp4 = gen_hyphen_resp(b4, black, KQkq, no_hyphen_pass, 3, 1, no_hyphen_prom);
         res3 = fn(res2, gen_hyphen_pos(7, 6), gen_hyphen_pos(5, 5));
         to_hyphen_equal(resp4)(res3);
-        resp5 = gen_hyphen_resp(b4, black, KQkq, no_hyphen_pass, 'illegal move');
+        resp5 = gen_hyphen_resp(b4, black, KQkq, no_hyphen_pass, 3, 1, 'illegal move');
         res4 = fn(res3, gen_hyphen_pos(0, 7), gen_hyphen_pos(5, 7));
         to_hyphen_equal(resp5)(res4);
         b5 = 'r-bqkbnrpppp-ppp--n---------p-------P--------N--PPPP-PPPRNBQKB-R';
-        resp6 = gen_hyphen_resp(b5, white, KQkq, no_hyphen_pass, no_hyphen_prom);
+        resp6 = gen_hyphen_resp(b5, white, KQkq, no_hyphen_pass, 4, 2, no_hyphen_prom);
         res5 = fn(res3, gen_hyphen_pos(0, 1), gen_hyphen_pos(2, 2));
         to_hyphen_equal(resp6)(res5);
         b6 = 'r-bqkbnrpppp-ppp--n------B--p-------P--------N--PPPP-PPPRNBQK--R';
-        resp7 = gen_hyphen_resp(b6, black, KQkq, no_hyphen_pass, no_hyphen_prom);
+        resp7 = gen_hyphen_resp(b6, black, KQkq, no_hyphen_pass, 5, 2, no_hyphen_prom);
         res6 = fn(res5, gen_hyphen_pos(7, 5), gen_hyphen_pos(3, 1));
         to_hyphen_equal(resp7)(res6);
         b7 = 'r-bqkb-rpppp-ppp--n--n---B--p-------P--------N--PPPP-PPPRNBQK--R';
-        resp8 = gen_hyphen_resp(b7, white, KQkq, no_hyphen_pass, no_hyphen_prom);
+        resp8 = gen_hyphen_resp(b7, white, KQkq, no_hyphen_pass, 6, 3, no_hyphen_prom);
         res7 = fn(res6, gen_hyphen_pos(0, 6), gen_hyphen_pos(2, 5));
         to_hyphen_equal(resp8)(res7);
         b8 = 'r-bqkb-rpppp-ppp--n--n---B--p-------P--------N--PPPP-PPPRNBQ-RK-';
-        resp9 = gen_hyphen_resp(b8, black, 'kq', no_hyphen_pass, no_hyphen_prom);
+        resp9 = gen_hyphen_resp(b8, black, 'kq', no_hyphen_pass, 7, 3, no_hyphen_prom);
         res8 = fn(res7, gen_hyphen_pos(7, 4), gen_hyphen_pos(7, 6));
         to_hyphen_equal(resp9)(res8);
         b9 = 'rnbqkbnrpPpppppp----------------------------------PPPPPPRNBQKBNR';
-        c2 = g.generate_hyphen_context(b9, white, no_hyphen_rts, no_hyphen_pass);
+        c2 = g.generate_hyphen_context(b9, white, no_hyphen_rts, no_hyphen_pass, 8, 4);
         b10 = 'Pnbqkbnrp-pppppp----------------------------------PPPPPPRNBQKBNR';
-        resp10 = gen_hyphen_resp(b10, black, no_hyphen_rts, no_hyphen_pass, gen_hyphen_pos(0, 0));
+        resp10 = gen_hyphen_resp(b10, black, no_hyphen_rts, no_hyphen_pass, 9, 4, gen_hyphen_pos(0, 0));
         res9 = fn(c2, gen_hyphen_pos(1, 1), gen_hyphen_pos(0, 0));
         return to_hyphen_equal(resp10)(res9);
       });
@@ -207,6 +209,16 @@
         to_hyphen_unset(fn(bd2, pos0_hyphen_3, pos0_hyphen_3));
         to_hyphen_equal(pos0_hyphen_0)(fn(bd4, gen_hyphen_pos(1, 0), pos0_hyphen_0));
         return to_hyphen_equal(pos7_hyphen_1)(fn(bd4, gen_hyphen_pos(6, 0), pos7_hyphen_1));
+      });
+      descr('#update-move-number')(function() {
+        return t('should update the "moveNumber" field only when the player is black')(function() {
+          var fn;
+          fn = gs.update_hyphen_move_hyphen_number;
+          to_hyphen_equal(1)(fn(c.white, 1));
+          to_hyphen_equal(2)(fn(c.black, 1));
+          to_hyphen_equal(2)(fn(c.white, 2));
+          return to_hyphen_equal(3)(fn(c.black, 2));
+        });
       });
       return t('test gs.vulnerable-positions-for')(function() {
         var fn, pos_hyphen_w_slash__hyphen_file_hyphen_2, pos_hyphen_w_slash__hyphen_rank_hyphen_7, res2, res3;
