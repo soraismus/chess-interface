@@ -33,6 +33,9 @@ define (['constants'], (c) ->
   inessent? = \pos ->
     pos.every bounded?
 
+  non-negative-integer? = \val ->
+    val == val >>> 0
+
   string? = \val ->
     javascript-type? ('String', val)
 
@@ -141,6 +144,7 @@ define (['constants'], (c) ->
     empty?
     inessent?
     integral-pair?
+    non-negative-integer?
     passant-position?
     passant-position-code?
     promotion-position?

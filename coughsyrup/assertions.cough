@@ -10,30 +10,31 @@ define (['types'], \y ->
     val == undefined || pred val
 
   validation-pairs = [
-    [y.board?,              'board'             ]
-    [y.bounded?,            'bounded number'    ]
-    [y.castling-right?,     'castling right'    ]
-    [y.castling-right-set?, 'castling right set']
-    [y.chessman?,           'chessman'          ]
-    [y.chessman-type?,      'chessman type'     ]
-    [y.color?,              'color'             ]
-    [y.color-pair?,         'color pair'        ]
-    [y.context?,            'context'           ]
-    [y.fen?,                'fen'               ]
-    [y.fen-board?,          'fen board'         ]
-    [y.index?,              'index'             ]
-    [y.integral-pair?,      'integral pair'     ]
-    [y.pair?,               'pair'              ]
-    [y.passant-position?,   'passant position'  ]
-    [y.passant-position-code?,   'passant position code']
-    [y.pawn-direction?,     'pawn direction'    ]
-    [y.player?,             'player'            ]
-    [y.position?,           'position'          ]
-    [y.position-code?,      'position code'     ]
-    [y.position-component?, 'position component']
-    [y.promotion-position?, 'promotion position']
-    [y.square?,             'square'            ]
-    [y.string?,             'string'            ]
+    [y.board?,                 'board'                ]
+    [y.bounded?,               'bounded number'       ]
+    [y.castling-right?,        'castling right'       ]
+    [y.castling-right-set?,    'castling right set'   ]
+    [y.chessman?,              'chessman'             ]
+    [y.chessman-type?,         'chessman type'        ]
+    [y.color?,                 'color'                ]
+    [y.color-pair?,            'color pair'           ]
+    [y.context?,               'context'              ]
+    [y.fen?,                   'fen'                  ]
+    [y.fen-board?,             'fen board'            ]
+    [y.index?,                 'index'                ]
+    [y.integral-pair?,         'integral pair'        ]
+    [y.non-negative-integer?,  'non-negative integer' ]
+    [y.pair?,                  'pair'                 ]
+    [y.passant-position?,      'passant position'     ]
+    [y.passant-position-code?, 'passant position code']
+    [y.pawn-direction?,        'pawn direction'       ]
+    [y.player?,                'player'               ]
+    [y.position?,              'position'             ]
+    [y.position-code?,         'position code'        ]
+    [y.position-component?,    'position component'   ]
+    [y.promotion-position?,    'promotion position'   ]
+    [y.square?,                'square'               ]
+    [y.string?,                'string'               ]
   ]
 
   generate-singular-validator = ([pred, str]) ->
@@ -53,6 +54,7 @@ define (['types'], \y ->
     vow-fen-board
     vow-index
     vow-integral-pair
+    vow-non-negative-integer
     vow-pair
     vow-passant-position
     vow-passant-position-code
@@ -106,6 +108,7 @@ define (['types'], \y ->
     vow-index
     vow-integral-pair
     vow-message-when-set
+    vow-non-negative-integer
     vow-pair
     vow-passant-position
     vow-passant-position-code
