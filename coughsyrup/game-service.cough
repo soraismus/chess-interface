@@ -1,4 +1,5 @@
 define ([
+  'base-helpers'
   'constants'
   'utilities'
   'extractors'
@@ -7,8 +8,9 @@ define ([
   'rook'
   'knight'
   'pawn'
+  'fen-service'
   'assertions'
-], (c, u, x, slider-fns, king-fns, rook-fns, knight-fns, pawn-fns, v) ->
+], (bh, c, u, x, slider-fns, king-fns, rook-fns, knight-fns, pawn-fns, fs, v) ->
 
   dispatch-table = {}
   dispatch-table[c.king  ] = king-fns
@@ -62,12 +64,19 @@ define ([
     potential-positions.some (u.same-position? tgt)
 
   copy = \ctx ->
-    {board, player, castlingRights, passantPosition, promotionPosition} = ctx
-    {board, player, castlingRights, passantPosition, promotionPosition}
+    bh.defaults ctx {}
 
   extract-props = \ctx ->
-    { board, player, castlingRights, passantPosition } = ctx
-    [board, player, castlingRights, passantPosition]
+    {
+      board
+      player
+      castlingRights
+      passantPosition
+      clock
+      moveNumber
+    } = ctx
+
+    [board, player, castlingRights, passantPosition, clock, moveNumber]
 
   game-completed-response = \new-ctx ->
     add-msg (new-ctx, 'checkmate')
@@ -76,13 +85,15 @@ define ([
     add-msg (new-ctx, 'check')
 
   generate-new-ctx = (new-bd, orig-ctx, src, tgt) ->
-    [orig-bd, player, rts] = extract-props orig-ctx
+    [orig-bd, player, rts, pass, clock, mv-nbr] = extract-props orig-ctx
 
     board  : new-bd
     player : u.opposing-color player
     castlingRights    : modifyCastlingRights (orig-bd, src, rts)
     passantPosition   : setPassantPosition   (orig-bd, src, tgt)
     promotionPosition : setPromotionPosition (orig-bd, src, tgt)
+    clock             : update-clock (clock)
+    moveNumber        : update-move-number (player, mv-nbr)
 
   getPotentialKingAttacks = (bd, src) ->
     # Start testing mode.
@@ -103,6 +114,14 @@ define ([
 
     type = x.chessman-type-at bd src
     call 'getPotentialMoves' type (bd, src, rts, passant, type, attackable?)
+
+  get-response = (ctx, src, tgt) ->
+    [bd, player, rts, passant] = extract-props ctx
+
+    if move-legal? (bd, src, rts, passant) tgt
+      move-legal-response (ctx, src, tgt)
+    else
+      move-illegal-response ctx
 
   in-check? = (board, color) ->
     # Start testing mode.
@@ -180,6 +199,13 @@ define ([
       new-ctx = generate-new-ctx (new-bd, orig-ctx, src, tgt)
       king-safe-response (new-ctx)
 
+  navigate = \ctx ->
+    # Start testing mode.
+    v.vow-context ctx
+    # End testing mode.
+
+    window.location.hash = encodeURI (fs.encode-context ctx)
+
   possible-checkmate-response = \new-ctx ->
     [new-bd, opponent, _, new-passant] = extract-props new-ctx
 
@@ -195,13 +221,13 @@ define ([
     new-ctx.promotionPosition = c.unset-promotion-pos
     new-ctx
 
+  # This function causes global side effects.
   query-game-service = (ctx, src, tgt) ->
-    [bd, player, rts, passant] = extract-props ctx
+    response = get-response (ctx, src, tgt)
 
-    if move-legal? (bd, src, rts, passant) tgt
-      move-legal-response (ctx, src, tgt)
-    else
-      move-illegal-response ctx
+    navigate response
+
+    response
 
   setPassantPosition = (bd, src, tgt) ->
     # Start testing mode.
@@ -226,6 +252,21 @@ define ([
     color    = x.color-of chessman
 
     call 'setPromotionPosition' type (color, tgt)
+
+  update-clock = \nbr ->
+    # Start testing mode.
+    v.vow-non-negative-integer nbr
+    # End testing mode.
+
+    nbr + 1
+
+  update-move-number = (player, mv-nbr) ->
+    # Start testing mode.
+    v.vow-color player
+    v.vow-non-negative-integer mv-nbr
+    # End testing mode.
+
+    if u.black? player then mv-nbr + 1 else mv-nbr
 
   vulnerable-positions-for = (board, color) ->
     # Start testing mode.
@@ -258,6 +299,8 @@ define ([
     query-game-service
     setPassantPosition
     setPromotionPosition
+    update-clock
+    update-move-number
     vulnerable-positions-for
   }
 
