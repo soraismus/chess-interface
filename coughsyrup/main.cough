@@ -9,8 +9,16 @@ require.config
     jqueryUi : 'http://code.jquery.com/ui/1.10.3/jquery-ui'
     react    : 'http://fb.me/react-0.10.0'
 
-require (['constants', 'game-ui'], (c, game) ->
+require (['constants', 'fen-service', 'game-ui'], (c, fs, game) ->
 
   game.render c.initial-context
+
+  # An octothorpe ('#') prefixes a fragment identifer; it must be removed.
+  slice-# = \str -> str.slice 1
+
+  # Functions between demarcating semicolons are not applied, but composed.
+  window.addEventListener('popstate', ->
+    ; game.render fs.decode-fen slice-# decodeURI ; window.location.hash
+  )
 
 )

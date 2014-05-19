@@ -14,8 +14,17 @@
     }
   });
 
-  require(['constants', 'game-ui'], function(c, game) {
-    return game.render(c.initial_hyphen_context);
+  require(['constants', 'fen-service', 'game-ui'], function(c, fs, game) {
+    var slice_hyphen__octothorpe_;
+    game.render(c.initial_hyphen_context);
+    slice_hyphen__octothorpe_ = function(str) {
+      return str.slice(1);
+    };
+    return window.addEventListener('popstate', function() {
+      return (function(__i) {
+        return game.render(fs.decode_hyphen_fen(slice_hyphen__octothorpe_(decodeURI(__i))));
+      })(window.location.hash);
+    });
   });
 
 }).call(this);
