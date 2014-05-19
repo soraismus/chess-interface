@@ -58,6 +58,8 @@ define ( ->
 
   unset-passant-pos = '-'
 
+  unset-passant-pos-code = '-'
+
   unset-promotion-pos = '-'
 
   return {
@@ -158,6 +160,8 @@ define ( ->
     rook
 
     unset-passant-pos
+
+    unset-passant-pos-code
 
     unset-promotion-pos
 
