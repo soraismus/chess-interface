@@ -19,13 +19,17 @@ define (['types'], \y ->
     [y.color?,              'color'             ]
     [y.color-pair?,         'color pair'        ]
     [y.context?,            'context'           ]
+    [y.fen?,                'fen'               ]
+    [y.fen-board?,          'fen board'         ]
     [y.index?,              'index'             ]
     [y.integral-pair?,      'integral pair'     ]
     [y.pair?,               'pair'              ]
     [y.passant-position?,   'passant position'  ]
+    [y.passant-position-code?,   'passant position code']
     [y.pawn-direction?,     'pawn direction'    ]
     [y.player?,             'player'            ]
     [y.position?,           'position'          ]
+    [y.position-code?,      'position code'     ]
     [y.position-component?, 'position component']
     [y.promotion-position?, 'promotion position']
     [y.square?,             'square'            ]
@@ -45,13 +49,17 @@ define (['types'], \y ->
     vow-color
     vow-color-pair
     vow-context
+    vow-fen
+    vow-fen-board
     vow-index
     vow-integral-pair
     vow-pair
     vow-passant-position
+    vow-passant-position-code
     vow-pawn-direction
     vow-player
     vow-position
+    vow-position-code
     vow-position-component
     vow-promotion-position
     vow-square
@@ -80,6 +88,7 @@ define (['types'], \y ->
     vow-with (unless-undefined y.promotion-position?) msg val
 
   return {
+    vow
     vow-all-passant-positions
     vow-all-position-components
     vow-all-positions
@@ -92,15 +101,19 @@ define (['types'], \y ->
     vow-color
     vow-color-pair
     vow-context
+    vow-fen
+    vow-fen-board
     vow-index
     vow-integral-pair
     vow-message-when-set
     vow-pair
     vow-passant-position
+    vow-passant-position-code
     vow-promotion-position-when-set
     vow-pawn-direction
     vow-player
     vow-position
+    vow-position-code
     vow-promotion-position
     vow-square
     vow-string
