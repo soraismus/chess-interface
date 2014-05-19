@@ -22,16 +22,18 @@ define ([
     black-chessman = black-chessman-from[chessman-type]
     if (y.black? color) then black-chessman else (_.to-white black-chessman)
 
-  generate-context = (board, player-color, rts, passant) ->
-  generate-context = (board, player, castlingRights, passantPosition) ->
-    # Start testing mode.
-    v.vow-board board
-    v.vow-color player
-    v.vow-castling-right-set castlingRights
-    v.vow-passant-position passantPosition
-    # End testing mode.
+  generate-context =
+    (board, player, castlingRights, passantPosition, clock, moveNumber) ->
+      # Start testing mode.
+      v.vow-board board
+      v.vow-color player
+      v.vow-castling-right-set castlingRights
+      v.vow-passant-position passantPosition
+      # v.vow-non-negative-integer clock
+      # v.vow-non-negative-integer moveNumber
+      # End testing mode.
 
-    { board, player, castlingRights, passantPosition }
+      { board, player, castlingRights, passantPosition, clock, moveNumber }
 
   generate-position = (rank, file) ->
     # Start testing mode.

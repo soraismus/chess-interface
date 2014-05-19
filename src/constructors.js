@@ -20,8 +20,7 @@
         return _.to_hyphen_white(black_hyphen_chessman);
       }
     };
-    generate_hyphen_context = function(board, player_hyphen_color, rts, passant) {};
-    generate_hyphen_context = function(board, player, castlingRights, passantPosition) {
+    generate_hyphen_context = function(board, player, castlingRights, passantPosition, clock, moveNumber) {
       v.vow_hyphen_board(board);
       v.vow_hyphen_color(player);
       v.vow_hyphen_castling_hyphen_right_hyphen_set(castlingRights);
@@ -30,7 +29,9 @@
         board: board,
         player: player,
         castlingRights: castlingRights,
-        passantPosition: passantPosition
+        passantPosition: passantPosition,
+        clock: clock,
+        moveNumber: moveNumber
       };
     };
     generate_hyphen_position = function(rank, file) {
