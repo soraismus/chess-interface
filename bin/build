@@ -1,0 +1,44 @@
+#!/usr/bin/env sh
+
+# -----------------------------------------------------------
+# This awk script ignores each line (i.e., `$0`) passed     |
+# through that comes between two markers:                   |
+#   (1) "# Start testing mode."                             |
+#   (2) "# End testing mode."                               |
+# -----------------------------------------------------------
+# The script only prints (i.e., pipes to the next process)  |
+# lines if the lines don't `~` (i.e. match) either of these |
+# two markers and if the `streaming` variable is not set to |
+# `false` ('0' is equivalent to `false` in awk.)            |
+# -----------------------------------------------------------
+awkscript='BEGIN {
+  start="# Start testing mode."
+  stop="# End testing mode."
+  streaming=1
+}
+{
+  if ($0 ~ start) {
+    streaming=0
+  }
+
+  if ($0 ~ stop) {
+    streaming=1
+  }
+
+  if (streaming && $0 !~ start && $0 !~ stop) {
+    print($0)
+  }
+}'
+
+for file in coughsyrup/*; do
+  base="$( basename "$file" )"
+
+  # Remove the extension, which happens to be '.cough'.
+  filename="${base%.*}"
+
+  # Pass the file to the awk-interpreted script and then to the cough-syrup
+  # transpiler. Finally, write to the 'src' directory a new file with the
+  # same name as the input file except with the '.js' extension. (As with
+  # coffee-script, the '-s' option allows piping into and out of cough-syrup.)
+  awk < "$file" "$awkscript" | cough -sc > "src/$filename.js"
+done
