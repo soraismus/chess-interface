@@ -151,7 +151,7 @@ define ([
   # End testing mode.
 
   # Start production mode.
-  fen-service = { extract-chart }
+  fen-service = { decode-fen, encode-context }
   return fen-service
   # End production mode.
 
