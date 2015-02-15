@@ -48,7 +48,7 @@ define ([
     v.vow-board bd
     v.vow-color color
     v.vow-all-positions [set-passant, tgt]
-    # Endt testing mode.
+    # End testing mode.
 
     if u.same-position? tgt set-passant
       delete-passed-pawn (bd, color, set-passant)
