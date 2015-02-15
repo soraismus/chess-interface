@@ -1,1 +1,0 @@
-/home/theo/docs/practice/jasmine/uzikilon-tutorial2/js/mydash/mydash.js
