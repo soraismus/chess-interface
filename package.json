@@ -1,0 +1,27 @@
+{
+  "name": "chess-interface",
+  "version": "0.0.0",
+  "private": true,
+  "description": "A simple chess user-interface tested for firefox",
+  "main": "index.html",
+  "scripts": {
+    "build": "bin/build",
+    "build-test": "npm run compile-spec && npm run compile-src",
+    "compile-spec": "cough -o test/spec/ -c test/cough-spec/",
+    "compile-src": "cough -o src/ -c coughsyrup/",
+    "firefox": "which firefox && firefox -new-window index.html",
+    "open": "npm run build && npm run firefox",
+    "start-dev": "bin/start-dev",
+    "test": "npm run build-test && testem"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/matthew-hilty/chess-interface.git"
+  },
+  "author": "mhilty",
+  "license": "MIT",
+  "dependencies": {
+    "cough-syrup": "0.0.1",
+    "testem": "^0.7.0-1"
+  }
+}
