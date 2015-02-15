@@ -151,7 +151,7 @@ define ([
   extract-pos = \node-class ->
     regx = /..-pos-(\d)-(\d)/
     res  = regx.exec node-class
-    [row, col] = res[1..].map Number.toInteger
+    [row, col] = res[1..].map to-integer
 
   query-game-service = (event, ui, ctx) ->
     src = extract-pos (ui.draggable[0].className)
@@ -194,6 +194,9 @@ define ([
 
   src-for = (color, png-type) ->
     "assets/#{color}#{png-type}.png"
+
+  to-integer = \str ->
+    Number.parseInt (str, 10)
 
   return { render }
 

@@ -1,7 +1,7 @@
 define (['constants'], (c) ->
 
   black? = \sq ->
-    sq == String.toLowerCase sq && sq != c.empty-square
+    sq == to-black sq && sq != c.empty-square
 
   defaults = \mixin \val ->
     for prop of mixin
@@ -10,11 +10,11 @@ define (['constants'], (c) ->
     val
 
   white? = \sq ->
-    sq == String.toUpperCase sq && sq != c.empty-square
+    sq == to-white sq && sq != c.empty-square
 
-  to-black = String.toLowerCase
+  to-black = \str -> str.toLowerCase ()
 
-  to-white = String.toUpperCase
+  to-white = \str -> str.toUpperCase ()
 
   return {
     black?

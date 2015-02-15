@@ -104,7 +104,7 @@ define ([
     v.vow-fen-board fen-board
     # End testing mode.
 
-    fen-board.replace('/', '', 'g')
+    fen-board.replace(/\//g, '')
              .split('')
              .map(expand-char)
              .join('')
@@ -118,10 +118,19 @@ define ([
     # End testing mode.
 
     nbr-times = Number.parseInt (digit-as-string, 10)
-    empty-square.repeat nbr-times
+    repeat (empty-square, nbr-times)
 
   generate-fen = (bd, plyr, rts, pass, clock, mv-nbr) ->
     "#{bd} #{plyr} #{rts} #{pass} #{clock} #{mv-nbr}"
+
+  repeat = (pattern, count) ->
+    return '' if count < 1
+    prefix = ''
+    while count > 1
+      prefix += pattern if count & 1
+      count >>= 1
+      pattern += pattern
+    prefix + pattern
 
   # ----------
   # Constants

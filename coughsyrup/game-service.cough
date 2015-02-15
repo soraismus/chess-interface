@@ -280,7 +280,7 @@ define ([
     get-potential-king-attacks = \pos ->
       getPotentialKingAttacks (board, pos)
 
-    Array.concat.apply (null, (foe-positions.map get-potential-king-attacks))
+    Array.prototype.concat.apply ([], (foe-positions.map get-potential-king-attacks))
 
   # Start testing mode.
 

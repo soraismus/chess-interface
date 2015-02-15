@@ -143,12 +143,12 @@ define ([
       kingward  = [gen-pos (0, 6)]
       queenward = [gen-pos (0, 2)]
 
-      two-ranks = Array.concat (next-rank, same-rank)
+      two-ranks = next-rank.concat (same-rank)
 
-      res2 = Array.concat (two-ranks, kingward)
-      res3 = Array.concat (two-ranks, queenward, kingward)
-      res4 = Array.concat (two-ranks, queenward)
-      res5 = Array.concat (same-rank, queenward, kingward)
+      res2 = two-ranks.concat (kingward)
+      res3 = two-ranks.concat (queenward, kingward)
+      res4 = two-ranks.concat (queenward)
+      res5 = same-rank.concat (queenward, kingward)
 
       to-equal res2 (fn bd16, pos0-4, KQkq, no-pass)
       to-equal res3 (fn bd17, pos0-4, KQkq, no-pass)

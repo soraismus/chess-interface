@@ -139,10 +139,9 @@ define ([
     [rank, file] = x.rank-&-file-from src
     dir = direction-for color
 
-    moves = Array.concat (
-      get-fwd-moves    (bd, rank, file, color, dir)
-      get-diag-attacks (bd, rank, file, color, dir, passant)
-    )
+    fwd-moves    = get-fwd-moves (bd, rank, file, color, dir)
+    diag-attacks = get-diag-attacks (bd, rank, file, color, dir, passant)
+    moves        = fwd-moves.concat diag-attacks
 
     moves.filter u.inessent?
 
