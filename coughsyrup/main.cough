@@ -5,9 +5,9 @@ require.config
       exports  : 'jqueryUi'
 
   paths :
-    jquery   : 'http://code.jquery.com/jquery-1.9.1'
-    jqueryUi : 'http://code.jquery.com/ui/1.10.3/jquery-ui'
-    react    : 'http://fb.me/react-0.10.0'
+    jquery    : '../vendor/jquery.min'
+    jqueryUi  : '../vendor/jquery-ui.min'
+    react     : '../node_modules/react/dist/react.min'
 
 require (['constants', 'fen-service', 'game-ui'], (c, fs, game) ->
 
