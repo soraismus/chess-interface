@@ -1,8 +1,8 @@
 require.config({
   baseUrl : "../src/",
   paths : {
-    jasmine       : '../test/lib/jasmine',
-    jasmineHtml   : '../test/lib/jasmine-html',
+    jasmine       : '../test/vendor/jasmine',
+    jasmineHtml   : '../test/vendor/jasmine-html',
     jFns          : '../test/spec/jasmine-fns',
     spec          : '../test/spec',
     specConstants : '../test/spec/spec-constants',
